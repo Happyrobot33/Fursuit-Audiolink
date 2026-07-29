@@ -1,0 +1,18 @@
+syntax = "proto3";
+
+message History {
+    repeated float bass = 1 [packed=true];
+    repeated float lowmid = 2 [packed=true];
+    repeated float highmid = 3 [packed=true];
+    repeated float treble = 4 [packed=true];
+}
+
+message Audiolink_Data {
+    History history = 1;
+}
+
+message Sub_Packet {
+    int32 packet_index = 1;
+    //arbitrary data
+    repeated byte data = 2;
+}
