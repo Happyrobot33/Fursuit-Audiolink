@@ -5,26 +5,8 @@ using System.IO.Ports;
 using System.Threading;
 using UnityEngine;
 using VRCAudioLink;
-
-// Protobuf message definitions
-public class History
-{
-    public List<float> bass = new List<float>();
-    public List<float> lowmid = new List<float>();
-    public List<float> highmid = new List<float>();
-    public List<float> treble = new List<float>();
-}
-
-public class AudiolinkData
-{
-    public History history = new History();
-}
-
-public class SubPacket
-{
-    public int packet_index;
-    public List<byte> data = new List<byte>();
-}
+using PROTO;
+using pbc = global::Google.Protobuf.Collections;
 
 public class SerialExport : MonoBehaviour
 {
@@ -34,9 +16,8 @@ public class SerialExport : MonoBehaviour
     private float timeSinceLastSend = 0f;
     
     // Reusable data structures to avoid allocations
-    private AudiolinkData cachedAudioData;
+    private Audiolink_Data cachedAudioData;
     private byte[] serialBuffer = new byte[4096];
-    private byte[] cobsBuffer = new byte[4096];
     
     // Background thread for serial writing
     private Thread serialThread;
@@ -49,36 +30,26 @@ public class SerialExport : MonoBehaviour
 
     void Start()
     {
-        try
-        {
-            // Initialize reusable data structures
-            cachedAudioData = new AudiolinkData();
-            cachedAudioData.history.bass.Capacity = 128;
-            cachedAudioData.history.lowmid.Capacity = 128;
-            cachedAudioData.history.highmid.Capacity = 128;
-            cachedAudioData.history.treble.Capacity = 128;
-            
-            // Open serial port COM6 at 115200 baud
-            // serialPort = new SerialPort("COM6", 115200);
-            const int baudRate = 921600;
-            serialPort = new SerialPort("COM3", baudRate);
-            serialPort.Open();
-            //automatically derive the write timeout based on the baud rate and data size
-            int bytesToWrite = 4096; // Example value, adjust as needed
-            int calculatedTimeoutMs = (int)((bytesToWrite * 10.0 / baudRate) * 1000.0 * 2.0);
-            serialPort.WriteTimeout = calculatedTimeoutMs;
-            Debug.Log("Serial port COM6 opened successfully");
-            
-            // Start background serial thread
-            serialThreadRunning = true;
-            serialThread = new Thread(SerialWriteThread);
-            serialThread.Name = "SerialWrite";
-            serialThread.Start();
-        }
-        catch (System.Exception ex)
-        {
-            Debug.LogError("Failed to open serial port COM6: " + ex.Message);
-        }
+        // Initialize reusable data structures
+        cachedAudioData = new Audiolink_Data();
+        
+        // Open serial port COM6 at 115200 baud
+        // serialPort = new SerialPort("COM6", 115200);
+        const int baudRate = 921600;
+        const string portName = "COM3"; // Change this to your desired COM port
+        serialPort = new SerialPort(portName, baudRate);
+        serialPort.Open();
+        //automatically derive the write timeout based on the baud rate and data size
+        int bytesToWrite = 4096; // Example value, adjust as needed
+        int calculatedTimeoutMs = (int)((bytesToWrite * 10.0 / baudRate) * 1000.0 * 2.0);
+        serialPort.WriteTimeout = calculatedTimeoutMs;
+        Debug.Log("Serial port " + portName + " opened successfully");
+        
+        // Start background serial thread
+        serialThreadRunning = true;
+        serialThread = new Thread(SerialWriteThread);
+        serialThread.Name = "SerialWrite";
+        serialThread.Start();
     }
 
     void Update()
@@ -103,23 +74,29 @@ public class SerialExport : MonoBehaviour
             if (audioLink == null || audioLink.audioData == null)
                 return;
 
+            //make sure the lists exist
+            if (cachedAudioData.History == null)
+            {
+                cachedAudioData.History = new History();
+            }
+
             // Clear previous data (reuse lists)
-            cachedAudioData.history.bass.Clear();
-            cachedAudioData.history.lowmid.Clear();
-            cachedAudioData.history.highmid.Clear();
-            cachedAudioData.history.treble.Clear();
+            cachedAudioData.History.Bass.Clear();
+            cachedAudioData.History.Lowmid.Clear();
+            cachedAudioData.History.Highmid.Clear();
+            cachedAudioData.History.Treble.Clear();
             
             // Collect audio bands for the current frame
             // Using 4 bands: bass, lowmid, highmid, treble
             for (int i = 0; i < 4; i++)
             {
-                List<float> targetList = i switch
+                var targetList = i switch
                 {
-                    0 => cachedAudioData.history.bass,
-                    1 => cachedAudioData.history.lowmid,
-                    2 => cachedAudioData.history.highmid,
-                    3 => cachedAudioData.history.treble,
-                    _ => cachedAudioData.history.bass
+                    0 => cachedAudioData.History.Bass,
+                    1 => cachedAudioData.History.Lowmid,
+                    2 => cachedAudioData.History.Highmid,
+                    3 => cachedAudioData.History.Treble,
+                    _ => cachedAudioData.History.Bass
                 };
                 
                 for (int j = 0; j < 128; j++)
@@ -132,14 +109,16 @@ public class SerialExport : MonoBehaviour
             // Serialize to bytes (manual protobuf serialization)
             int serializedLength = SerializeAudioData(cachedAudioData, serialBuffer);
 
-            // COBS encode
-            int cobsLength = COBSEncode(serialBuffer, serializedLength, cobsBuffer);
+            // COBS encode using cobs.net library
+            byte[] inputData = new byte[serializedLength];
+            System.Array.Copy(serialBuffer, 0, inputData, 0, serializedLength);
+            byte[] cobsEncoded = COBS.NET.COBS.Encode(inputData);
 
             // Queue the data for serial writing on background thread
             // Add 0x00 frame delimiter at the end
-            byte[] dataToSend = new byte[cobsLength + 1];
-            System.Array.Copy(cobsBuffer, 0, dataToSend, 0, cobsLength);
-            dataToSend[cobsLength] = 0x00;
+            byte[] dataToSend = new byte[cobsEncoded.Length + 1];
+            System.Array.Copy(cobsEncoded, 0, dataToSend, 0, cobsEncoded.Length);
+            dataToSend[cobsEncoded.Length] = 0x00;
 
             //print the first 10 bytes of the data to send for debugging
             // string debugOutput = "Data to send (first 10 bytes): ";
@@ -160,7 +139,7 @@ public class SerialExport : MonoBehaviour
         }
         catch (System.Exception ex)
         {
-            Debug.LogError("Error preparing audio data: " + ex.Message);
+            Debug.LogError(ex);
         }
     }
 
@@ -244,7 +223,7 @@ public class SerialExport : MonoBehaviour
     }
 
     // Calculate size of packed repeated float field
-    int CalculatePackedFloatSize(List<float> values)
+    int CalculatePackedFloatSize(pbc::RepeatedField<float> values)
     {
         if (values.Count == 0) return 0;
         int floatDataSize = values.Count * 4;
@@ -257,15 +236,15 @@ public class SerialExport : MonoBehaviour
     int CalculateHistorySize(History history)
     {
         int size = 0;
-        size += CalculatePackedFloatSize(history.bass);
-        size += CalculatePackedFloatSize(history.lowmid);
-        size += CalculatePackedFloatSize(history.highmid);
-        size += CalculatePackedFloatSize(history.treble);
+        size += CalculatePackedFloatSize(history.Bass);
+        size += CalculatePackedFloatSize(history.Lowmid);
+        size += CalculatePackedFloatSize(history.Highmid);
+        size += CalculatePackedFloatSize(history.Treble);
         return size;
     }
 
     // Manual protobuf serialization for Audiolink_Data
-    int SerializeAudioData(AudiolinkData data, byte[] buffer)
+    int SerializeAudioData(Audiolink_Data data, byte[] buffer)
     {
         int offset = 0;
 
@@ -274,22 +253,22 @@ public class SerialExport : MonoBehaviour
         
         // Calculate history size first
         int historySize = 0;
-        historySize += CalculateRepeatedFloatSize(data.history.bass);
-        historySize += CalculateRepeatedFloatSize(data.history.lowmid);
-        historySize += CalculateRepeatedFloatSize(data.history.highmid);
-        historySize += CalculateRepeatedFloatSize(data.history.treble);
+        historySize += CalculateRepeatedFloatSize(data.History.Bass);
+        historySize += CalculateRepeatedFloatSize(data.History.Lowmid);
+        historySize += CalculateRepeatedFloatSize(data.History.Highmid);
+        historySize += CalculateRepeatedFloatSize(data.History.Treble);
         
         // Write history length
         offset += AppendVarintLength(buffer, offset, historySize);
         
         // Write history data directly
-        offset += SerializeHistory(data.history, buffer, offset);
+        offset += SerializeHistory(data.History, buffer, offset);
 
         return offset;
     }
 
     // Calculate size of packed repeated float field
-    int CalculateRepeatedFloatSize(List<float> values)
+    int CalculateRepeatedFloatSize(pbc::RepeatedField<float> values)
     {
         if (values.Count == 0) return 0;
         
@@ -305,22 +284,22 @@ public class SerialExport : MonoBehaviour
         int startOffset = offset;
 
         // Field 1: bass (repeated float, packed)
-        offset += SerializeRepeatedFloat(1, history.bass, buffer, offset);
+        offset += SerializeRepeatedFloat(1, history.Bass, buffer, offset);
 
         // Field 2: lowmid (repeated float, packed)
-        offset += SerializeRepeatedFloat(2, history.lowmid, buffer, offset);
+        offset += SerializeRepeatedFloat(2, history.Lowmid, buffer, offset);
 
         // Field 3: highmid (repeated float, packed)
-        offset += SerializeRepeatedFloat(3, history.highmid, buffer, offset);
+        offset += SerializeRepeatedFloat(3, history.Highmid, buffer, offset);
 
         // Field 4: treble (repeated float, packed)
-        offset += SerializeRepeatedFloat(4, history.treble, buffer, offset);
+        offset += SerializeRepeatedFloat(4, history.Treble, buffer, offset);
 
         return offset - startOffset;
     }
 
     // Serialize repeated float field (packed encoding)
-    int SerializeRepeatedFloat(int fieldNumber, List<float> values, byte[] buffer, int offset)
+    int SerializeRepeatedFloat(int fieldNumber, pbc::RepeatedField<float> values, byte[] buffer, int offset)
     {
         int startOffset = offset;
         
@@ -359,40 +338,6 @@ public class SerialExport : MonoBehaviour
         buffer[offset++] = (byte)(length & 0x7F);
         
         return offset - startOffset;
-    }
-
-    // COBS (Consistent Overhead Byte Stuffing) encode - matches Python implementation
-    int COBSEncode(byte[] input, int inputLength, byte[] output)
-    {
-        if (inputLength == 0)
-        {
-            output[0] = 0x01;
-            return 1;
-        }
-
-        int writePos = 0;
-        int codePos = 0;
-        output[writePos++] = 0;  // Placeholder for first code byte
-        
-        for (int i = 0; i < inputLength; i++)
-        {
-            if (input[i] == 0x00)
-            {
-                // Found a zero, write code and reset
-                output[codePos] = (byte)(i - codePos + 1);
-                codePos = writePos;
-                output[writePos++] = 0;  // New code placeholder
-            }
-            else
-            {
-                output[writePos++] = input[i];
-            }
-        }
-        
-        // Write final code
-        output[codePos] = (byte)(writePos - codePos);
-        
-        return writePos;
     }
 
     // Background thread for serial port writing and reading

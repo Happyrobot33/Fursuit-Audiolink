@@ -1,0 +1,22 @@
+syntax = "proto3";
+
+//Used to prefix so CPP native code can directly use the message name
+package PROTO;
+
+message History {
+    repeated float bass = 1 [packed=true];
+    repeated float lowmid = 2 [packed=true];
+    repeated float highmid = 3 [packed=true];
+    repeated float treble = 4 [packed=true];
+}
+
+message Audiolink_Data {
+    History history = 1;
+}
+
+message Sub_Packet {
+    int32 packet_index = 1;
+    int32 packet_count = 3;
+    //arbitrary data
+    repeated bytes data = 2;
+}

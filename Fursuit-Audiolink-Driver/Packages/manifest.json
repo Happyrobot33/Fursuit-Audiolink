@@ -1,5 +1,7 @@
 {
   "dependencies": {
+    "com.e7.protobuf-unity": "https://github.com/5argon/protobuf-unity.git",
+    "com.github-glitchenzo.nugetforunity": "https://github.com/GlitchEnzo/NuGetForUnity.git?path=/src/NuGetForUnity",
     "com.hecomi.uwindowcapture": "https://github.com/hecomi/uWindowCapture.git#upm",
     "com.iam1337.extosc": "https://github.com/iam1337/extOSC.git#upm",
     "com.unity.ide.rider": "3.0.21",
