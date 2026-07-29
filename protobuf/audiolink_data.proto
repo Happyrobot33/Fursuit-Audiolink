@@ -13,6 +13,7 @@ message Audiolink_Data {
 
 message Sub_Packet {
     int32 packet_index = 1;
+    int32 packet_count = 3;
     //arbitrary data
-    repeated byte data = 2;
+    repeated bytes data = 2;
 }

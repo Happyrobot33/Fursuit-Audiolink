@@ -14,8 +14,4 @@ dependencies:
   #   # `public` flag doesn't have an effect dependencies of the `main` component.
   #   # All dependencies of `main` are public by default.
   #   public: true
-  espressif/led_strip: ^3.0.3
-  nopnop2002/mirf:
-    path: components/mirf/
-    git: https://github.com/nopnop2002/esp-idf-mirf.git
   livekit/nanopb: ^0.4.9

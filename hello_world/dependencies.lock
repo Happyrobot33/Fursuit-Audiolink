@@ -13,6 +13,13 @@ dependencies:
     source:
       type: idf
     version: 6.0.2
+  livekit/nanopb:
+    component_hash: 5b3bd915d2eb2ad1a7bb4a3ca655c40f31bab5f4f48e75ec04e300dc9ab78f4d
+    dependencies: []
+    source:
+      registry_url: https://components.espressif.com/
+      type: service
+    version: 0.4.9
   nopnop2002/mirf:
     component_hash: c2125d8b02cda80cb893045bac67ad29670c05839ba712f1216a261d5d8a2b02
     dependencies: []
@@ -24,7 +31,8 @@ dependencies:
 direct_dependencies:
 - espressif/led_strip
 - idf
+- livekit/nanopb
 - nopnop2002/mirf
-manifest_hash: 4106f29d9b10230bb69f1b465158cadb3270bce3e68168b64143fd6f5c3abed0
+manifest_hash: 2d3f4b8397d432c9df48fa61c6b26cd94365a8befba82f9732417d0a545c4e69
 target: esp32
 version: 3.0.0

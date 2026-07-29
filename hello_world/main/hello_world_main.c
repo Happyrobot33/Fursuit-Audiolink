@@ -22,6 +22,7 @@
 #include "led_strip_rmt.h"
 #include "led_strip.h"
 #include "audiolink_data.pb.h"
+#include "pb_decode.h"
 
 static const char *TAG = "audiolink";
 
@@ -35,14 +36,34 @@ static const char *TAG = "audiolink";
 /* Buffer for receiving Sub_Packets and reconstructing Audiolink_Data */
 #define MAX_SUB_PACKETS 16
 #define MAX_AUDIO_DATA_SIZE 10000
+#define MAX_FREQUENCY_SAMPLES 256
+
+/* Decoded frequency data arrays */
+typedef struct {
+    float bass[MAX_FREQUENCY_SAMPLES];
+    size_t bass_count;
+    float lowmid[MAX_FREQUENCY_SAMPLES];
+    size_t lowmid_count;
+    float highmid[MAX_FREQUENCY_SAMPLES];
+    size_t highmid_count;
+    float treble[MAX_FREQUENCY_SAMPLES];
+    size_t treble_count;
+} FrequencyData;
 
 typedef struct {
-    Sub_Packet packets[MAX_SUB_PACKETS];
+    uint32_t packet_index;
+    uint8_t data[ESP_NOW_MAX_DATA_LEN_V2];
+    size_t data_len;
+} PacketBuffer;
+
+typedef struct {
+    PacketBuffer packets[MAX_SUB_PACKETS];
     int packet_count;
     bool is_complete;
     uint8_t reconstructed_data[MAX_AUDIO_DATA_SIZE];
     size_t reconstructed_size;
     Audiolink_Data audio_data;
+    FrequencyData frequency_data;
 } AudioBuffer;
 
 static AudioBuffer current_audio = {0};
@@ -53,6 +74,87 @@ typedef struct {
     uint8_t r, g, b;
 } pixel_t;
 static pixel_t led_pixels[LED_STRIP_LED_NUMBERS] = {0};
+
+/* Structure to hold decoded Sub_Packet data in callback */
+typedef struct {
+    uint8_t buffer[ESP_NOW_MAX_DATA_LEN_V2];
+    size_t size;
+} SubPacketData;
+
+/* Callback handler for decoding repeated bytes data field */
+static bool decode_subpacket_data_callback(pb_istream_t *stream, const pb_field_t *field, void **arg)
+{
+    SubPacketData *pkt_data = (SubPacketData *)*arg;
+    
+    /* For a repeated bytes field, stream->bytes_left contains the length of this element */
+    size_t bytes_to_read = stream->bytes_left;
+    
+    if (pkt_data->size + bytes_to_read > ESP_NOW_MAX_DATA_LEN_V2) {
+        ESP_LOGW(TAG, "Sub_Packet data too large: %zu + %zu > %zu", 
+                 pkt_data->size, bytes_to_read, (size_t)ESP_NOW_MAX_DATA_LEN_V2);
+        return false;
+    }
+    
+    if (!pb_read(stream, &pkt_data->buffer[pkt_data->size], bytes_to_read)) {
+        return false;
+    }
+    
+    pkt_data->size += bytes_to_read;
+    return true;
+}
+
+/* Callback handlers for decoding repeated float fields */
+static bool decode_bass_callback(pb_istream_t *stream, const pb_field_t *field, void **arg)
+{
+    FrequencyData *freq_data = (FrequencyData *)*arg;
+    float value;
+    if (!pb_decode_fixed32(stream, (uint32_t*)&value)) {
+        return false;
+    }
+    if (freq_data->bass_count < MAX_FREQUENCY_SAMPLES) {
+        freq_data->bass[freq_data->bass_count++] = value;
+    }
+    return true;
+}
+
+static bool decode_lowmid_callback(pb_istream_t *stream, const pb_field_t *field, void **arg)
+{
+    FrequencyData *freq_data = (FrequencyData *)*arg;
+    float value;
+    if (!pb_decode_fixed32(stream, (uint32_t*)&value)) {
+        return false;
+    }
+    if (freq_data->lowmid_count < MAX_FREQUENCY_SAMPLES) {
+        freq_data->lowmid[freq_data->lowmid_count++] = value;
+    }
+    return true;
+}
+
+static bool decode_highmid_callback(pb_istream_t *stream, const pb_field_t *field, void **arg)
+{
+    FrequencyData *freq_data = (FrequencyData *)*arg;
+    float value;
+    if (!pb_decode_fixed32(stream, (uint32_t*)&value)) {
+        return false;
+    }
+    if (freq_data->highmid_count < MAX_FREQUENCY_SAMPLES) {
+        freq_data->highmid[freq_data->highmid_count++] = value;
+    }
+    return true;
+}
+
+static bool decode_treble_callback(pb_istream_t *stream, const pb_field_t *field, void **arg)
+{
+    FrequencyData *freq_data = (FrequencyData *)*arg;
+    float value;
+    if (!pb_decode_fixed32(stream, (uint32_t*)&value)) {
+        return false;
+    }
+    if (freq_data->treble_count < MAX_FREQUENCY_SAMPLES) {
+        freq_data->treble[freq_data->treble_count++] = value;
+    }
+    return true;
+}
 
 /* HSV to RGB conversion - maps highmid value to a color gradient */
 static void hsv_to_rgb(float hue, float saturation, float value, uint8_t *r, uint8_t *g, uint8_t *b)
@@ -123,87 +225,123 @@ static int map_to_leds(led_strip_handle_t led_strip, float *frequency_value, int
     return ESP_OK;
 }
 
-/* Attempt to reconstruct Audiolink_Data from received Sub_Packets */
 static bool try_reconstruct_audio_data(AudioBuffer *buf)
 {
     if (buf->packet_count == 0) {
         return false;
     }
     
-    /* Concatenate all sub-packet data in order */
+    /* Assume all packets have the same packet_count from the first packet */
+    uint32_t expected_packet_count = buf->packets[0].packet_index; // Will be set in recv callback
+    
+    /* Check if we have all expected packets */
+    if (buf->packet_count < expected_packet_count) {
+        ESP_LOGD(TAG, "Waiting for packets: %d/%d", buf->packet_count, expected_packet_count);
+        return false;
+    }
+    
+    /* Concatenate all packet data in order */
     buf->reconstructed_size = 0;
     for (int i = 0; i < buf->packet_count; i++) {
-        Sub_Packet *pkt = &buf->packets[i];
+        PacketBuffer *pkt = &buf->packets[i];
         
-        if (buf->reconstructed_size + pkt->data_count > MAX_AUDIO_DATA_SIZE) {
+        if (buf->reconstructed_size + pkt->data_len > MAX_AUDIO_DATA_SIZE) {
             ESP_LOGW(TAG, "Audio data too large, discarding");
             return false;
         }
         
-        memcpy(&buf->reconstructed_data[buf->reconstructed_size],
-               pkt->data, pkt->data_count);
-        buf->reconstructed_size += pkt->data_count;
+        if (pkt->data_len > 0) {
+            memcpy(&buf->reconstructed_data[buf->reconstructed_size],
+                   pkt->data, pkt->data_len);
+            buf->reconstructed_size += pkt->data_len;
+        }
     }
     
-    /* Decode the concatenated data as Audiolink_Data */
-    int decode_len = audiolink_data_decode(buf->reconstructed_data,
-                                          buf->reconstructed_size,
-                                          &buf->audio_data);
+    /* Initialize frequency data structure */
+    memset(&buf->frequency_data, 0, sizeof(FrequencyData));
     
-    if (decode_len > 0) {
+    /* Set up callbacks for repeated float fields */
+    buf->audio_data.history.bass.funcs.decode = decode_bass_callback;
+    buf->audio_data.history.bass.arg = &buf->frequency_data;
+    
+    buf->audio_data.history.lowmid.funcs.decode = decode_lowmid_callback;
+    buf->audio_data.history.lowmid.arg = &buf->frequency_data;
+    
+    buf->audio_data.history.highmid.funcs.decode = decode_highmid_callback;
+    buf->audio_data.history.highmid.arg = &buf->frequency_data;
+    
+    buf->audio_data.history.treble.funcs.decode = decode_treble_callback;
+    buf->audio_data.history.treble.arg = &buf->frequency_data;
+    
+    /* Decode the concatenated data as Audiolink_Data using nanopb */
+    pb_istream_t stream = pb_istream_from_buffer(buf->reconstructed_data, buf->reconstructed_size);
+    bool status = pb_decode(&stream, Audiolink_Data_fields, &buf->audio_data);
+    
+    if (status) {
         buf->is_complete = true;
-        ESP_LOGI(TAG, "Audio data reconstructed: bass=%d, lowmid=%d, highmid=%d, treble=%d",
-                 buf->audio_data.history.bass_count,
-                 buf->audio_data.history.lowmid_count,
-                 buf->audio_data.history.highmid_count,
-                 buf->audio_data.history.treble_count);
+        ESP_LOGI(TAG, "Audio data reconstructed: received %d packets, bass=%zu, lowmid=%zu, highmid=%zu, treble=%zu",
+                 buf->packet_count,
+                 buf->frequency_data.bass_count,
+                 buf->frequency_data.lowmid_count,
+                 buf->frequency_data.highmid_count,
+                 buf->frequency_data.treble_count);
         return true;
+    } else {
+        ESP_LOGW(TAG, "Protobuf decode failed: %s", PB_GET_ERROR(&stream));
+        return false;
     }
-    
-    return false;
 }
 
 static void espnow_recv_cb(const esp_now_recv_info_t *recv_info, const uint8_t *data, int len)
 {
-    Sub_Packet pkt;
-    sub_packet_init(&pkt);
+    /* Decode the received data as a Sub_Packet protobuf message */
+    Sub_Packet sub_pkt = {0};
+    SubPacketData pkt_data = {0};
     
-    int decode_len = sub_packet_decode(data, (size_t)len, &pkt);
-    if (decode_len <= 0) {
-        ESP_LOGW(TAG, "Failed to decode Sub_Packet");
+    /* Set up callback for data field */
+    sub_pkt.data.funcs.decode = decode_subpacket_data_callback;
+    sub_pkt.data.arg = &pkt_data;
+    
+    pb_istream_t stream = pb_istream_from_buffer(data, len);
+    bool decode_status = pb_decode(&stream, Sub_Packet_fields, &sub_pkt);
+    
+    if (!decode_status) {
+        ESP_LOGW(TAG, "Failed to decode Sub_Packet: %s", PB_GET_ERROR(&stream));
         return;
     }
     
     /* Use debug logging to avoid blocking in callback */
-    ESP_LOGD(TAG, "Packet received - MAC: %02x:%02x:%02x:%02x:%02x:%02x, Size: %d bytes, Index: %d, Data size: %d",
+    ESP_LOGD(TAG, "Packet received - MAC: %02x:%02x:%02x:%02x:%02x:%02x, Index: %d, Count: %d, Data size: %d",
              recv_info->src_addr[0], recv_info->src_addr[1], recv_info->src_addr[2],
              recv_info->src_addr[3], recv_info->src_addr[4], recv_info->src_addr[5],
-             len, pkt.packet_index, pkt.data_count);
+             sub_pkt.packet_index, sub_pkt.packet_count, pkt_data.size);
     
     if (xSemaphoreTake(audio_mutex, pdMS_TO_TICKS(100)) == pdTRUE) {
         /* Check if this is a new message (packet_index == 0) or continuation */
-        if (pkt.packet_index == 0) {
+        if (sub_pkt.packet_index == 0) {
             /* New message: reset the buffer */
             current_audio.packet_count = 0;
             current_audio.is_complete = false;
-            ESP_LOGD(TAG, "Starting new audio message");
+            ESP_LOGD(TAG, "Starting new audio message (expecting %d packets)", sub_pkt.packet_count);
         }
         
         /* Store the packet if we have space */
         if (current_audio.packet_count < MAX_SUB_PACKETS) {
-            memcpy(&current_audio.packets[current_audio.packet_count],
-                   &pkt, sizeof(Sub_Packet));
+            PacketBuffer *pkt = &current_audio.packets[current_audio.packet_count];
+            pkt->packet_index = sub_pkt.packet_index;
+            pkt->data_len = pkt_data.size;
+            memcpy(pkt->data, pkt_data.buffer, pkt_data.size);
             current_audio.packet_count++;
             
-            ESP_LOGD(TAG, "Received Sub_Packet %d (total packets in buffer: %d)",
-                     pkt.packet_index, current_audio.packet_count);
+            ESP_LOGD(TAG, "Received packet %d/%d (total buffered: %d)",
+                     sub_pkt.packet_index, sub_pkt.packet_count, current_audio.packet_count);
             
-            /* Try to reconstruct - if we have a reasonable number of packets */
-            if (current_audio.packet_count >= 1) {
+            /* Try to reconstruct - if we have all expected packets */
+            if (current_audio.packet_count >= sub_pkt.packet_count) {
                 try_reconstruct_audio_data(&current_audio);
             }
         } else {
-            ESP_LOGW(TAG, "Too many Sub_Packets, discarding");
+            ESP_LOGW(TAG, "Too many packets, discarding");
         }
         
         xSemaphoreGive(audio_mutex);
@@ -268,26 +406,26 @@ void app_main(void)
                 /* Map 4 frequency bands to 4 quadrants */
                 /* Quadrant 0: bass -> red */
                 map_to_leds(led_strip, 
-                           current_audio.audio_data.history.bass, 
-                           current_audio.audio_data.history.bass_count,
+                           current_audio.frequency_data.bass, 
+                           current_audio.frequency_data.bass_count,
                            0, 255, 0, 0);
                 
                 /* Quadrant 1: lowmid -> yellow */
                 map_to_leds(led_strip, 
-                           current_audio.audio_data.history.lowmid,
-                           current_audio.audio_data.history.lowmid_count,
+                           current_audio.frequency_data.lowmid,
+                           current_audio.frequency_data.lowmid_count,
                            1, 255, 255, 0);
                 
                 /* Quadrant 2: highmid -> green */
                 map_to_leds(led_strip, 
-                           current_audio.audio_data.history.highmid,
-                           current_audio.audio_data.history.highmid_count,
+                           current_audio.frequency_data.highmid,
+                           current_audio.frequency_data.highmid_count,
                            2, 0, 255, 0);
                 
                 /* Quadrant 3: treble -> blue */
                 map_to_leds(led_strip, 
-                           current_audio.audio_data.history.treble,
-                           current_audio.audio_data.history.treble_count,
+                           current_audio.frequency_data.treble,
+                           current_audio.frequency_data.treble_count,
                            3, 0, 0, 255);
                 
                 ESP_ERROR_CHECK(led_strip_refresh(led_strip));
