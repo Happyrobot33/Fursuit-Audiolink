@@ -4,18 +4,19 @@
  * SPDX-License-Identifier: CC0-1.0
  */
 #include <cstdio>
+#include <vector>
 #include "freertos/FreeRTOS.h"
 #include "freertos/task.h"
 #include "freertos/semphr.h"
 #include "esp_log.h"
 #include "driver/gpio.h"
-#include "audio_processor.h"
 #include "led_controller.h"
 #include "receiver.h"
 #include "config.h"
 
-// Global instances
-AudioProcessor audio_processor;
+// Global data structures
+CppAudiolinkData audio_data;
+bool audio_complete = false;
 LEDController led_controller;
 SemaphoreHandle_t audio_mutex = nullptr;
 
@@ -40,35 +41,35 @@ extern "C" void app_main(void) {
     /* Main loop */
     while (1) {
         if (xSemaphoreTake(audio_mutex, pdMS_TO_TICKS(10)) == pdTRUE) {
-            if (audio_processor.is_complete) {
+            if (audio_complete) {
                 /* Clear LED strip */
                 led_controller.clear(led_strip);
                 
                 /* Map 4 frequency bands to 4 LED quadrants */
                 /* Quadrant 0: bass -> red */
-                if (!audio_processor.bass.empty()) {
-                    led_controller.map_to_leds(led_strip, audio_processor.bass, 0, 255, 0, 0);
+                if (!audio_data.history.bass.empty()) {
+                    led_controller.map_to_leds(led_strip, audio_data.history.bass, 0, 255, 0, 0);
                 }
                 
                 /* Quadrant 1: lowmid -> yellow */
-                if (!audio_processor.lowmid.empty()) {
-                    led_controller.map_to_leds(led_strip, audio_processor.lowmid, 1, 255, 255, 0);
+                if (!audio_data.history.lowmid.empty()) {
+                    led_controller.map_to_leds(led_strip, audio_data.history.lowmid, 1, 255, 255, 0);
                 }
                 
                 /* Quadrant 2: highmid -> green */
-                if (!audio_processor.highmid.empty()) {
-                    led_controller.map_to_leds(led_strip, audio_processor.highmid, 2, 0, 255, 0);
+                if (!audio_data.history.highmid.empty()) {
+                    led_controller.map_to_leds(led_strip, audio_data.history.highmid, 2, 0, 255, 0);
                 }
                 
                 /* Quadrant 3: treble -> blue */
-                if (!audio_processor.treble.empty()) {
-                    led_controller.map_to_leds(led_strip, audio_processor.treble, 3, 0, 0, 255);
+                if (!audio_data.history.treble.empty()) {
+                    led_controller.map_to_leds(led_strip, audio_data.history.treble, 3, 0, 0, 255);
                 }
                 
                 ESP_ERROR_CHECK(led_strip_refresh(led_strip));
                 
                 /* Reset flag after displaying to avoid redundant updates */
-                audio_processor.is_complete = false;
+                audio_complete = false;
             }
             xSemaphoreGive(audio_mutex);
         }

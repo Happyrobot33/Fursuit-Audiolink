@@ -68,7 +68,7 @@ void espnow_sender_task(void *arg)
             size_t offset = 0;
 
             while (offset < frame.data_len || packet_index == 0) {
-                Sub_Packet sub_pkt = Sub_Packet_init_zero;
+                PROTO_Sub_Packet sub_pkt = PROTO_Sub_Packet_init_zero;
                 sub_pkt.packet_index = packet_index;
                 sub_pkt.packet_count = total_packets;
 
@@ -89,7 +89,7 @@ void espnow_sender_task(void *arg)
                 /* Encode Sub_Packet into buffer */
                 uint8_t pkt_buf[ESP_NOW_MAX_DATA_LEN_V2];
                 pb_ostream_t stream = pb_ostream_from_buffer(pkt_buf, sizeof(pkt_buf));
-                bool encode_status = pb_encode(&stream, Sub_Packet_fields, &sub_pkt);
+                bool encode_status = pb_encode(&stream, PROTO_Sub_Packet_fields, &sub_pkt);
                 
                 if (encode_status) {
                     size_t pkt_len = stream.bytes_written;

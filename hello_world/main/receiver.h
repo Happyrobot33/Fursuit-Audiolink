@@ -1,5 +1,24 @@
 #pragma once
 
+#include <vector>
+
+/**
+ * C++ wrapper struct for History with vectors instead of callbacks
+ */
+struct CppHistory {
+    std::vector<float> bass;
+    std::vector<float> lowmid;
+    std::vector<float> highmid;
+    std::vector<float> treble;
+};
+
+/**
+ * C++ wrapper struct for Audiolink_Data with vectors
+ */
+struct CppAudiolinkData {
+    CppHistory history;
+};
+
 /**
  * Initialize WiFi in STA mode (for ESP-NOW receiver)
  */

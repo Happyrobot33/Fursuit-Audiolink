@@ -1,5 +1,8 @@
 syntax = "proto3";
 
+//Used to prefix so CPP native code can directly use the message name
+package PROTO;
+
 message History {
     repeated float bass = 1 [packed=true];
     repeated float lowmid = 2 [packed=true];

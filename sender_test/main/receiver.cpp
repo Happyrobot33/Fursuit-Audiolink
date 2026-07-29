@@ -60,9 +60,9 @@ void serial_rx_task(void *arg)
                                 cobs_decode_result decode_result = cobs_decode(dec_buf, sizeof(dec_buf), enc_buf, enc_len);
                                 if (decode_result.status == COBS_DECODE_OK) {
                                     size_t dec_len = decode_result.out_len;
-                                    Audiolink_Data audio_data = Audiolink_Data_init_zero;
+                                    PROTO_Audiolink_Data audio_data = PROTO_Audiolink_Data_init_zero;
                                     pb_istream_t stream = pb_istream_from_buffer(dec_buf, dec_len);
-                                    bool status = pb_decode(&stream, Audiolink_Data_fields, &audio_data);
+                                    bool status = pb_decode(&stream, PROTO_Audiolink_Data_fields, &audio_data);
                                     
                                     if (status) {
                                         ESP_LOGI(TAG, "Audiolink_Data decoded successfully");
