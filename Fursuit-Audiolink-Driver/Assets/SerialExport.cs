@@ -6,7 +6,7 @@ using System.Threading;
 using UnityEngine;
 using VRCAudioLink;
 using PROTO;
-using pbc = global::Google.Protobuf.Collections;
+using Google.Protobuf;
 
 public class SerialExport : MonoBehaviour
 {
@@ -16,7 +16,7 @@ public class SerialExport : MonoBehaviour
     private float timeSinceLastSend = 0f;
     
     // Reusable data structures to avoid allocations
-    private Audiolink_Data cachedAudioData;
+    private Audiolink_Data audiolink_Data;
     private byte[] serialBuffer = new byte[4096];
     
     // Background thread for serial writing
@@ -31,7 +31,7 @@ public class SerialExport : MonoBehaviour
     void Start()
     {
         // Initialize reusable data structures
-        cachedAudioData = new Audiolink_Data();
+        audiolink_Data = new Audiolink_Data();
         
         // Open serial port COM6 at 115200 baud
         // serialPort = new SerialPort("COM6", 115200);
@@ -75,16 +75,16 @@ public class SerialExport : MonoBehaviour
                 return;
 
             //make sure the lists exist
-            if (cachedAudioData.History == null)
+            if (audiolink_Data.History == null)
             {
-                cachedAudioData.History = new History();
+                audiolink_Data.History = new History();
             }
 
             // Clear previous data (reuse lists)
-            cachedAudioData.History.Bass.Clear();
-            cachedAudioData.History.Lowmid.Clear();
-            cachedAudioData.History.Highmid.Clear();
-            cachedAudioData.History.Treble.Clear();
+            audiolink_Data.History.Bass.Clear();
+            audiolink_Data.History.Lowmid.Clear();
+            audiolink_Data.History.Highmid.Clear();
+            audiolink_Data.History.Treble.Clear();
             
             // Collect audio bands for the current frame
             // Using 4 bands: bass, lowmid, highmid, treble
@@ -92,11 +92,11 @@ public class SerialExport : MonoBehaviour
             {
                 var targetList = i switch
                 {
-                    0 => cachedAudioData.History.Bass,
-                    1 => cachedAudioData.History.Lowmid,
-                    2 => cachedAudioData.History.Highmid,
-                    3 => cachedAudioData.History.Treble,
-                    _ => cachedAudioData.History.Bass
+                    0 => audiolink_Data.History.Bass,
+                    1 => audiolink_Data.History.Lowmid,
+                    2 => audiolink_Data.History.Highmid,
+                    3 => audiolink_Data.History.Treble,
+                    _ => audiolink_Data.History.Bass
                 };
                 
                 for (int j = 0; j < 128; j++)
@@ -106,13 +106,7 @@ public class SerialExport : MonoBehaviour
                 }
             }
 
-            // Serialize to bytes (manual protobuf serialization)
-            int serializedLength = SerializeAudioData(cachedAudioData, serialBuffer);
-
-            // COBS encode using cobs.net library
-            byte[] inputData = new byte[serializedLength];
-            System.Array.Copy(serialBuffer, 0, inputData, 0, serializedLength);
-            byte[] cobsEncoded = COBS.NET.COBS.Encode(inputData);
+            byte[] cobsEncoded = COBS.NET.COBS.Encode(audiolink_Data.ToByteArray());
 
             // Queue the data for serial writing on background thread
             // Add 0x00 frame delimiter at the end
@@ -210,134 +204,6 @@ public class SerialExport : MonoBehaviour
 
         float bandValue = audioLink.audioData[dataIndex].grayscale;
         return bandValue;
-    }
-
-    // Calculate varint size
-    int CalculateVarintSize(int value)
-    {
-        if (value < 0x80) return 1;
-        if (value < 0x4000) return 2;
-        if (value < 0x200000) return 3;
-        if (value < 0x10000000) return 4;
-        return 5;
-    }
-
-    // Calculate size of packed repeated float field
-    int CalculatePackedFloatSize(pbc::RepeatedField<float> values)
-    {
-        if (values.Count == 0) return 0;
-        int floatDataSize = values.Count * 4;
-        int tagSize = 1;
-        int lengthSize = CalculateVarintSize(floatDataSize);
-        return tagSize + lengthSize + floatDataSize;
-    }
-
-    // Calculate total size of History message
-    int CalculateHistorySize(History history)
-    {
-        int size = 0;
-        size += CalculatePackedFloatSize(history.Bass);
-        size += CalculatePackedFloatSize(history.Lowmid);
-        size += CalculatePackedFloatSize(history.Highmid);
-        size += CalculatePackedFloatSize(history.Treble);
-        return size;
-    }
-
-    // Manual protobuf serialization for Audiolink_Data
-    int SerializeAudioData(Audiolink_Data data, byte[] buffer)
-    {
-        int offset = 0;
-
-        // Write History field directly (field 1, length-delimited)
-        buffer[offset++] = (byte)((1 << 3) | 2);  // Tag 1, wire type 2
-        
-        // Calculate history size first
-        int historySize = 0;
-        historySize += CalculateRepeatedFloatSize(data.History.Bass);
-        historySize += CalculateRepeatedFloatSize(data.History.Lowmid);
-        historySize += CalculateRepeatedFloatSize(data.History.Highmid);
-        historySize += CalculateRepeatedFloatSize(data.History.Treble);
-        
-        // Write history length
-        offset += AppendVarintLength(buffer, offset, historySize);
-        
-        // Write history data directly
-        offset += SerializeHistory(data.History, buffer, offset);
-
-        return offset;
-    }
-
-    // Calculate size of packed repeated float field
-    int CalculateRepeatedFloatSize(pbc::RepeatedField<float> values)
-    {
-        if (values.Count == 0) return 0;
-        
-        int floatDataSize = values.Count * 4;
-        int tagSize = 1;
-        int lengthSize = CalculateVarintSize(floatDataSize);
-        return tagSize + lengthSize + floatDataSize;
-    }
-
-    // Manual protobuf serialization for History
-    int SerializeHistory(History history, byte[] buffer, int offset)
-    {
-        int startOffset = offset;
-
-        // Field 1: bass (repeated float, packed)
-        offset += SerializeRepeatedFloat(1, history.Bass, buffer, offset);
-
-        // Field 2: lowmid (repeated float, packed)
-        offset += SerializeRepeatedFloat(2, history.Lowmid, buffer, offset);
-
-        // Field 3: highmid (repeated float, packed)
-        offset += SerializeRepeatedFloat(3, history.Highmid, buffer, offset);
-
-        // Field 4: treble (repeated float, packed)
-        offset += SerializeRepeatedFloat(4, history.Treble, buffer, offset);
-
-        return offset - startOffset;
-    }
-
-    // Serialize repeated float field (packed encoding)
-    int SerializeRepeatedFloat(int fieldNumber, pbc::RepeatedField<float> values, byte[] buffer, int offset)
-    {
-        int startOffset = offset;
-        
-        if (values.Count == 0)
-            return 0;
-        
-        // Calculate packed data size (4 bytes per float)
-        int packedDataSize = values.Count * 4;
-        
-        // Write tag with wire type 2 (length-delimited)
-        buffer[offset++] = (byte)((fieldNumber << 3) | 2);
-        
-        // Write length as varint
-        offset += AppendVarintLength(buffer, offset, packedDataSize);
-        
-        // Write all float values back-to-back
-        foreach (float value in values)
-        {
-            System.BitConverter.GetBytes(value).CopyTo(buffer, offset);
-            offset += 4;
-        }
-
-        return offset - startOffset;
-    }
-
-    // Append varint-encoded length to buffer, returns bytes written
-    int AppendVarintLength(byte[] buffer, int offset, int length)
-    {
-        int startOffset = offset;
-        
-        while (length > 127)
-        {
-            buffer[offset++] = (byte)((length & 0x7F) | 0x80);
-            length >>= 7;
-        }
-        buffer[offset++] = (byte)(length & 0x7F);
-        
-        return offset - startOffset;
     }
 
     // Background thread for serial port writing and reading
