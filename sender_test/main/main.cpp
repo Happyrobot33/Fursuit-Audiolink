@@ -26,7 +26,7 @@ static void wifi_init(void)
     ESP_ERROR_CHECK(esp_wifi_start());
 }
 
-void app_main(void)
+extern "C" void app_main(void)
 {
     ESP_LOGI(TAG, "Application starting");
     ESP_ERROR_CHECK(nvs_flash_init());

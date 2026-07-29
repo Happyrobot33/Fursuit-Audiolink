@@ -14,13 +14,12 @@ static const char *TAG = "serial_rx";
 
 void serial_rx_task(void *arg)
 {
-    const uart_config_t uart_cfg = {
-        .baud_rate  = SERIAL_BAUD_RATE,
-        .data_bits  = UART_DATA_8_BITS,
-        .parity     = UART_PARITY_DISABLE,
-        .stop_bits  = UART_STOP_BITS_1,
-        .flow_ctrl  = UART_HW_FLOWCTRL_DISABLE,
-    };
+    uart_config_t uart_cfg{};
+    uart_cfg.baud_rate  = SERIAL_BAUD_RATE;
+    uart_cfg.data_bits  = UART_DATA_8_BITS;
+    uart_cfg.parity     = UART_PARITY_DISABLE;
+    uart_cfg.stop_bits  = UART_STOP_BITS_1;
+    uart_cfg.flow_ctrl  = UART_HW_FLOWCTRL_DISABLE;
     ESP_ERROR_CHECK(uart_param_config(SERIAL_UART_NUM, &uart_cfg));
     ESP_ERROR_CHECK(uart_set_pin(SERIAL_UART_NUM,
                                  SERIAL_UART_TX_PIN, SERIAL_UART_RX_PIN,

@@ -6,10 +6,10 @@ set(GENERATED_C "${CMAKE_CURRENT_BINARY_DIR}/audiolink_data.pb.c")
 
 # 2. Register the component immediately
 idf_component_register(
-    SRCS "main.c"
-         "sender.c"
-         "receiver.c"
-         "cobs.c"
+    SRCS "main.cpp"
+         "sender.cpp"
+         "receiver.cpp"
+         "cobs.cpp"
          "${GENERATED_C}"
     INCLUDE_DIRS "."
                  "${CMAKE_CURRENT_BINARY_DIR}"

@@ -41,11 +41,10 @@ void espnow_init(void)
     ESP_ERROR_CHECK(esp_now_init());
     ESP_ERROR_CHECK(esp_now_register_send_cb(on_data_sent));
 
-    esp_now_peer_info_t peer = {
-        .channel = 0,
-        .ifidx   = WIFI_IF_STA,
-        .encrypt = false,
-    };
+    esp_now_peer_info_t peer{};
+    peer.channel = 0;
+    peer.ifidx   = WIFI_IF_STA;
+    peer.encrypt = false;
     memcpy(peer.peer_addr, BROADCAST_MAC, ESP_NOW_ETH_ALEN);
     ESP_ERROR_CHECK(esp_now_add_peer(&peer));
 }
