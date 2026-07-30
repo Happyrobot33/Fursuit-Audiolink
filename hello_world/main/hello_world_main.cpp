@@ -68,10 +68,12 @@ extern "C" void app_main(void) {
 
                 //fill with theme color
                 // led_controller.fill(led_strip, audio_data.theme_colors.ThemeColor0);
-                led_controller.set_pixel(led_strip, 10 + 0, audio_data.theme_colors.ThemeColor0);
-                led_controller.set_pixel(led_strip, 10 + 1, audio_data.theme_colors.ThemeColor1);
-                led_controller.set_pixel(led_strip, 10 + 2, audio_data.theme_colors.ThemeColor2);
-                led_controller.set_pixel(led_strip, 10 + 3, audio_data.theme_colors.ThemeColor3);
+                // led_controller.set_pixel(led_strip, 10 + 0, audio_data.theme_colors.ThemeColor0);
+                // led_controller.set_pixel(led_strip, 10 + 1, audio_data.theme_colors.ThemeColor1);
+                // led_controller.set_pixel(led_strip, 10 + 2, audio_data.theme_colors.ThemeColor2);
+                // led_controller.set_pixel(led_strip, 10 + 3, audio_data.theme_colors.ThemeColor3);
+
+                led_controller.map_to_leds(led_strip, audio_data.history.bass, 0, LED_STRIP_LED_NUMBERS, Color{1.0f, 0.0f, 0.0f});
 
                 // /* Map 4 frequency bands to 4 LED quadrants */
                 // /* Quadrant 0: bass -> red */

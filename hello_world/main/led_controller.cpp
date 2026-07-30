@@ -65,19 +65,17 @@ void hsv_to_rgb(float hue, float saturation, float value, uint8_t *r, uint8_t *g
 
 esp_err_t LEDController::map_to_leds(led_strip_handle_t led_strip, 
                                       const std::vector<float>& frequency_values,
-                                      uint8_t quadrant, const Color& color) {
-    if (frequency_values.empty() || quadrant >= 4) {
+                                      uint8_t start_pixel, uint8_t end_pixel, const Color& color) {
+    if (frequency_values.empty() || start_pixel >= end_pixel) {
         return ESP_FAIL;
     }
     
-    int quadrant_size = LED_STRIP_LED_NUMBERS / 4;
-    int start_led = quadrant * quadrant_size;
-    int end_led = start_led + quadrant_size;
+    int pixel_range = end_pixel - start_pixel;
     
-    for (int i = start_led; i < end_led; i++) {
-        /* Map position within quadrant to frequency index */
-        int quadrant_pos = i - start_led;
-        size_t idx = (quadrant_pos * frequency_values.size()) / quadrant_size;
+    for (int i = start_pixel; i < end_pixel; i++) {
+        /* Map position within range to frequency index */
+        int range_pos = i - start_pixel;
+        size_t idx = (range_pos * frequency_values.size()) / pixel_range;
         if (idx >= frequency_values.size()) {
             idx = frequency_values.size() - 1;
         }

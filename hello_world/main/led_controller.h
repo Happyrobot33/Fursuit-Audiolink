@@ -22,16 +22,17 @@ public:
     led_strip_handle_t init();
     
     /**
-     * Map frequency values to an LED quadrant with specified color
+     * Map frequency values to an LED pixel range with specified color
      * @param led_strip LED strip handle
      * @param frequency_values Vector of frequency values (0.0-1.0)
-     * @param quadrant LED quadrant (0-3)
+     * @param start_pixel Starting LED index
+     * @param end_pixel Ending LED index (exclusive)
      * @param color Color to apply (float values 0.0-1.0)
      * @return ESP_OK on success, ESP_FAIL on error
      */
     esp_err_t map_to_leds(led_strip_handle_t led_strip, 
                           const std::vector<float>& frequency_values,
-                          uint8_t quadrant, const Color& color);
+                          uint8_t start_pixel, uint8_t end_pixel, const Color& color);
     
     /**
      * Clear all LED pixels

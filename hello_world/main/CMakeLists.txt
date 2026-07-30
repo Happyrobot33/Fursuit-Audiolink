@@ -1,5 +1,5 @@
 # 1. Define paths first (Safe for the first pass)
-SET(PROTO_FOLDER "${CMAKE_CURRENT_SOURCE_DIR}/../../protobuf")
+SET(PROTO_FOLDER "${CMAKE_CURRENT_SOURCE_DIR}/../../Fursuit-Audiolink-Driver/Assets")
 set(PROTO_FILE "${PROTO_FOLDER}/audiolink_data.proto")
 set(GENERATED_H "${CMAKE_CURRENT_BINARY_DIR}/audiolink_data.pb.h")
 set(GENERATED_C "${CMAKE_CURRENT_BINARY_DIR}/audiolink_data.pb.c")
@@ -28,7 +28,7 @@ find_package(Python3 REQUIRED)
 add_custom_command(
     OUTPUT "${GENERATED_H}" "${GENERATED_C}"
     COMMAND ${Python3_EXECUTABLE} 
-            "${PROTO_FOLDER}/generator/nanopb_generator.py"
+            "${CMAKE_CURRENT_SOURCE_DIR}/../../protobuf/generator/nanopb_generator.py"
             --quiet
             --output-dir="${CMAKE_CURRENT_BINARY_DIR}"
             --proto-path="${PROTO_FOLDER}"
