@@ -20,6 +20,10 @@ bool audio_complete = false;
 LEDController led_controller;
 SemaphoreHandle_t audio_mutex = nullptr;
 
+// Framerate tracking
+static uint32_t frame_count = 0;
+static uint32_t last_log_time_ms = 0;
+
 extern "C" void app_main(void) {
     /* Initialize synchronization */
     audio_mutex = xSemaphoreCreateMutex();
@@ -40,8 +44,19 @@ extern "C" void app_main(void) {
 
     /* Main loop */
     while (1) {
-        if (xSemaphoreTake(audio_mutex, pdMS_TO_TICKS(10)) == pdTRUE) {
+        uint32_t current_time_ms = xTaskGetTickCount() * portTICK_PERIOD_MS;
+        
+        if (xSemaphoreTake(audio_mutex, pdMS_TO_TICKS(5)) == pdTRUE) {
             if (audio_complete) {
+                // Calculate and log framerate every second
+                frame_count++;
+                uint32_t elapsed_time_ms = current_time_ms - last_log_time_ms;
+                if (elapsed_time_ms >= 1000) {
+                    float framerate = (frame_count * 1000.0f) / elapsed_time_ms;
+                    ESP_LOGI(TAG, "Framerate: %.1f FPS", framerate);
+                    frame_count = 0;
+                    last_log_time_ms = current_time_ms;
+                }
                 /* Clear LED strip */
                 led_controller.clear(led_strip);
 
@@ -52,7 +67,11 @@ extern "C" void app_main(void) {
                 //          audio_data.theme_colors.ThemeColor1.b);
 
                 //fill with theme color
-                led_controller.fill(led_strip, audio_data.theme_colors.ThemeColor0);
+                // led_controller.fill(led_strip, audio_data.theme_colors.ThemeColor0);
+                led_controller.set_pixel(led_strip, 10 + 0, audio_data.theme_colors.ThemeColor0);
+                led_controller.set_pixel(led_strip, 10 + 1, audio_data.theme_colors.ThemeColor1);
+                led_controller.set_pixel(led_strip, 10 + 2, audio_data.theme_colors.ThemeColor2);
+                led_controller.set_pixel(led_strip, 10 + 3, audio_data.theme_colors.ThemeColor3);
 
                 // /* Map 4 frequency bands to 4 LED quadrants */
                 // /* Quadrant 0: bass -> red */
@@ -81,6 +100,7 @@ extern "C" void app_main(void) {
             }
             xSemaphoreGive(audio_mutex);
         }
-        vTaskDelay(pdMS_TO_TICKS(20));
+        
+        // vTaskDelay(pdMS_TO_TICKS(5));
     }
 }

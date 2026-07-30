@@ -45,6 +45,14 @@ public:
      * @param color Color to fill with (float values 0.0-1.0)
      */
     void fill(led_strip_handle_t led_strip, const Color& color);
+
+    /**
+     * Set a specific LED pixel to a color
+     * @param led_strip LED strip handle
+     * @param index LED index (0 to LED_COUNT-1)
+     * @param color Color to set (float values 0.0-1.0)
+     */
+    void set_pixel(led_strip_handle_t led_strip, int index, const Color& color);
     
 private:
     std::array<Color, LED_COUNT> pixels;

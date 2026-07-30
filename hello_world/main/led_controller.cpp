@@ -110,6 +110,15 @@ void LEDController::clear(led_strip_handle_t led_strip) {
     }
 }
 
+void LEDController::set_pixel(led_strip_handle_t led_strip, int index, const Color& color) {
+    if (index < 0 || index >= LED_STRIP_LED_NUMBERS) {
+        ESP_LOGW(TAG, "LED index %d out of bounds", index);
+        return;
+    }
+    pixels[index] = color;
+    ESP_ERROR_CHECK(led_strip_set_pixel_color(led_strip, index, color));
+}
+
 void LEDController::fill(led_strip_handle_t led_strip, const Color& color) {
     for (int i = 0; i < LED_STRIP_LED_NUMBERS; i++) {
         pixels[i] = color;
