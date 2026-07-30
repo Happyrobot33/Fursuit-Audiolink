@@ -11,6 +11,6 @@
 
 // Buffer for receiving Sub_Packets and reconstructing Audiolink_Data
 #define MAX_SUB_PACKETS 16
-#define MAX_AUDIO_DATA_SIZE 10000
+#define MAX_AUDIO_DATA_SIZE 10000000
 
 static const char *TAG = "audiolink";

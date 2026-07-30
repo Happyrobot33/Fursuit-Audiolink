@@ -45,64 +45,39 @@ extern "C" void app_main(void) {
     /* Main loop */
     while (1) {
         uint32_t current_time_ms = xTaskGetTickCount() * portTICK_PERIOD_MS;
+        bool should_update = false;
         
+        /* Check flag and reset with minimal lock time */
         if (xSemaphoreTake(audio_mutex, pdMS_TO_TICKS(5)) == pdTRUE) {
             if (audio_complete) {
-                // Calculate and log framerate every second
-                frame_count++;
-                uint32_t elapsed_time_ms = current_time_ms - last_log_time_ms;
-                if (elapsed_time_ms >= 1000) {
-                    float framerate = (frame_count * 1000.0f) / elapsed_time_ms;
-                    ESP_LOGI(TAG, "Framerate: %.1f FPS", framerate);
-                    frame_count = 0;
-                    last_log_time_ms = current_time_ms;
-                }
-                /* Clear LED strip */
-                led_controller.clear(led_strip);
-
-                //print what theme color 0 is
-                // ESP_LOGI(TAG, "Theme Color 1: R=%.2f, G=%.2f, B=%.2f",
-                //          audio_data.theme_colors.ThemeColor1.r,
-                //          audio_data.theme_colors.ThemeColor1.g,
-                //          audio_data.theme_colors.ThemeColor1.b);
-
-                //fill with theme color
-                // led_controller.fill(led_strip, audio_data.theme_colors.ThemeColor0);
-                // led_controller.set_pixel(led_strip, 10 + 0, audio_data.theme_colors.ThemeColor0);
-                // led_controller.set_pixel(led_strip, 10 + 1, audio_data.theme_colors.ThemeColor1);
-                // led_controller.set_pixel(led_strip, 10 + 2, audio_data.theme_colors.ThemeColor2);
-                // led_controller.set_pixel(led_strip, 10 + 3, audio_data.theme_colors.ThemeColor3);
-
-                led_controller.map_to_leds(led_strip, audio_data.history.bass, 0, LED_STRIP_LED_NUMBERS, Color{1.0f, 0.0f, 0.0f});
-
-                // /* Map 4 frequency bands to 4 LED quadrants */
-                // /* Quadrant 0: bass -> red */
-                // if (!audio_data.history.bass.empty()) {
-                //     led_controller.map_to_leds(led_strip, audio_data.history.bass, 0, Color{1.0f, 0.0f, 0.0f});
-                // }
-                
-                // /* Quadrant 1: lowmid -> yellow */
-                // if (!audio_data.history.lowmid.empty()) {
-                //     led_controller.map_to_leds(led_strip, audio_data.history.lowmid, 1, Color{1.0f, 1.0f, 0.0f});
-                // }
-                
-                // /* Quadrant 2: highmid -> green */
-                // if (!audio_data.history.highmid.empty()) {
-                //     led_controller.map_to_leds(led_strip, audio_data.history.highmid, 2, Color{0.0f, 1.0f, 0.0f});
-                // }
-                
-                // /* Quadrant 3: treble -> blue */
-                // if (!audio_data.history.treble.empty()) {
-                //     led_controller.map_to_leds(led_strip, audio_data.history.treble, 3, Color{0.0f, 0.0f, 1.0f});
-                // }
-                
-                ESP_ERROR_CHECK(led_strip_refresh(led_strip));
-                /* Reset flag after displaying to avoid redundant updates */
+                should_update = true;
                 audio_complete = false;
             }
             xSemaphoreGive(audio_mutex);
         }
         
-        // vTaskDelay(pdMS_TO_TICKS(5));
+        /* Perform LED operations using global audio_data directly */
+        if (should_update) {
+            // Calculate and log framerate every second
+            frame_count++;
+            uint32_t elapsed_time_ms = current_time_ms - last_log_time_ms;
+            if (elapsed_time_ms >= 1000) {
+                float framerate = (frame_count * 1000.0f) / elapsed_time_ms;
+                ESP_LOGI(TAG, "Framerate: %.1f FPS", framerate);
+                frame_count = 0;
+                last_log_time_ms = current_time_ms;
+            }
+            
+            /* Clear LED strip */
+            led_controller.clear(led_strip);
+            
+            /* Map audio data to LEDs using global data */
+            led_controller.map_to_leds(led_strip, audio_data.dft.mag, 0, LED_STRIP_LED_NUMBERS, audio_data.theme_colors.ThemeColor0);
+            
+            /* Refresh LED display */
+            ESP_ERROR_CHECK(led_strip_refresh(led_strip));
+        }
+        
+        vTaskDelay(pdMS_TO_TICKS(5));
     }
 }

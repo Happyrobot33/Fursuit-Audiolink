@@ -56,7 +56,7 @@ void espnow_sender_task(void *arg)
 
     while (true) {
         /* Wait for a frame from the queue (with timeout) */
-        if (xQueueReceive(audio_queue, &frame, pdMS_TO_TICKS(1000)) == pdTRUE) {
+        if (xQueueReceive(audio_queue, &frame, pdMS_TO_TICKS(10)) == pdTRUE) {
             /* We have a decoded audio frame, split into Sub_Packets and send */
             
             /* Calculate total number of packets for this frame */

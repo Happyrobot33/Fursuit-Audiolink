@@ -12,8 +12,8 @@
 #define SERIAL_BAUD_RATE    921600
 
 /* Buffer sizes */
-#define COBS_MAX_ENC        4096
-#define COBS_MAX_DEC        4000
+#define COBS_MAX_ENC        4096 * 2
+#define COBS_MAX_DEC        4000 * 2
 #define SUB_PACKET_DATA_COUNT 1024
 
 /* Queue message for passing decoded audio data to sender task */

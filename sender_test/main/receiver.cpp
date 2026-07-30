@@ -31,9 +31,9 @@ void serial_rx_task(void *arg)
     ESP_LOGI(TAG, "UART initialized: num=%d, baud=%d, rx_pin=%d, tx_pin=%d",
              SERIAL_UART_NUM, SERIAL_BAUD_RATE, SERIAL_UART_RX_PIN, SERIAL_UART_TX_PIN);
 
-    uint8_t enc_buf[COBS_MAX_ENC];
-    uint8_t dec_buf[COBS_MAX_DEC];
-    uint8_t read_buf[512];
+    static uint8_t enc_buf[COBS_MAX_ENC];
+    static uint8_t dec_buf[COBS_MAX_DEC];
+    static uint8_t read_buf[512];
     int     enc_len = 0;
     uart_event_t event;
 

@@ -40,7 +40,7 @@ public class SerialExport : MonoBehaviour
         serialPort = new SerialPort(portName, baudRate);
         serialPort.Open();
         //automatically derive the write timeout based on the baud rate and data size
-        int bytesToWrite = 4096; // Example value, adjust as needed
+        int bytesToWrite = 4096 * 2; // Example value, adjust as needed
         int calculatedTimeoutMs = (int)((bytesToWrite * 10.0 / baudRate) * 1000.0 * 2.0);
         serialPort.WriteTimeout = calculatedTimeoutMs;
         Debug.Log("Serial port " + portName + " opened successfully");
@@ -101,7 +101,7 @@ public class SerialExport : MonoBehaviour
                 
                 for (int j = 0; j < 128; j++)
                 {
-                    float bandValue = getBandHistory(i, j);
+                    uint bandValue = floatToUInt32(getBandHistory(i, j));
                     targetList.Add(bandValue);
                 }
             }
@@ -112,6 +112,9 @@ public class SerialExport : MonoBehaviour
             themeColors.ThemeColor2 = getThemeColor(2);
             themeColors.ThemeColor3 = getThemeColor(3);
             audiolink_Data.ThemeColors = themeColors;
+
+            audiolink_Data.Dft = getDFT();
+            audiolink_Data.FilteredAudiolink = getFilteredAudiolink();
 
             byte[] cobsEncoded = COBS.NET.COBS.Encode(audiolink_Data.ToByteArray());
 
@@ -213,6 +216,115 @@ public class SerialExport : MonoBehaviour
         return bandValue;
     }
 
+    PROTO.FilteredAudiolink getFilteredAudiolink()
+    {
+        // Validate audioLink is assigned
+        if (audioLink == null)
+        {
+            Debug.LogWarning("AudioLink is not assigned!");
+            return new PROTO.FilteredAudiolink();
+        }
+
+        // Validate audioData exists
+        if (audioLink.audioData == null)
+        {
+            Debug.LogWarning("AudioLink.audioData is not initialized!");
+            return new PROTO.FilteredAudiolink();
+        }
+
+        PROTO.FilteredAudiolink filteredAudiolink = new PROTO.FilteredAudiolink();
+
+        Vector2Int startPos = new Vector2Int(0, 28); // Assuming the filtered data starts at row 32
+
+        // Assuming the filtered data starts at index 4096 and has 128 values for each band
+        for (int band = 0; band < 4; band++)
+        {
+            for (int i = 0; i < 16; i++)
+            {
+                int dataIndex = getIndexFromXY(startPos.x + i, startPos.y + band);
+
+                // Validate index is within bounds
+                if (dataIndex < 0 || dataIndex >= audioLink.audioData.Length)
+                {
+                    Debug.LogWarning($"AudioLink data index {dataIndex} out of bounds (length: {audioLink.audioData.Length})");
+                    continue;
+                }
+
+                uint bandValue = floatToUInt32(audioLink.audioData[dataIndex].grayscale);
+
+                switch (band)
+                {
+                    case 0:
+                        filteredAudiolink.Bass.Add(bandValue);
+                        break;
+                    case 1:
+                        filteredAudiolink.Lowmid.Add(bandValue);
+                        break;
+                    case 2:
+                        filteredAudiolink.Highmid.Add(bandValue);
+                        break;
+                    case 3:
+                        filteredAudiolink.Treble.Add(bandValue);
+                        break;
+                }
+            }
+        }
+
+        return filteredAudiolink;
+    }
+
+    PROTO.DFT getDFT()
+    {
+        // Validate audioLink is assigned
+        if (audioLink == null)
+        {
+            Debug.LogWarning("AudioLink is not assigned!");
+            return new PROTO.DFT();
+        }
+
+        // Validate audioData exists
+        if (audioLink.audioData == null)
+        {
+            Debug.LogWarning("AudioLink.audioData is not initialized!");
+            return new PROTO.DFT();
+        }
+
+        //dft starts at 0,4
+        Vector2Int startPos = new Vector2Int(0, 4);
+        const int totalDFT = 128 * 2;
+        //split into 4 float arrays
+        float[] mag = new float[totalDFT];
+        float[] magEQ = new float[totalDFT];
+        float[] magFilt = new float[totalDFT];
+        float[] magPhase = new float[totalDFT];
+        for (int i = 0; i < totalDFT; i++)
+        {
+            var col = audioLink.audioData[interpretMultiline(startPos, i)];
+            mag[i] = col.r;
+            magEQ[i] = col.g;
+            magFilt[i] = col.b;
+            magPhase[i] = col.a;
+        }
+        PROTO.DFT dft = new PROTO.DFT
+        {
+            Mag = { mag },
+            MagEQ = { magEQ },
+            Magfilt = { magFilt },
+            MagPhase = { magPhase }
+        };
+
+        return dft;
+    }
+
+    private int interpretMultiline(Vector2Int startPos, int index)
+    {
+        //For data groups that are multiline, all data is represented as left-to-right (increasing X) then incrementing Y and scanning X from left to right on the next line.
+        int width = 128; // Assuming the texture width is 128
+        int x = startPos.x + (index % width);
+        int y = startPos.y + (index / width);
+        return getIndexFromXY(x, y);
+    }
+
     PROTO.Color getThemeColor(int index)
     {
         // return new PROTO.Color
@@ -301,23 +413,25 @@ public class SerialExport : MonoBehaviour
             // Read incoming data
             // try
             // {
-            //     while (serialPort != null && serialPort.IsOpen && serialPort.BytesToRead > 0)
+            //     if (serialPort != null && serialPort.IsOpen && serialPort.BytesToRead > 0)
             //     {
-            //         int byteRead = serialPort.ReadByte();
-            //         lock (queueLock)
+            //         byte[] buffer = new byte[Mathf.Min(serialPort.BytesToRead, 4096)];
+            //         int bytesRead = serialPort.Read(buffer, 0, buffer.Length);
+                    
+            //         if (bytesRead > 0)
             //         {
-            //             receivedDataBuffer.Add((byte)byteRead);
-            //         }
-            //     }
-                
-            //     // Log batched received data if any
-            //     if (receivedDataBuffer.Count > 0)
-            //     {
-            //         lock (queueLock)
-            //         {
-            //             string dataString = System.Text.Encoding.ASCII.GetString(receivedDataBuffer.ToArray());
-            //             Debug.Log($"Received {receivedDataBuffer.Count} bytes: {dataString}");
-            //             receivedDataBuffer.Clear();
+            //             lock (queueLock)
+            //             {
+            //                 for (int i = 0; i < bytesRead; i++)
+            //                 {
+            //                     receivedDataBuffer.Add(buffer[i]);
+            //                 }
+                            
+            //                 // Log batched received data
+            //                 string dataString = System.Text.Encoding.ASCII.GetString(receivedDataBuffer.ToArray());
+            //                 Debug.Log($"Received {receivedDataBuffer.Count} bytes: {dataString}");
+            //                 receivedDataBuffer.Clear();
+            //             }
             //         }
             //     }
             // }
@@ -354,9 +468,26 @@ public class SerialExport : MonoBehaviour
     {
         return new PROTO.Color
         {
-            R = unityColor.r,
-            G = unityColor.g,
-            B = unityColor.b
+            R = floatToUInt32(unityColor.r),
+            G = floatToUInt32(unityColor.g),
+            B = floatToUInt32(unityColor.b)
         };
+    }
+
+    private uint[] floatArrayToUInt32Array(float[] floatArray)
+    {
+        uint[] uintArray = new uint[floatArray.Length];
+        for (int i = 0; i < floatArray.Length; i++)
+        {
+            uintArray[i] = floatToUInt32(floatArray[i]);
+        }
+        return uintArray;
+    }
+
+    private uint floatToUInt32(float value)
+    {
+        // Clamp the value to [0, 1] range
+        value = Mathf.Clamp01(value);
+        return (uint)(value * 255.0f);
     }
 }

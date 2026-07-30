@@ -54,12 +54,9 @@ static void try_reconstruct_audio_data() {
         /* Atomic update: copy decoded data to global */
         audio_data = temp_audio;
         audio_complete = true;
-        ESP_LOGI(TAG, "Audio data reconstructed: received %d packets, bass=%zu, lowmid=%zu, highmid=%zu, treble=%zu",
+        ESP_LOGI(TAG, "Audio data reconstructed: received %d packets, size=%zu bytes",
                  packet_count,
-                 audio_data.history.bass.size(),
-                 audio_data.history.lowmid.size(),
-                 audio_data.history.highmid.size(),
-                 audio_data.history.treble.size());
+                 reconstructed_data.size());
     } else {
         ESP_LOGW(TAG, "Protobuf decode failed: %s", PB_GET_ERROR(&stream));
     }

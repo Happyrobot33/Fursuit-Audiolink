@@ -3,11 +3,16 @@ syntax = "proto3";
 //Used to prefix so CPP native code can directly use the message name
 package PROTO;
 
+//TODO: Do this
+//float should be avoided, use uint32 to leverage varint encoding
+//these can be declared remapped to float when used or serializes
+//any cases like this are assumed 0 to 1 range
+
 //"Primitive" type
 message Color {
-    float r = 1;
-    float g = 2;
-    float b = 3;
+    float R = 1;
+    float G = 2;
+    float B = 3;
 }
 
 message ThemeColors {
@@ -17,7 +22,24 @@ message ThemeColors {
     Color ThemeColor3 = 4;
 }
 
+//hard to decide right now if things should be halfs or bytes
+
+message DFT {
+    repeated float mag = 1 [packed=true];
+    repeated float magEQ = 2 [packed=true];
+    repeated float magfilt = 3 [packed=true];
+    repeated float magPhase = 4 [packed=true];
+}
+
 message History {
+    repeated float bass = 1 [packed=true];
+    repeated float lowmid = 2 [packed=true];
+    repeated float highmid = 3 [packed=true];
+    repeated float treble = 4 [packed=true];
+}
+
+//4 x 16
+message FilteredAudiolink {
     repeated float bass = 1 [packed=true];
     repeated float lowmid = 2 [packed=true];
     repeated float highmid = 3 [packed=true];
@@ -27,6 +49,8 @@ message History {
 message Audiolink_Data {
     History history = 1;
     ThemeColors theme_colors = 2;
+    DFT dft = 3;
+    FilteredAudiolink filtered_audiolink = 4;
 }
 
 message Sub_Packet {

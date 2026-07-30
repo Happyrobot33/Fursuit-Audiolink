@@ -11,9 +11,9 @@
 LEDController::LEDController() {
     // Initialize all pixels to off
     for (auto& pixel : pixels) {
-        pixel.r = 0.0f;
-        pixel.g = 0.0f;
-        pixel.b = 0.0f;
+        pixel.R = 0.0f;
+        pixel.G = 0.0f;
+        pixel.B = 0.0f;
     }
 }
 
@@ -86,9 +86,9 @@ esp_err_t LEDController::map_to_leds(led_strip_handle_t led_strip,
         
         /* Scale the color by the frequency value (brightness modulation) */
         Color scaled_color = {
-            color.r * value,
-            color.g * value,
-            color.b * value
+            color.R * value,
+            color.G * value,
+            color.B * value
         };
         
         /* Update local pixel state and LED */
@@ -101,10 +101,10 @@ esp_err_t LEDController::map_to_leds(led_strip_handle_t led_strip,
 
 void LEDController::clear(led_strip_handle_t led_strip) {
     for (int i = 0; i < LED_STRIP_LED_NUMBERS; i++) {
-        pixels[i].r = 0.0f;
-        pixels[i].g = 0.0f;
-        pixels[i].b = 0.0f;
-        ESP_ERROR_CHECK(led_strip_set_pixel(led_strip, i, 0, 0, 0));
+        pixels[i].R = 0;
+        pixels[i].G = 0;
+        pixels[i].B = 0;
+        ESP_ERROR_CHECK(led_strip_set_pixel_color(led_strip, i, Color{0, 0, 0}));
     }
 }
 
