@@ -3,6 +3,20 @@ syntax = "proto3";
 //Used to prefix so CPP native code can directly use the message name
 package PROTO;
 
+//"Primitive" type
+message Color {
+    float r = 1;
+    float g = 2;
+    float b = 3;
+}
+
+message ThemeColors {
+    Color ThemeColor0 = 1;
+    Color ThemeColor1 = 2;
+    Color ThemeColor2 = 3;
+    Color ThemeColor3 = 4;
+}
+
 message History {
     repeated float bass = 1 [packed=true];
     repeated float lowmid = 2 [packed=true];
@@ -12,6 +26,7 @@ message History {
 
 message Audiolink_Data {
     History history = 1;
+    ThemeColors theme_colors = 2;
 }
 
 message Sub_Packet {

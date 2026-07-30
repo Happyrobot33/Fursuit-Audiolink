@@ -15,7 +15,7 @@
 #include "config.h"
 
 // Global data structures
-CppAudiolinkData audio_data;
+AudiolinkData audio_data;
 bool audio_complete = false;
 LEDController led_controller;
 SemaphoreHandle_t audio_mutex = nullptr;
@@ -44,30 +44,38 @@ extern "C" void app_main(void) {
             if (audio_complete) {
                 /* Clear LED strip */
                 led_controller.clear(led_strip);
+
+                //print what theme color 0 is
+                // ESP_LOGI(TAG, "Theme Color 1: R=%.2f, G=%.2f, B=%.2f",
+                //          audio_data.theme_colors.ThemeColor1.r,
+                //          audio_data.theme_colors.ThemeColor1.g,
+                //          audio_data.theme_colors.ThemeColor1.b);
+
+                //fill with theme color
+                led_controller.fill(led_strip, audio_data.theme_colors.ThemeColor0);
+
+                // /* Map 4 frequency bands to 4 LED quadrants */
+                // /* Quadrant 0: bass -> red */
+                // if (!audio_data.history.bass.empty()) {
+                //     led_controller.map_to_leds(led_strip, audio_data.history.bass, 0, Color{1.0f, 0.0f, 0.0f});
+                // }
                 
-                /* Map 4 frequency bands to 4 LED quadrants */
-                /* Quadrant 0: bass -> red */
-                if (!audio_data.history.bass.empty()) {
-                    led_controller.map_to_leds(led_strip, audio_data.history.bass, 0, 255, 0, 0);
-                }
+                // /* Quadrant 1: lowmid -> yellow */
+                // if (!audio_data.history.lowmid.empty()) {
+                //     led_controller.map_to_leds(led_strip, audio_data.history.lowmid, 1, Color{1.0f, 1.0f, 0.0f});
+                // }
                 
-                /* Quadrant 1: lowmid -> yellow */
-                if (!audio_data.history.lowmid.empty()) {
-                    led_controller.map_to_leds(led_strip, audio_data.history.lowmid, 1, 255, 255, 0);
-                }
+                // /* Quadrant 2: highmid -> green */
+                // if (!audio_data.history.highmid.empty()) {
+                //     led_controller.map_to_leds(led_strip, audio_data.history.highmid, 2, Color{0.0f, 1.0f, 0.0f});
+                // }
                 
-                /* Quadrant 2: highmid -> green */
-                if (!audio_data.history.highmid.empty()) {
-                    led_controller.map_to_leds(led_strip, audio_data.history.highmid, 2, 0, 255, 0);
-                }
-                
-                /* Quadrant 3: treble -> blue */
-                if (!audio_data.history.treble.empty()) {
-                    led_controller.map_to_leds(led_strip, audio_data.history.treble, 3, 0, 0, 255);
-                }
+                // /* Quadrant 3: treble -> blue */
+                // if (!audio_data.history.treble.empty()) {
+                //     led_controller.map_to_leds(led_strip, audio_data.history.treble, 3, Color{0.0f, 0.0f, 1.0f});
+                // }
                 
                 ESP_ERROR_CHECK(led_strip_refresh(led_strip));
-                
                 /* Reset flag after displaying to avoid redundant updates */
                 audio_complete = false;
             }

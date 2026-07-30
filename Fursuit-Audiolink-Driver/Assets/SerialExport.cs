@@ -106,6 +106,13 @@ public class SerialExport : MonoBehaviour
                 }
             }
 
+            var themeColors = new ThemeColors();
+            themeColors.ThemeColor0 = getThemeColor(0);
+            themeColors.ThemeColor1 = getThemeColor(1);
+            themeColors.ThemeColor2 = getThemeColor(2);
+            themeColors.ThemeColor3 = getThemeColor(3);
+            audiolink_Data.ThemeColors = themeColors;
+
             byte[] cobsEncoded = COBS.NET.COBS.Encode(audiolink_Data.ToByteArray());
 
             // Queue the data for serial writing on background thread
@@ -206,6 +213,64 @@ public class SerialExport : MonoBehaviour
         return bandValue;
     }
 
+    PROTO.Color getThemeColor(int index)
+    {
+        // return new PROTO.Color
+        // {
+        //     R = 0,
+        //     G = 1,
+        //     B = 0
+        // };
+        // Validate audioLink is assigned
+        if (audioLink == null)
+        {
+            Debug.LogWarning("AudioLink is not assigned!");
+            return new PROTO.Color { R = 0, G = 0, B = 0 };
+        }
+
+        int dataIndex = getIndexFromXY(index, 23); // Assuming the theme colors are in the first row (y=0)
+        return convertUnityColorToProtoColor(audioLink.audioData[dataIndex]);
+    }
+
+    //helper function to convert from XY coords in the texture to the index in the audioData array
+    int getIndexFromXY(int x, int y)
+    {
+        // Validate audioLink is assigned
+        if (audioLink == null)
+        {
+            Debug.LogWarning("AudioLink is not assigned!");
+            return -1;
+        }
+
+        // Validate audioData exists
+        if (audioLink.audioData == null)
+        {
+            Debug.LogWarning("AudioLink.audioData is not initialized!");
+            return -1;
+        }
+
+        int width = 128; // Assuming the texture width is 128
+        int height = 64; // Assuming the texture height is 64
+
+        // Validate x and y are within bounds
+        if (x < 0 || x >= width || y < 0 || y >= height)
+        {
+            Debug.LogWarning($"XY coordinates ({x}, {y}) out of bounds (width: {width}, height: {height})");
+            return -1;
+        }
+
+        int index = (y * width) + x;
+
+        // Validate index is within bounds
+        if (index < 0 || index >= audioLink.audioData.Length)
+        {
+            Debug.LogWarning($"Calculated index {index} out of bounds (length: {audioLink.audioData.Length})");
+            return -1;
+        }
+
+        return index;
+    }
+
     // Background thread for serial port writing and reading
     void SerialWriteThread()
     {
@@ -283,5 +348,15 @@ public class SerialExport : MonoBehaviour
             serialPort.Close();
             Debug.Log("Serial port closed");
         }
+    }
+
+    private PROTO.Color convertUnityColorToProtoColor(UnityEngine.Color unityColor)
+    {
+        return new PROTO.Color
+        {
+            R = unityColor.r,
+            G = unityColor.g,
+            B = unityColor.b
+        };
     }
 }

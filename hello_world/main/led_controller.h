@@ -3,14 +3,7 @@
 #include <array>
 #include <vector>
 #include "led_strip.h"
-
-/**
- * @struct Pixel
- * @brief RGB pixel representation
- */
-struct Pixel {
-    uint8_t r = 0, g = 0, b = 0;
-};
+#include "audiolink_data.h"
 
 /**
  * @class LEDController
@@ -33,14 +26,12 @@ public:
      * @param led_strip LED strip handle
      * @param frequency_values Vector of frequency values (0.0-1.0)
      * @param quadrant LED quadrant (0-3)
-     * @param r Red channel (0-255)
-     * @param g Green channel (0-255)
-     * @param b Blue channel (0-255)
+     * @param color Color to apply (float values 0.0-1.0)
      * @return ESP_OK on success, ESP_FAIL on error
      */
     esp_err_t map_to_leds(led_strip_handle_t led_strip, 
                           const std::vector<float>& frequency_values,
-                          uint8_t quadrant, uint8_t r, uint8_t g, uint8_t b);
+                          uint8_t quadrant, const Color& color);
     
     /**
      * Clear all LED pixels
@@ -48,9 +39,30 @@ public:
      */
     void clear(led_strip_handle_t led_strip);
     
+    /**
+     * Fill all LED pixels with a solid color
+     * @param led_strip LED strip handle
+     * @param color Color to fill with (float values 0.0-1.0)
+     */
+    void fill(led_strip_handle_t led_strip, const Color& color);
+    
 private:
-    std::array<Pixel, LED_COUNT> pixels;
+    std::array<Color, LED_COUNT> pixels;
 };
+
+/**
+ * Set an LED pixel using a Color struct (float values 0.0-1.0)
+ * @param led_strip LED strip handle
+ * @param index LED index
+ * @param color Color to set (float values 0.0-1.0)
+ * @return ESP_OK on success, ESP_FAIL on error
+ */
+inline esp_err_t led_strip_set_pixel_color(led_strip_handle_t led_strip, uint32_t index, const Color& color) {
+    uint8_t r = (uint8_t)(color.r * 255.0f);
+    uint8_t g = (uint8_t)(color.g * 255.0f);
+    uint8_t b = (uint8_t)(color.b * 255.0f);
+    return led_strip_set_pixel(led_strip, index, r, g, b);
+}
 
 /**
  * Convert HSV color to RGB

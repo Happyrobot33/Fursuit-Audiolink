@@ -24,17 +24,24 @@ namespace PROTO {
     static AudiolinkDataReflection() {
       byte[] descriptorData = global::System.Convert.FromBase64String(
           string.Concat(
-            "ChRhdWRpb2xpbmtfZGF0YS5wcm90bxIFUFJPVE8iWAoHSGlzdG9yeRIQCgRi",
-            "YXNzGAEgAygCQgIQARISCgZsb3dtaWQYAiADKAJCAhABEhMKB2hpZ2htaWQY",
-            "AyADKAJCAhABEhIKBnRyZWJsZRgEIAMoAkICEAEiMQoOQXVkaW9saW5rX0Rh",
-            "dGESHwoHaGlzdG9yeRgBIAEoCzIOLlBST1RPLkhpc3RvcnkiRgoKU3ViX1Bh",
-            "Y2tldBIUCgxwYWNrZXRfaW5kZXgYASABKAUSFAoMcGFja2V0X2NvdW50GAMg",
-            "ASgFEgwKBGRhdGEYAiADKAxiBnByb3RvMw=="));
+            "ChRhdWRpb2xpbmtfZGF0YS5wcm90bxIFUFJPVE8iKAoFQ29sb3ISCQoBchgB",
+            "IAEoAhIJCgFnGAIgASgCEgkKAWIYAyABKAIimQEKC1RoZW1lQ29sb3JzEiEK",
+            "C1RoZW1lQ29sb3IwGAEgASgLMgwuUFJPVE8uQ29sb3ISIQoLVGhlbWVDb2xv",
+            "cjEYAiABKAsyDC5QUk9UTy5Db2xvchIhCgtUaGVtZUNvbG9yMhgDIAEoCzIM",
+            "LlBST1RPLkNvbG9yEiEKC1RoZW1lQ29sb3IzGAQgASgLMgwuUFJPVE8uQ29s",
+            "b3IiWAoHSGlzdG9yeRIQCgRiYXNzGAEgAygCQgIQARISCgZsb3dtaWQYAiAD",
+            "KAJCAhABEhMKB2hpZ2htaWQYAyADKAJCAhABEhIKBnRyZWJsZRgEIAMoAkIC",
+            "EAEiWwoOQXVkaW9saW5rX0RhdGESHwoHaGlzdG9yeRgBIAEoCzIOLlBST1RP",
+            "Lkhpc3RvcnkSKAoMdGhlbWVfY29sb3JzGAIgASgLMhIuUFJPVE8uVGhlbWVD",
+            "b2xvcnMiRgoKU3ViX1BhY2tldBIUCgxwYWNrZXRfaW5kZXgYASABKAUSFAoM",
+            "cGFja2V0X2NvdW50GAMgASgFEgwKBGRhdGEYAiADKAxiBnByb3RvMw=="));
       descriptor = pbr::FileDescriptor.FromGeneratedCode(descriptorData,
           new pbr::FileDescriptor[] { },
           new pbr::GeneratedClrTypeInfo(null, null, new pbr::GeneratedClrTypeInfo[] {
+            new pbr::GeneratedClrTypeInfo(typeof(global::PROTO.Color), global::PROTO.Color.Parser, new[]{ "R", "G", "B" }, null, null, null, null),
+            new pbr::GeneratedClrTypeInfo(typeof(global::PROTO.ThemeColors), global::PROTO.ThemeColors.Parser, new[]{ "ThemeColor0", "ThemeColor1", "ThemeColor2", "ThemeColor3" }, null, null, null, null),
             new pbr::GeneratedClrTypeInfo(typeof(global::PROTO.History), global::PROTO.History.Parser, new[]{ "Bass", "Lowmid", "Highmid", "Treble" }, null, null, null, null),
-            new pbr::GeneratedClrTypeInfo(typeof(global::PROTO.Audiolink_Data), global::PROTO.Audiolink_Data.Parser, new[]{ "History" }, null, null, null, null),
+            new pbr::GeneratedClrTypeInfo(typeof(global::PROTO.Audiolink_Data), global::PROTO.Audiolink_Data.Parser, new[]{ "History", "ThemeColors" }, null, null, null, null),
             new pbr::GeneratedClrTypeInfo(typeof(global::PROTO.Sub_Packet), global::PROTO.Sub_Packet.Parser, new[]{ "PacketIndex", "PacketCount", "Data" }, null, null, null, null)
           }));
     }
@@ -42,6 +49,626 @@ namespace PROTO {
 
   }
   #region Messages
+  /// <summary>
+  ///"Primitive" type
+  /// </summary>
+  [global::System.Diagnostics.DebuggerDisplayAttribute("{ToString(),nq}")]
+  public sealed partial class Color : pb::IMessage<Color>
+  #if !GOOGLE_PROTOBUF_REFSTRUCT_COMPATIBILITY_MODE
+      , pb::IBufferMessage
+  #endif
+  {
+    private static readonly pb::MessageParser<Color> _parser = new pb::MessageParser<Color>(() => new Color());
+    private pb::UnknownFieldSet _unknownFields;
+    [global::System.Diagnostics.DebuggerNonUserCodeAttribute]
+    [global::System.CodeDom.Compiler.GeneratedCode("protoc", null)]
+    public static pb::MessageParser<Color> Parser { get { return _parser; } }
+
+    [global::System.Diagnostics.DebuggerNonUserCodeAttribute]
+    [global::System.CodeDom.Compiler.GeneratedCode("protoc", null)]
+    public static pbr::MessageDescriptor Descriptor {
+      get { return global::PROTO.AudiolinkDataReflection.Descriptor.MessageTypes[0]; }
+    }
+
+    [global::System.Diagnostics.DebuggerNonUserCodeAttribute]
+    [global::System.CodeDom.Compiler.GeneratedCode("protoc", null)]
+    pbr::MessageDescriptor pb::IMessage.Descriptor {
+      get { return Descriptor; }
+    }
+
+    [global::System.Diagnostics.DebuggerNonUserCodeAttribute]
+    [global::System.CodeDom.Compiler.GeneratedCode("protoc", null)]
+    public Color() {
+      OnConstruction();
+    }
+
+    partial void OnConstruction();
+
+    [global::System.Diagnostics.DebuggerNonUserCodeAttribute]
+    [global::System.CodeDom.Compiler.GeneratedCode("protoc", null)]
+    public Color(Color other) : this() {
+      r_ = other.r_;
+      g_ = other.g_;
+      b_ = other.b_;
+      _unknownFields = pb::UnknownFieldSet.Clone(other._unknownFields);
+    }
+
+    [global::System.Diagnostics.DebuggerNonUserCodeAttribute]
+    [global::System.CodeDom.Compiler.GeneratedCode("protoc", null)]
+    public Color Clone() {
+      return new Color(this);
+    }
+
+    /// <summary>Field number for the "r" field.</summary>
+    public const int RFieldNumber = 1;
+    private float r_;
+    [global::System.Diagnostics.DebuggerNonUserCodeAttribute]
+    [global::System.CodeDom.Compiler.GeneratedCode("protoc", null)]
+    public float R {
+      get { return r_; }
+      set {
+        r_ = value;
+      }
+    }
+
+    /// <summary>Field number for the "g" field.</summary>
+    public const int GFieldNumber = 2;
+    private float g_;
+    [global::System.Diagnostics.DebuggerNonUserCodeAttribute]
+    [global::System.CodeDom.Compiler.GeneratedCode("protoc", null)]
+    public float G {
+      get { return g_; }
+      set {
+        g_ = value;
+      }
+    }
+
+    /// <summary>Field number for the "b" field.</summary>
+    public const int BFieldNumber = 3;
+    private float b_;
+    [global::System.Diagnostics.DebuggerNonUserCodeAttribute]
+    [global::System.CodeDom.Compiler.GeneratedCode("protoc", null)]
+    public float B {
+      get { return b_; }
+      set {
+        b_ = value;
+      }
+    }
+
+    [global::System.Diagnostics.DebuggerNonUserCodeAttribute]
+    [global::System.CodeDom.Compiler.GeneratedCode("protoc", null)]
+    public override bool Equals(object other) {
+      return Equals(other as Color);
+    }
+
+    [global::System.Diagnostics.DebuggerNonUserCodeAttribute]
+    [global::System.CodeDom.Compiler.GeneratedCode("protoc", null)]
+    public bool Equals(Color other) {
+      if (ReferenceEquals(other, null)) {
+        return false;
+      }
+      if (ReferenceEquals(other, this)) {
+        return true;
+      }
+      if (!pbc::ProtobufEqualityComparers.BitwiseSingleEqualityComparer.Equals(R, other.R)) return false;
+      if (!pbc::ProtobufEqualityComparers.BitwiseSingleEqualityComparer.Equals(G, other.G)) return false;
+      if (!pbc::ProtobufEqualityComparers.BitwiseSingleEqualityComparer.Equals(B, other.B)) return false;
+      return Equals(_unknownFields, other._unknownFields);
+    }
+
+    [global::System.Diagnostics.DebuggerNonUserCodeAttribute]
+    [global::System.CodeDom.Compiler.GeneratedCode("protoc", null)]
+    public override int GetHashCode() {
+      int hash = 1;
+      if (R != 0F) hash ^= pbc::ProtobufEqualityComparers.BitwiseSingleEqualityComparer.GetHashCode(R);
+      if (G != 0F) hash ^= pbc::ProtobufEqualityComparers.BitwiseSingleEqualityComparer.GetHashCode(G);
+      if (B != 0F) hash ^= pbc::ProtobufEqualityComparers.BitwiseSingleEqualityComparer.GetHashCode(B);
+      if (_unknownFields != null) {
+        hash ^= _unknownFields.GetHashCode();
+      }
+      return hash;
+    }
+
+    [global::System.Diagnostics.DebuggerNonUserCodeAttribute]
+    [global::System.CodeDom.Compiler.GeneratedCode("protoc", null)]
+    public override string ToString() {
+      return pb::JsonFormatter.ToDiagnosticString(this);
+    }
+
+    [global::System.Diagnostics.DebuggerNonUserCodeAttribute]
+    [global::System.CodeDom.Compiler.GeneratedCode("protoc", null)]
+    public void WriteTo(pb::CodedOutputStream output) {
+    #if !GOOGLE_PROTOBUF_REFSTRUCT_COMPATIBILITY_MODE
+      output.WriteRawMessage(this);
+    #else
+      if (R != 0F) {
+        output.WriteRawTag(13);
+        output.WriteFloat(R);
+      }
+      if (G != 0F) {
+        output.WriteRawTag(21);
+        output.WriteFloat(G);
+      }
+      if (B != 0F) {
+        output.WriteRawTag(29);
+        output.WriteFloat(B);
+      }
+      if (_unknownFields != null) {
+        _unknownFields.WriteTo(output);
+      }
+    #endif
+    }
+
+    #if !GOOGLE_PROTOBUF_REFSTRUCT_COMPATIBILITY_MODE
+    [global::System.Diagnostics.DebuggerNonUserCodeAttribute]
+    [global::System.CodeDom.Compiler.GeneratedCode("protoc", null)]
+    void pb::IBufferMessage.InternalWriteTo(ref pb::WriteContext output) {
+      if (R != 0F) {
+        output.WriteRawTag(13);
+        output.WriteFloat(R);
+      }
+      if (G != 0F) {
+        output.WriteRawTag(21);
+        output.WriteFloat(G);
+      }
+      if (B != 0F) {
+        output.WriteRawTag(29);
+        output.WriteFloat(B);
+      }
+      if (_unknownFields != null) {
+        _unknownFields.WriteTo(ref output);
+      }
+    }
+    #endif
+
+    [global::System.Diagnostics.DebuggerNonUserCodeAttribute]
+    [global::System.CodeDom.Compiler.GeneratedCode("protoc", null)]
+    public int CalculateSize() {
+      int size = 0;
+      if (R != 0F) {
+        size += 1 + 4;
+      }
+      if (G != 0F) {
+        size += 1 + 4;
+      }
+      if (B != 0F) {
+        size += 1 + 4;
+      }
+      if (_unknownFields != null) {
+        size += _unknownFields.CalculateSize();
+      }
+      return size;
+    }
+
+    [global::System.Diagnostics.DebuggerNonUserCodeAttribute]
+    [global::System.CodeDom.Compiler.GeneratedCode("protoc", null)]
+    public void MergeFrom(Color other) {
+      if (other == null) {
+        return;
+      }
+      if (other.R != 0F) {
+        R = other.R;
+      }
+      if (other.G != 0F) {
+        G = other.G;
+      }
+      if (other.B != 0F) {
+        B = other.B;
+      }
+      _unknownFields = pb::UnknownFieldSet.MergeFrom(_unknownFields, other._unknownFields);
+    }
+
+    [global::System.Diagnostics.DebuggerNonUserCodeAttribute]
+    [global::System.CodeDom.Compiler.GeneratedCode("protoc", null)]
+    public void MergeFrom(pb::CodedInputStream input) {
+    #if !GOOGLE_PROTOBUF_REFSTRUCT_COMPATIBILITY_MODE
+      input.ReadRawMessage(this);
+    #else
+      uint tag;
+      while ((tag = input.ReadTag()) != 0) {
+      if ((tag & 7) == 4) {
+        // Abort on any end group tag.
+        return;
+      }
+      switch(tag) {
+          default:
+            _unknownFields = pb::UnknownFieldSet.MergeFieldFrom(_unknownFields, input);
+            break;
+          case 13: {
+            R = input.ReadFloat();
+            break;
+          }
+          case 21: {
+            G = input.ReadFloat();
+            break;
+          }
+          case 29: {
+            B = input.ReadFloat();
+            break;
+          }
+        }
+      }
+    #endif
+    }
+
+    #if !GOOGLE_PROTOBUF_REFSTRUCT_COMPATIBILITY_MODE
+    [global::System.Diagnostics.DebuggerNonUserCodeAttribute]
+    [global::System.CodeDom.Compiler.GeneratedCode("protoc", null)]
+    void pb::IBufferMessage.InternalMergeFrom(ref pb::ParseContext input) {
+      uint tag;
+      while ((tag = input.ReadTag()) != 0) {
+      if ((tag & 7) == 4) {
+        // Abort on any end group tag.
+        return;
+      }
+      switch(tag) {
+          default:
+            _unknownFields = pb::UnknownFieldSet.MergeFieldFrom(_unknownFields, ref input);
+            break;
+          case 13: {
+            R = input.ReadFloat();
+            break;
+          }
+          case 21: {
+            G = input.ReadFloat();
+            break;
+          }
+          case 29: {
+            B = input.ReadFloat();
+            break;
+          }
+        }
+      }
+    }
+    #endif
+
+  }
+
+  [global::System.Diagnostics.DebuggerDisplayAttribute("{ToString(),nq}")]
+  public sealed partial class ThemeColors : pb::IMessage<ThemeColors>
+  #if !GOOGLE_PROTOBUF_REFSTRUCT_COMPATIBILITY_MODE
+      , pb::IBufferMessage
+  #endif
+  {
+    private static readonly pb::MessageParser<ThemeColors> _parser = new pb::MessageParser<ThemeColors>(() => new ThemeColors());
+    private pb::UnknownFieldSet _unknownFields;
+    [global::System.Diagnostics.DebuggerNonUserCodeAttribute]
+    [global::System.CodeDom.Compiler.GeneratedCode("protoc", null)]
+    public static pb::MessageParser<ThemeColors> Parser { get { return _parser; } }
+
+    [global::System.Diagnostics.DebuggerNonUserCodeAttribute]
+    [global::System.CodeDom.Compiler.GeneratedCode("protoc", null)]
+    public static pbr::MessageDescriptor Descriptor {
+      get { return global::PROTO.AudiolinkDataReflection.Descriptor.MessageTypes[1]; }
+    }
+
+    [global::System.Diagnostics.DebuggerNonUserCodeAttribute]
+    [global::System.CodeDom.Compiler.GeneratedCode("protoc", null)]
+    pbr::MessageDescriptor pb::IMessage.Descriptor {
+      get { return Descriptor; }
+    }
+
+    [global::System.Diagnostics.DebuggerNonUserCodeAttribute]
+    [global::System.CodeDom.Compiler.GeneratedCode("protoc", null)]
+    public ThemeColors() {
+      OnConstruction();
+    }
+
+    partial void OnConstruction();
+
+    [global::System.Diagnostics.DebuggerNonUserCodeAttribute]
+    [global::System.CodeDom.Compiler.GeneratedCode("protoc", null)]
+    public ThemeColors(ThemeColors other) : this() {
+      themeColor0_ = other.themeColor0_ != null ? other.themeColor0_.Clone() : null;
+      themeColor1_ = other.themeColor1_ != null ? other.themeColor1_.Clone() : null;
+      themeColor2_ = other.themeColor2_ != null ? other.themeColor2_.Clone() : null;
+      themeColor3_ = other.themeColor3_ != null ? other.themeColor3_.Clone() : null;
+      _unknownFields = pb::UnknownFieldSet.Clone(other._unknownFields);
+    }
+
+    [global::System.Diagnostics.DebuggerNonUserCodeAttribute]
+    [global::System.CodeDom.Compiler.GeneratedCode("protoc", null)]
+    public ThemeColors Clone() {
+      return new ThemeColors(this);
+    }
+
+    /// <summary>Field number for the "ThemeColor0" field.</summary>
+    public const int ThemeColor0FieldNumber = 1;
+    private global::PROTO.Color themeColor0_;
+    [global::System.Diagnostics.DebuggerNonUserCodeAttribute]
+    [global::System.CodeDom.Compiler.GeneratedCode("protoc", null)]
+    public global::PROTO.Color ThemeColor0 {
+      get { return themeColor0_; }
+      set {
+        themeColor0_ = value;
+      }
+    }
+
+    /// <summary>Field number for the "ThemeColor1" field.</summary>
+    public const int ThemeColor1FieldNumber = 2;
+    private global::PROTO.Color themeColor1_;
+    [global::System.Diagnostics.DebuggerNonUserCodeAttribute]
+    [global::System.CodeDom.Compiler.GeneratedCode("protoc", null)]
+    public global::PROTO.Color ThemeColor1 {
+      get { return themeColor1_; }
+      set {
+        themeColor1_ = value;
+      }
+    }
+
+    /// <summary>Field number for the "ThemeColor2" field.</summary>
+    public const int ThemeColor2FieldNumber = 3;
+    private global::PROTO.Color themeColor2_;
+    [global::System.Diagnostics.DebuggerNonUserCodeAttribute]
+    [global::System.CodeDom.Compiler.GeneratedCode("protoc", null)]
+    public global::PROTO.Color ThemeColor2 {
+      get { return themeColor2_; }
+      set {
+        themeColor2_ = value;
+      }
+    }
+
+    /// <summary>Field number for the "ThemeColor3" field.</summary>
+    public const int ThemeColor3FieldNumber = 4;
+    private global::PROTO.Color themeColor3_;
+    [global::System.Diagnostics.DebuggerNonUserCodeAttribute]
+    [global::System.CodeDom.Compiler.GeneratedCode("protoc", null)]
+    public global::PROTO.Color ThemeColor3 {
+      get { return themeColor3_; }
+      set {
+        themeColor3_ = value;
+      }
+    }
+
+    [global::System.Diagnostics.DebuggerNonUserCodeAttribute]
+    [global::System.CodeDom.Compiler.GeneratedCode("protoc", null)]
+    public override bool Equals(object other) {
+      return Equals(other as ThemeColors);
+    }
+
+    [global::System.Diagnostics.DebuggerNonUserCodeAttribute]
+    [global::System.CodeDom.Compiler.GeneratedCode("protoc", null)]
+    public bool Equals(ThemeColors other) {
+      if (ReferenceEquals(other, null)) {
+        return false;
+      }
+      if (ReferenceEquals(other, this)) {
+        return true;
+      }
+      if (!object.Equals(ThemeColor0, other.ThemeColor0)) return false;
+      if (!object.Equals(ThemeColor1, other.ThemeColor1)) return false;
+      if (!object.Equals(ThemeColor2, other.ThemeColor2)) return false;
+      if (!object.Equals(ThemeColor3, other.ThemeColor3)) return false;
+      return Equals(_unknownFields, other._unknownFields);
+    }
+
+    [global::System.Diagnostics.DebuggerNonUserCodeAttribute]
+    [global::System.CodeDom.Compiler.GeneratedCode("protoc", null)]
+    public override int GetHashCode() {
+      int hash = 1;
+      if (themeColor0_ != null) hash ^= ThemeColor0.GetHashCode();
+      if (themeColor1_ != null) hash ^= ThemeColor1.GetHashCode();
+      if (themeColor2_ != null) hash ^= ThemeColor2.GetHashCode();
+      if (themeColor3_ != null) hash ^= ThemeColor3.GetHashCode();
+      if (_unknownFields != null) {
+        hash ^= _unknownFields.GetHashCode();
+      }
+      return hash;
+    }
+
+    [global::System.Diagnostics.DebuggerNonUserCodeAttribute]
+    [global::System.CodeDom.Compiler.GeneratedCode("protoc", null)]
+    public override string ToString() {
+      return pb::JsonFormatter.ToDiagnosticString(this);
+    }
+
+    [global::System.Diagnostics.DebuggerNonUserCodeAttribute]
+    [global::System.CodeDom.Compiler.GeneratedCode("protoc", null)]
+    public void WriteTo(pb::CodedOutputStream output) {
+    #if !GOOGLE_PROTOBUF_REFSTRUCT_COMPATIBILITY_MODE
+      output.WriteRawMessage(this);
+    #else
+      if (themeColor0_ != null) {
+        output.WriteRawTag(10);
+        output.WriteMessage(ThemeColor0);
+      }
+      if (themeColor1_ != null) {
+        output.WriteRawTag(18);
+        output.WriteMessage(ThemeColor1);
+      }
+      if (themeColor2_ != null) {
+        output.WriteRawTag(26);
+        output.WriteMessage(ThemeColor2);
+      }
+      if (themeColor3_ != null) {
+        output.WriteRawTag(34);
+        output.WriteMessage(ThemeColor3);
+      }
+      if (_unknownFields != null) {
+        _unknownFields.WriteTo(output);
+      }
+    #endif
+    }
+
+    #if !GOOGLE_PROTOBUF_REFSTRUCT_COMPATIBILITY_MODE
+    [global::System.Diagnostics.DebuggerNonUserCodeAttribute]
+    [global::System.CodeDom.Compiler.GeneratedCode("protoc", null)]
+    void pb::IBufferMessage.InternalWriteTo(ref pb::WriteContext output) {
+      if (themeColor0_ != null) {
+        output.WriteRawTag(10);
+        output.WriteMessage(ThemeColor0);
+      }
+      if (themeColor1_ != null) {
+        output.WriteRawTag(18);
+        output.WriteMessage(ThemeColor1);
+      }
+      if (themeColor2_ != null) {
+        output.WriteRawTag(26);
+        output.WriteMessage(ThemeColor2);
+      }
+      if (themeColor3_ != null) {
+        output.WriteRawTag(34);
+        output.WriteMessage(ThemeColor3);
+      }
+      if (_unknownFields != null) {
+        _unknownFields.WriteTo(ref output);
+      }
+    }
+    #endif
+
+    [global::System.Diagnostics.DebuggerNonUserCodeAttribute]
+    [global::System.CodeDom.Compiler.GeneratedCode("protoc", null)]
+    public int CalculateSize() {
+      int size = 0;
+      if (themeColor0_ != null) {
+        size += 1 + pb::CodedOutputStream.ComputeMessageSize(ThemeColor0);
+      }
+      if (themeColor1_ != null) {
+        size += 1 + pb::CodedOutputStream.ComputeMessageSize(ThemeColor1);
+      }
+      if (themeColor2_ != null) {
+        size += 1 + pb::CodedOutputStream.ComputeMessageSize(ThemeColor2);
+      }
+      if (themeColor3_ != null) {
+        size += 1 + pb::CodedOutputStream.ComputeMessageSize(ThemeColor3);
+      }
+      if (_unknownFields != null) {
+        size += _unknownFields.CalculateSize();
+      }
+      return size;
+    }
+
+    [global::System.Diagnostics.DebuggerNonUserCodeAttribute]
+    [global::System.CodeDom.Compiler.GeneratedCode("protoc", null)]
+    public void MergeFrom(ThemeColors other) {
+      if (other == null) {
+        return;
+      }
+      if (other.themeColor0_ != null) {
+        if (themeColor0_ == null) {
+          ThemeColor0 = new global::PROTO.Color();
+        }
+        ThemeColor0.MergeFrom(other.ThemeColor0);
+      }
+      if (other.themeColor1_ != null) {
+        if (themeColor1_ == null) {
+          ThemeColor1 = new global::PROTO.Color();
+        }
+        ThemeColor1.MergeFrom(other.ThemeColor1);
+      }
+      if (other.themeColor2_ != null) {
+        if (themeColor2_ == null) {
+          ThemeColor2 = new global::PROTO.Color();
+        }
+        ThemeColor2.MergeFrom(other.ThemeColor2);
+      }
+      if (other.themeColor3_ != null) {
+        if (themeColor3_ == null) {
+          ThemeColor3 = new global::PROTO.Color();
+        }
+        ThemeColor3.MergeFrom(other.ThemeColor3);
+      }
+      _unknownFields = pb::UnknownFieldSet.MergeFrom(_unknownFields, other._unknownFields);
+    }
+
+    [global::System.Diagnostics.DebuggerNonUserCodeAttribute]
+    [global::System.CodeDom.Compiler.GeneratedCode("protoc", null)]
+    public void MergeFrom(pb::CodedInputStream input) {
+    #if !GOOGLE_PROTOBUF_REFSTRUCT_COMPATIBILITY_MODE
+      input.ReadRawMessage(this);
+    #else
+      uint tag;
+      while ((tag = input.ReadTag()) != 0) {
+      if ((tag & 7) == 4) {
+        // Abort on any end group tag.
+        return;
+      }
+      switch(tag) {
+          default:
+            _unknownFields = pb::UnknownFieldSet.MergeFieldFrom(_unknownFields, input);
+            break;
+          case 10: {
+            if (themeColor0_ == null) {
+              ThemeColor0 = new global::PROTO.Color();
+            }
+            input.ReadMessage(ThemeColor0);
+            break;
+          }
+          case 18: {
+            if (themeColor1_ == null) {
+              ThemeColor1 = new global::PROTO.Color();
+            }
+            input.ReadMessage(ThemeColor1);
+            break;
+          }
+          case 26: {
+            if (themeColor2_ == null) {
+              ThemeColor2 = new global::PROTO.Color();
+            }
+            input.ReadMessage(ThemeColor2);
+            break;
+          }
+          case 34: {
+            if (themeColor3_ == null) {
+              ThemeColor3 = new global::PROTO.Color();
+            }
+            input.ReadMessage(ThemeColor3);
+            break;
+          }
+        }
+      }
+    #endif
+    }
+
+    #if !GOOGLE_PROTOBUF_REFSTRUCT_COMPATIBILITY_MODE
+    [global::System.Diagnostics.DebuggerNonUserCodeAttribute]
+    [global::System.CodeDom.Compiler.GeneratedCode("protoc", null)]
+    void pb::IBufferMessage.InternalMergeFrom(ref pb::ParseContext input) {
+      uint tag;
+      while ((tag = input.ReadTag()) != 0) {
+      if ((tag & 7) == 4) {
+        // Abort on any end group tag.
+        return;
+      }
+      switch(tag) {
+          default:
+            _unknownFields = pb::UnknownFieldSet.MergeFieldFrom(_unknownFields, ref input);
+            break;
+          case 10: {
+            if (themeColor0_ == null) {
+              ThemeColor0 = new global::PROTO.Color();
+            }
+            input.ReadMessage(ThemeColor0);
+            break;
+          }
+          case 18: {
+            if (themeColor1_ == null) {
+              ThemeColor1 = new global::PROTO.Color();
+            }
+            input.ReadMessage(ThemeColor1);
+            break;
+          }
+          case 26: {
+            if (themeColor2_ == null) {
+              ThemeColor2 = new global::PROTO.Color();
+            }
+            input.ReadMessage(ThemeColor2);
+            break;
+          }
+          case 34: {
+            if (themeColor3_ == null) {
+              ThemeColor3 = new global::PROTO.Color();
+            }
+            input.ReadMessage(ThemeColor3);
+            break;
+          }
+        }
+      }
+    }
+    #endif
+
+  }
+
   [global::System.Diagnostics.DebuggerDisplayAttribute("{ToString(),nq}")]
   public sealed partial class History : pb::IMessage<History>
   #if !GOOGLE_PROTOBUF_REFSTRUCT_COMPATIBILITY_MODE
@@ -57,7 +684,7 @@ namespace PROTO {
     [global::System.Diagnostics.DebuggerNonUserCodeAttribute]
     [global::System.CodeDom.Compiler.GeneratedCode("protoc", null)]
     public static pbr::MessageDescriptor Descriptor {
-      get { return global::PROTO.AudiolinkDataReflection.Descriptor.MessageTypes[0]; }
+      get { return global::PROTO.AudiolinkDataReflection.Descriptor.MessageTypes[2]; }
     }
 
     [global::System.Diagnostics.DebuggerNonUserCodeAttribute]
@@ -330,7 +957,7 @@ namespace PROTO {
     [global::System.Diagnostics.DebuggerNonUserCodeAttribute]
     [global::System.CodeDom.Compiler.GeneratedCode("protoc", null)]
     public static pbr::MessageDescriptor Descriptor {
-      get { return global::PROTO.AudiolinkDataReflection.Descriptor.MessageTypes[1]; }
+      get { return global::PROTO.AudiolinkDataReflection.Descriptor.MessageTypes[3]; }
     }
 
     [global::System.Diagnostics.DebuggerNonUserCodeAttribute]
@@ -351,6 +978,7 @@ namespace PROTO {
     [global::System.CodeDom.Compiler.GeneratedCode("protoc", null)]
     public Audiolink_Data(Audiolink_Data other) : this() {
       history_ = other.history_ != null ? other.history_.Clone() : null;
+      themeColors_ = other.themeColors_ != null ? other.themeColors_.Clone() : null;
       _unknownFields = pb::UnknownFieldSet.Clone(other._unknownFields);
     }
 
@@ -372,6 +1000,18 @@ namespace PROTO {
       }
     }
 
+    /// <summary>Field number for the "theme_colors" field.</summary>
+    public const int ThemeColorsFieldNumber = 2;
+    private global::PROTO.ThemeColors themeColors_;
+    [global::System.Diagnostics.DebuggerNonUserCodeAttribute]
+    [global::System.CodeDom.Compiler.GeneratedCode("protoc", null)]
+    public global::PROTO.ThemeColors ThemeColors {
+      get { return themeColors_; }
+      set {
+        themeColors_ = value;
+      }
+    }
+
     [global::System.Diagnostics.DebuggerNonUserCodeAttribute]
     [global::System.CodeDom.Compiler.GeneratedCode("protoc", null)]
     public override bool Equals(object other) {
@@ -388,6 +1028,7 @@ namespace PROTO {
         return true;
       }
       if (!object.Equals(History, other.History)) return false;
+      if (!object.Equals(ThemeColors, other.ThemeColors)) return false;
       return Equals(_unknownFields, other._unknownFields);
     }
 
@@ -396,6 +1037,7 @@ namespace PROTO {
     public override int GetHashCode() {
       int hash = 1;
       if (history_ != null) hash ^= History.GetHashCode();
+      if (themeColors_ != null) hash ^= ThemeColors.GetHashCode();
       if (_unknownFields != null) {
         hash ^= _unknownFields.GetHashCode();
       }
@@ -418,6 +1060,10 @@ namespace PROTO {
         output.WriteRawTag(10);
         output.WriteMessage(History);
       }
+      if (themeColors_ != null) {
+        output.WriteRawTag(18);
+        output.WriteMessage(ThemeColors);
+      }
       if (_unknownFields != null) {
         _unknownFields.WriteTo(output);
       }
@@ -432,6 +1078,10 @@ namespace PROTO {
         output.WriteRawTag(10);
         output.WriteMessage(History);
       }
+      if (themeColors_ != null) {
+        output.WriteRawTag(18);
+        output.WriteMessage(ThemeColors);
+      }
       if (_unknownFields != null) {
         _unknownFields.WriteTo(ref output);
       }
@@ -444,6 +1094,9 @@ namespace PROTO {
       int size = 0;
       if (history_ != null) {
         size += 1 + pb::CodedOutputStream.ComputeMessageSize(History);
+      }
+      if (themeColors_ != null) {
+        size += 1 + pb::CodedOutputStream.ComputeMessageSize(ThemeColors);
       }
       if (_unknownFields != null) {
         size += _unknownFields.CalculateSize();
@@ -462,6 +1115,12 @@ namespace PROTO {
           History = new global::PROTO.History();
         }
         History.MergeFrom(other.History);
+      }
+      if (other.themeColors_ != null) {
+        if (themeColors_ == null) {
+          ThemeColors = new global::PROTO.ThemeColors();
+        }
+        ThemeColors.MergeFrom(other.ThemeColors);
       }
       _unknownFields = pb::UnknownFieldSet.MergeFrom(_unknownFields, other._unknownFields);
     }
@@ -487,6 +1146,13 @@ namespace PROTO {
               History = new global::PROTO.History();
             }
             input.ReadMessage(History);
+            break;
+          }
+          case 18: {
+            if (themeColors_ == null) {
+              ThemeColors = new global::PROTO.ThemeColors();
+            }
+            input.ReadMessage(ThemeColors);
             break;
           }
         }
@@ -515,6 +1181,13 @@ namespace PROTO {
             input.ReadMessage(History);
             break;
           }
+          case 18: {
+            if (themeColors_ == null) {
+              ThemeColors = new global::PROTO.ThemeColors();
+            }
+            input.ReadMessage(ThemeColors);
+            break;
+          }
         }
       }
     }
@@ -537,7 +1210,7 @@ namespace PROTO {
     [global::System.Diagnostics.DebuggerNonUserCodeAttribute]
     [global::System.CodeDom.Compiler.GeneratedCode("protoc", null)]
     public static pbr::MessageDescriptor Descriptor {
-      get { return global::PROTO.AudiolinkDataReflection.Descriptor.MessageTypes[2]; }
+      get { return global::PROTO.AudiolinkDataReflection.Descriptor.MessageTypes[4]; }
     }
 
     [global::System.Diagnostics.DebuggerNonUserCodeAttribute]

@@ -5,14 +5,15 @@
 #include "led_strip_types.h"
 #include "led_strip_rmt.h"
 #include "led_controller.h"
+#include "audiolink_data.h"
 #include "config.h"
 
 LEDController::LEDController() {
     // Initialize all pixels to off
     for (auto& pixel : pixels) {
-        pixel.r = 0;
-        pixel.g = 0;
-        pixel.b = 0;
+        pixel.r = 0.0f;
+        pixel.g = 0.0f;
+        pixel.b = 0.0f;
     }
 }
 
@@ -39,7 +40,7 @@ led_strip_handle_t LEDController::init() {
 
 void hsv_to_rgb(float hue, float saturation, float value, uint8_t *r, uint8_t *g, uint8_t *b) {
     float c = value * saturation;
-    float x = c * (1 - std::fabs(std::fmod(hue / 60.0, 2) - 1));
+    float x = c * (1 - std::fabs(std::fmod(hue / 60.0f, 2) - 1));
     float m = value - c;
     float rf, gf, bf;
     
@@ -57,14 +58,14 @@ void hsv_to_rgb(float hue, float saturation, float value, uint8_t *r, uint8_t *g
         rf = c; gf = 0; bf = x;
     }
     
-    *r = (uint8_t)((rf + m) * 255);
-    *g = (uint8_t)((gf + m) * 255);
-    *b = (uint8_t)((bf + m) * 255);
+    *r = (uint8_t)((rf + m) * 255.0f);
+    *g = (uint8_t)((gf + m) * 255.0f);
+    *b = (uint8_t)((bf + m) * 255.0f);
 }
 
 esp_err_t LEDController::map_to_leds(led_strip_handle_t led_strip, 
                                       const std::vector<float>& frequency_values,
-                                      uint8_t quadrant, uint8_t r, uint8_t g, uint8_t b) {
+                                      uint8_t quadrant, const Color& color) {
     if (frequency_values.empty() || quadrant >= 4) {
         return ESP_FAIL;
     }
@@ -82,20 +83,19 @@ esp_err_t LEDController::map_to_leds(led_strip_handle_t led_strip,
         }
         
         float value = frequency_values[idx];
-        if (value > 1.0) value = 1.0;
-        if (value < 0.0) value = 0.0;
+        if (value > 1.0f) value = 1.0f;
+        if (value < 0.0f) value = 0.0f;
         
         /* Scale the color by the frequency value (brightness modulation) */
-        uint8_t r_scaled = (uint8_t)(r * value);
-        uint8_t g_scaled = (uint8_t)(g * value);
-        uint8_t b_scaled = (uint8_t)(b * value);
+        Color scaled_color = {
+            color.r * value,
+            color.g * value,
+            color.b * value
+        };
         
         /* Update local pixel state and LED */
-        pixels[i].r = r_scaled;
-        pixels[i].g = g_scaled;
-        pixels[i].b = b_scaled;
-        
-        ESP_ERROR_CHECK(led_strip_set_pixel(led_strip, i, r_scaled, g_scaled, b_scaled));
+        pixels[i] = scaled_color;
+        ESP_ERROR_CHECK(led_strip_set_pixel_color(led_strip, i, scaled_color));
     }
     
     return ESP_OK;
@@ -103,9 +103,16 @@ esp_err_t LEDController::map_to_leds(led_strip_handle_t led_strip,
 
 void LEDController::clear(led_strip_handle_t led_strip) {
     for (int i = 0; i < LED_STRIP_LED_NUMBERS; i++) {
-        pixels[i].r = 0;
-        pixels[i].g = 0;
-        pixels[i].b = 0;
+        pixels[i].r = 0.0f;
+        pixels[i].g = 0.0f;
+        pixels[i].b = 0.0f;
         ESP_ERROR_CHECK(led_strip_set_pixel(led_strip, i, 0, 0, 0));
+    }
+}
+
+void LEDController::fill(led_strip_handle_t led_strip, const Color& color) {
+    for (int i = 0; i < LED_STRIP_LED_NUMBERS; i++) {
+        pixels[i] = color;
+        ESP_ERROR_CHECK(led_strip_set_pixel_color(led_strip, i, color));
     }
 }

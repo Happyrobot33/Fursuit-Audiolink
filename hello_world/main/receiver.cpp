@@ -18,7 +18,7 @@
 using namespace NanoPb::Converter;
 
 // Global audio data and synchronization
-extern CppAudiolinkData audio_data;
+extern AudiolinkData audio_data;
 extern bool audio_complete;
 extern SemaphoreHandle_t audio_mutex;
 
@@ -46,7 +46,7 @@ static void try_reconstruct_audio_data() {
     }
     
     /* Decode into temporary local struct */
-    CppAudiolinkData temp_audio;
+    AudiolinkData temp_audio;
     pb_istream_t stream = pb_istream_from_buffer(reconstructed_data.data(), 
                                                reconstructed_data.size());
     

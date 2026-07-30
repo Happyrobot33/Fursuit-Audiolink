@@ -3,16 +3,88 @@
 #include <vector>
 #include "audiolink_data.pb.h"
 #include "nanopb_cpp.h"
-#include "receiver.h"
 
 using namespace NanoPb::Converter;
+
+class ColorConverter : public MessageConverter<
+        ColorConverter,
+        Color,
+        PROTO_Color,
+        &PROTO_Color_msg>
+{
+public:
+    static ProtoType encoderInit(const LocalType& local) {
+        return ProtoType{
+                .r = local.r,
+                .g = local.g,
+                .b = local.b
+        };
+    }
+
+    static ProtoType decoderInit(LocalType& local) {
+        return ProtoType{
+                .r = local.r,
+                .g = local.g,
+                .b = local.b
+        };
+    }
+
+    static bool decoderApply(const ProtoType& proto, LocalType& local) {
+        local.r = proto.r;
+        local.g = proto.g;
+        local.b = proto.b;
+        return true;
+    }
+};
+
+class ThemeColorsConverter : public MessageConverter<
+        ThemeColorsConverter,
+        ThemeColors,
+        PROTO_ThemeColors,
+        &PROTO_ThemeColors_msg>
+{
+public:
+    static ProtoType encoderInit(const LocalType& local) {
+        return ProtoType{
+                .has_ThemeColor0 = true,
+                .ThemeColor0 = ColorConverter::encoderInit(local.ThemeColor0),
+                .has_ThemeColor1 = true,
+                .ThemeColor1 = ColorConverter::encoderInit(local.ThemeColor1),
+                .has_ThemeColor2 = true,
+                .ThemeColor2 = ColorConverter::encoderInit(local.ThemeColor2),
+                .has_ThemeColor3 = true,
+                .ThemeColor3 = ColorConverter::encoderInit(local.ThemeColor3)
+        };
+    }
+
+    static ProtoType decoderInit(LocalType& local) {
+        return ProtoType{
+                .has_ThemeColor0 = true,
+                .ThemeColor0 = ColorConverter::decoderInit(local.ThemeColor0),
+                .has_ThemeColor1 = true,
+                .ThemeColor1 = ColorConverter::decoderInit(local.ThemeColor1),
+                .has_ThemeColor2 = true,
+                .ThemeColor2 = ColorConverter::decoderInit(local.ThemeColor2),
+                .has_ThemeColor3 = true,
+                .ThemeColor3 = ColorConverter::decoderInit(local.ThemeColor3)
+        };
+    }
+
+    static bool decoderApply(const ProtoType& proto, LocalType& local) {
+        ColorConverter::decoderApply(proto.ThemeColor0, local.ThemeColor0);
+        ColorConverter::decoderApply(proto.ThemeColor1, local.ThemeColor1);
+        ColorConverter::decoderApply(proto.ThemeColor2, local.ThemeColor2);
+        ColorConverter::decoderApply(proto.ThemeColor3, local.ThemeColor3);
+        return true;
+    }
+};
 
 /**
  * Converter for History message using nanopb_cpp
  */
 class HistoryConverter : public MessageConverter<
         HistoryConverter,
-        CppHistory,
+        History,
         PROTO_History,
         &PROTO_History_msg>
 {
@@ -45,7 +117,7 @@ public:
  */
 class AudiolinkDataConverter : public MessageConverter<
         AudiolinkDataConverter,
-        CppAudiolinkData,
+        AudiolinkData,
         PROTO_Audiolink_Data,
         &PROTO_Audiolink_Data_msg>
 {
@@ -53,16 +125,21 @@ public:
     static ProtoType encoderInit(const LocalType& local) {
         ProtoType proto = {};
         proto.history = HistoryConverter::encoderInit(local.history);
+        proto.theme_colors = ThemeColorsConverter::encoderInit(local.theme_colors);
         return proto;
     }
 
     static ProtoType decoderInit(LocalType& local) {
         ProtoType proto = {};
         proto.history = HistoryConverter::decoderInit(local.history);
+        proto.theme_colors = ThemeColorsConverter::decoderInit(local.theme_colors);
         return proto;
     }
 
     static bool decoderApply(const ProtoType& proto, LocalType& local) {
-        return HistoryConverter::decoderApply(proto.history, local.history);
+        return HistoryConverter::decoderApply(proto.history, local.history) &&
+               ThemeColorsConverter::decoderApply(proto.theme_colors, local.theme_colors);
     }
 };
+
+
