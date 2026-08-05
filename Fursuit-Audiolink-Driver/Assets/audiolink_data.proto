@@ -46,11 +46,23 @@ message FilteredAudiolink {
     repeated float treble = 4 [packed=true];
 }
 
+message WaveForm {
+    //24,000 SPS audio, amplitude. Contains 2046 samples.
+    repeated float wav1 = 1 [packed=true];
+    //48,000 SPS audio, amplitude. Contains 2048 samples.
+    repeated float wav2 = 2 [packed=true];
+    //12,000 SPS audio, amplitude. Contains 1023 samples.
+    repeated float wav3 = 3 [packed=true];
+    //24,000 SPS audio, differential. For left channel take wav1 + wav1diff, for right channel take wav1 - wav1diff. Contains 2046 samples.
+    repeated float wav1diff = 4 [packed=true];
+}
+
 message Audiolink_Data {
     History history = 1;
     ThemeColors theme_colors = 2;
     DFT dft = 3;
     FilteredAudiolink filtered_audiolink = 4;
+    WaveForm waveform = 5;
 }
 
 message Sub_Packet {

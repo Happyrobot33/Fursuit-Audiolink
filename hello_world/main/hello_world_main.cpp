@@ -7,7 +7,6 @@
 #include <vector>
 #include "freertos/FreeRTOS.h"
 #include "freertos/task.h"
-#include "freertos/semphr.h"
 #include "esp_log.h"
 #include "driver/gpio.h"
 #include "led_controller.h"
@@ -15,50 +14,31 @@
 #include "config.h"
 
 // Global data structures
-AudiolinkData audio_data;
-bool audio_complete = false;
 LEDController led_controller;
-SemaphoreHandle_t audio_mutex = nullptr;
 
 // Framerate tracking
 static uint32_t frame_count = 0;
 static uint32_t last_log_time_ms = 0;
+static led_strip_handle_t g_led_strip = nullptr;
+static LEDController *g_led_controller = nullptr;
 
-extern "C" void app_main(void) {
-    /* Initialize synchronization */
-    audio_mutex = xSemaphoreCreateMutex();
-    if (!audio_mutex) {
-        ESP_LOGE(TAG, "Failed to create audio mutex");
-        return;
-    }
-
-    /* Initialize GPIO and LED strip */
-    gpio_set_drive_capability(LED_STRIP_BLINK_GPIO, GPIO_DRIVE_CAP_3);
-    led_strip_handle_t led_strip = led_controller.init();
-
-    /* Initialize WiFi and ESP-NOW */
-    receiver_wifi_init();
-    receiver_espnow_init();
-
-    ESP_LOGI(TAG, "Application started - waiting for audio data...");
-
-    /* Main loop */
+static void receiver_process_task(void *arg) {
     while (1) {
-        uint32_t current_time_ms = xTaskGetTickCount() * portTICK_PERIOD_MS;
-        bool should_update = false;
-        
-        /* Check flag and reset with minimal lock time */
-        if (xSemaphoreTake(audio_mutex, pdMS_TO_TICKS(5)) == pdTRUE) {
-            if (audio_complete) {
-                should_update = true;
-                audio_complete = false;
-            }
-            xSemaphoreGive(audio_mutex);
-        }
-        
-        /* Perform LED operations using global audio_data directly */
-        if (should_update) {
-            // Calculate and log framerate every second
+        /* Block until callback signals a completed frame, with periodic timeout as safeguard. */
+        (void)ulTaskNotifyTake(pdTRUE, pdMS_TO_TICKS(50));
+        receiver_process_pending();
+        vTaskDelay(pdMS_TO_TICKS(1));
+    }
+}
+
+static void led_update_task(void *arg) {
+    while (1) {
+        AudiolinkData local_audio_data;
+
+        bool should_update = receiver_take_decoded_frame(local_audio_data, pdMS_TO_TICKS(5));
+
+        if (should_update && g_led_controller && g_led_strip) {
+            uint32_t current_time_ms = xTaskGetTickCount() * portTICK_PERIOD_MS;
             frame_count++;
             uint32_t elapsed_time_ms = current_time_ms - last_log_time_ms;
             if (elapsed_time_ms >= 1000) {
@@ -67,17 +47,68 @@ extern "C" void app_main(void) {
                 frame_count = 0;
                 last_log_time_ms = current_time_ms;
             }
-            
-            /* Clear LED strip */
-            led_controller.clear(led_strip);
-            
-            /* Map audio data to LEDs using global data */
-            led_controller.map_to_leds(led_strip, audio_data.dft.mag, 0, LED_STRIP_LED_NUMBERS, audio_data.theme_colors.ThemeColor0);
-            
-            /* Refresh LED display */
-            ESP_ERROR_CHECK(led_strip_refresh(led_strip));
+
+            g_led_controller->clear(g_led_strip);
+            // g_led_controller->map_to_leds(g_led_strip,
+            //                               local_audio_data.dft.mag,
+            //                               0,
+            //                               LED_STRIP_LED_NUMBERS,
+            //                               local_audio_data.theme_colors.ThemeColor0);
+            g_led_controller->map_to_leds(g_led_strip,
+                                          local_audio_data.history.bass,
+                                          0,
+                                          LED_STRIP_LED_NUMBERS,
+                                          Color{1.0f, 0.0f, 0.0f}); // Red for bass
+            ESP_ERROR_CHECK(led_strip_refresh(g_led_strip));
         }
-        
-        vTaskDelay(pdMS_TO_TICKS(5));
+
+        vTaskDelay(pdMS_TO_TICKS(should_update ? 5 : 15));
+    }
+}
+
+extern "C" void app_main(void) {
+    /* Initialize GPIO and LED strip */
+    gpio_set_drive_capability(LED_STRIP_BLINK_GPIO, GPIO_DRIVE_CAP_3);
+    led_strip_handle_t led_strip = led_controller.init();
+    g_led_strip = led_strip;
+    g_led_controller = &led_controller;
+
+    /* Start LED rendering on CPU 1 */
+    BaseType_t task_created = xTaskCreatePinnedToCore(
+        led_update_task,
+        "led_update_task",
+        4096,
+        nullptr,
+        2,
+        nullptr,
+        1);
+    if (task_created != pdPASS) {
+        ESP_LOGE(TAG, "Failed to create LED update task");
+    }
+
+    /* Run decompress/decode work on CPU0 to keep CPU1 IDLE alive for task watchdog */
+    TaskHandle_t receiver_task_handle = nullptr;
+    BaseType_t receiver_task_created = xTaskCreatePinnedToCore(
+        receiver_process_task,
+        "receiver_process_task",
+        6144,
+        nullptr,
+        2,
+        &receiver_task_handle,
+        0);
+    if (receiver_task_created != pdPASS) {
+        ESP_LOGE(TAG, "Failed to create receiver process task");
+    } else {
+        receiver_set_process_task_handle(receiver_task_handle);
+    }
+
+    /* Initialize WiFi and ESP-NOW */
+    receiver_wifi_init();
+    receiver_espnow_init();
+
+    ESP_LOGI(TAG, "Application started - waiting for audio data...");
+
+    while (1) {
+        vTaskDelay(pdMS_TO_TICKS(100));
     }
 }

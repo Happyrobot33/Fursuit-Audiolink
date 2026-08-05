@@ -35,12 +35,15 @@ namespace PROTO {
             "EAESEwoHaGlnaG1pZBgDIAMoAkICEAESEgoGdHJlYmxlGAQgAygCQgIQASJi",
             "ChFGaWx0ZXJlZEF1ZGlvbGluaxIQCgRiYXNzGAEgAygCQgIQARISCgZsb3dt",
             "aWQYAiADKAJCAhABEhMKB2hpZ2htaWQYAyADKAJCAhABEhIKBnRyZWJsZRgE",
-            "IAMoAkICEAEiqgEKDkF1ZGlvbGlua19EYXRhEh8KB2hpc3RvcnkYASABKAsy",
-            "Di5QUk9UTy5IaXN0b3J5EigKDHRoZW1lX2NvbG9ycxgCIAEoCzISLlBST1RP",
-            "LlRoZW1lQ29sb3JzEhcKA2RmdBgDIAEoCzIKLlBST1RPLkRGVBI0ChJmaWx0",
-            "ZXJlZF9hdWRpb2xpbmsYBCABKAsyGC5QUk9UTy5GaWx0ZXJlZEF1ZGlvbGlu",
-            "ayJGCgpTdWJfUGFja2V0EhQKDHBhY2tldF9pbmRleBgBIAEoBRIUCgxwYWNr",
-            "ZXRfY291bnQYAyABKAUSDAoEZGF0YRgCIAMoDGIGcHJvdG8z"));
+            "IAMoAkICEAEiVgoIV2F2ZUZvcm0SEAoEd2F2MRgBIAMoAkICEAESEAoEd2F2",
+            "MhgCIAMoAkICEAESEAoEd2F2MxgDIAMoAkICEAESFAoId2F2MWRpZmYYBCAD",
+            "KAJCAhABIs0BCg5BdWRpb2xpbmtfRGF0YRIfCgdoaXN0b3J5GAEgASgLMg4u",
+            "UFJPVE8uSGlzdG9yeRIoCgx0aGVtZV9jb2xvcnMYAiABKAsyEi5QUk9UTy5U",
+            "aGVtZUNvbG9ycxIXCgNkZnQYAyABKAsyCi5QUk9UTy5ERlQSNAoSZmlsdGVy",
+            "ZWRfYXVkaW9saW5rGAQgASgLMhguUFJPVE8uRmlsdGVyZWRBdWRpb2xpbmsS",
+            "IQoId2F2ZWZvcm0YBSABKAsyDy5QUk9UTy5XYXZlRm9ybSJGCgpTdWJfUGFj",
+            "a2V0EhQKDHBhY2tldF9pbmRleBgBIAEoBRIUCgxwYWNrZXRfY291bnQYAyAB",
+            "KAUSDAoEZGF0YRgCIAMoDGIGcHJvdG8z"));
       descriptor = pbr::FileDescriptor.FromGeneratedCode(descriptorData,
           new pbr::FileDescriptor[] { },
           new pbr::GeneratedClrTypeInfo(null, null, new pbr::GeneratedClrTypeInfo[] {
@@ -49,7 +52,8 @@ namespace PROTO {
             new pbr::GeneratedClrTypeInfo(typeof(global::PROTO.DFT), global::PROTO.DFT.Parser, new[]{ "Mag", "MagEQ", "Magfilt", "MagPhase" }, null, null, null, null),
             new pbr::GeneratedClrTypeInfo(typeof(global::PROTO.History), global::PROTO.History.Parser, new[]{ "Bass", "Lowmid", "Highmid", "Treble" }, null, null, null, null),
             new pbr::GeneratedClrTypeInfo(typeof(global::PROTO.FilteredAudiolink), global::PROTO.FilteredAudiolink.Parser, new[]{ "Bass", "Lowmid", "Highmid", "Treble" }, null, null, null, null),
-            new pbr::GeneratedClrTypeInfo(typeof(global::PROTO.Audiolink_Data), global::PROTO.Audiolink_Data.Parser, new[]{ "History", "ThemeColors", "Dft", "FilteredAudiolink" }, null, null, null, null),
+            new pbr::GeneratedClrTypeInfo(typeof(global::PROTO.WaveForm), global::PROTO.WaveForm.Parser, new[]{ "Wav1", "Wav2", "Wav3", "Wav1Diff" }, null, null, null, null),
+            new pbr::GeneratedClrTypeInfo(typeof(global::PROTO.Audiolink_Data), global::PROTO.Audiolink_Data.Parser, new[]{ "History", "ThemeColors", "Dft", "FilteredAudiolink", "Waveform" }, null, null, null, null),
             new pbr::GeneratedClrTypeInfo(typeof(global::PROTO.Sub_Packet), global::PROTO.Sub_Packet.Parser, new[]{ "PacketIndex", "PacketCount", "Data" }, null, null, null, null)
           }));
     }
@@ -1500,6 +1504,291 @@ namespace PROTO {
   }
 
   [global::System.Diagnostics.DebuggerDisplayAttribute("{ToString(),nq}")]
+  public sealed partial class WaveForm : pb::IMessage<WaveForm>
+  #if !GOOGLE_PROTOBUF_REFSTRUCT_COMPATIBILITY_MODE
+      , pb::IBufferMessage
+  #endif
+  {
+    private static readonly pb::MessageParser<WaveForm> _parser = new pb::MessageParser<WaveForm>(() => new WaveForm());
+    private pb::UnknownFieldSet _unknownFields;
+    [global::System.Diagnostics.DebuggerNonUserCodeAttribute]
+    [global::System.CodeDom.Compiler.GeneratedCode("protoc", null)]
+    public static pb::MessageParser<WaveForm> Parser { get { return _parser; } }
+
+    [global::System.Diagnostics.DebuggerNonUserCodeAttribute]
+    [global::System.CodeDom.Compiler.GeneratedCode("protoc", null)]
+    public static pbr::MessageDescriptor Descriptor {
+      get { return global::PROTO.AudiolinkDataReflection.Descriptor.MessageTypes[5]; }
+    }
+
+    [global::System.Diagnostics.DebuggerNonUserCodeAttribute]
+    [global::System.CodeDom.Compiler.GeneratedCode("protoc", null)]
+    pbr::MessageDescriptor pb::IMessage.Descriptor {
+      get { return Descriptor; }
+    }
+
+    [global::System.Diagnostics.DebuggerNonUserCodeAttribute]
+    [global::System.CodeDom.Compiler.GeneratedCode("protoc", null)]
+    public WaveForm() {
+      OnConstruction();
+    }
+
+    partial void OnConstruction();
+
+    [global::System.Diagnostics.DebuggerNonUserCodeAttribute]
+    [global::System.CodeDom.Compiler.GeneratedCode("protoc", null)]
+    public WaveForm(WaveForm other) : this() {
+      wav1_ = other.wav1_.Clone();
+      wav2_ = other.wav2_.Clone();
+      wav3_ = other.wav3_.Clone();
+      wav1Diff_ = other.wav1Diff_.Clone();
+      _unknownFields = pb::UnknownFieldSet.Clone(other._unknownFields);
+    }
+
+    [global::System.Diagnostics.DebuggerNonUserCodeAttribute]
+    [global::System.CodeDom.Compiler.GeneratedCode("protoc", null)]
+    public WaveForm Clone() {
+      return new WaveForm(this);
+    }
+
+    /// <summary>Field number for the "wav1" field.</summary>
+    public const int Wav1FieldNumber = 1;
+    private static readonly pb::FieldCodec<float> _repeated_wav1_codec
+        = pb::FieldCodec.ForFloat(10);
+    private readonly pbc::RepeatedField<float> wav1_ = new pbc::RepeatedField<float>();
+    /// <summary>
+    ///24,000 SPS audio, amplitude. Contains 2046 samples.
+    /// </summary>
+    [global::System.Diagnostics.DebuggerNonUserCodeAttribute]
+    [global::System.CodeDom.Compiler.GeneratedCode("protoc", null)]
+    public pbc::RepeatedField<float> Wav1 {
+      get { return wav1_; }
+    }
+
+    /// <summary>Field number for the "wav2" field.</summary>
+    public const int Wav2FieldNumber = 2;
+    private static readonly pb::FieldCodec<float> _repeated_wav2_codec
+        = pb::FieldCodec.ForFloat(18);
+    private readonly pbc::RepeatedField<float> wav2_ = new pbc::RepeatedField<float>();
+    /// <summary>
+    ///48,000 SPS audio, amplitude. Contains 2048 samples.
+    /// </summary>
+    [global::System.Diagnostics.DebuggerNonUserCodeAttribute]
+    [global::System.CodeDom.Compiler.GeneratedCode("protoc", null)]
+    public pbc::RepeatedField<float> Wav2 {
+      get { return wav2_; }
+    }
+
+    /// <summary>Field number for the "wav3" field.</summary>
+    public const int Wav3FieldNumber = 3;
+    private static readonly pb::FieldCodec<float> _repeated_wav3_codec
+        = pb::FieldCodec.ForFloat(26);
+    private readonly pbc::RepeatedField<float> wav3_ = new pbc::RepeatedField<float>();
+    /// <summary>
+    ///12,000 SPS audio, amplitude. Contains 1023 samples.
+    /// </summary>
+    [global::System.Diagnostics.DebuggerNonUserCodeAttribute]
+    [global::System.CodeDom.Compiler.GeneratedCode("protoc", null)]
+    public pbc::RepeatedField<float> Wav3 {
+      get { return wav3_; }
+    }
+
+    /// <summary>Field number for the "wav1diff" field.</summary>
+    public const int Wav1DiffFieldNumber = 4;
+    private static readonly pb::FieldCodec<float> _repeated_wav1Diff_codec
+        = pb::FieldCodec.ForFloat(34);
+    private readonly pbc::RepeatedField<float> wav1Diff_ = new pbc::RepeatedField<float>();
+    /// <summary>
+    ///24,000 SPS audio, differential. For left channel take wav1 + wav1diff, for right channel take wav1 - wav1diff. Contains 2046 samples.
+    /// </summary>
+    [global::System.Diagnostics.DebuggerNonUserCodeAttribute]
+    [global::System.CodeDom.Compiler.GeneratedCode("protoc", null)]
+    public pbc::RepeatedField<float> Wav1Diff {
+      get { return wav1Diff_; }
+    }
+
+    [global::System.Diagnostics.DebuggerNonUserCodeAttribute]
+    [global::System.CodeDom.Compiler.GeneratedCode("protoc", null)]
+    public override bool Equals(object other) {
+      return Equals(other as WaveForm);
+    }
+
+    [global::System.Diagnostics.DebuggerNonUserCodeAttribute]
+    [global::System.CodeDom.Compiler.GeneratedCode("protoc", null)]
+    public bool Equals(WaveForm other) {
+      if (ReferenceEquals(other, null)) {
+        return false;
+      }
+      if (ReferenceEquals(other, this)) {
+        return true;
+      }
+      if(!wav1_.Equals(other.wav1_)) return false;
+      if(!wav2_.Equals(other.wav2_)) return false;
+      if(!wav3_.Equals(other.wav3_)) return false;
+      if(!wav1Diff_.Equals(other.wav1Diff_)) return false;
+      return Equals(_unknownFields, other._unknownFields);
+    }
+
+    [global::System.Diagnostics.DebuggerNonUserCodeAttribute]
+    [global::System.CodeDom.Compiler.GeneratedCode("protoc", null)]
+    public override int GetHashCode() {
+      int hash = 1;
+      hash ^= wav1_.GetHashCode();
+      hash ^= wav2_.GetHashCode();
+      hash ^= wav3_.GetHashCode();
+      hash ^= wav1Diff_.GetHashCode();
+      if (_unknownFields != null) {
+        hash ^= _unknownFields.GetHashCode();
+      }
+      return hash;
+    }
+
+    [global::System.Diagnostics.DebuggerNonUserCodeAttribute]
+    [global::System.CodeDom.Compiler.GeneratedCode("protoc", null)]
+    public override string ToString() {
+      return pb::JsonFormatter.ToDiagnosticString(this);
+    }
+
+    [global::System.Diagnostics.DebuggerNonUserCodeAttribute]
+    [global::System.CodeDom.Compiler.GeneratedCode("protoc", null)]
+    public void WriteTo(pb::CodedOutputStream output) {
+    #if !GOOGLE_PROTOBUF_REFSTRUCT_COMPATIBILITY_MODE
+      output.WriteRawMessage(this);
+    #else
+      wav1_.WriteTo(output, _repeated_wav1_codec);
+      wav2_.WriteTo(output, _repeated_wav2_codec);
+      wav3_.WriteTo(output, _repeated_wav3_codec);
+      wav1Diff_.WriteTo(output, _repeated_wav1Diff_codec);
+      if (_unknownFields != null) {
+        _unknownFields.WriteTo(output);
+      }
+    #endif
+    }
+
+    #if !GOOGLE_PROTOBUF_REFSTRUCT_COMPATIBILITY_MODE
+    [global::System.Diagnostics.DebuggerNonUserCodeAttribute]
+    [global::System.CodeDom.Compiler.GeneratedCode("protoc", null)]
+    void pb::IBufferMessage.InternalWriteTo(ref pb::WriteContext output) {
+      wav1_.WriteTo(ref output, _repeated_wav1_codec);
+      wav2_.WriteTo(ref output, _repeated_wav2_codec);
+      wav3_.WriteTo(ref output, _repeated_wav3_codec);
+      wav1Diff_.WriteTo(ref output, _repeated_wav1Diff_codec);
+      if (_unknownFields != null) {
+        _unknownFields.WriteTo(ref output);
+      }
+    }
+    #endif
+
+    [global::System.Diagnostics.DebuggerNonUserCodeAttribute]
+    [global::System.CodeDom.Compiler.GeneratedCode("protoc", null)]
+    public int CalculateSize() {
+      int size = 0;
+      size += wav1_.CalculateSize(_repeated_wav1_codec);
+      size += wav2_.CalculateSize(_repeated_wav2_codec);
+      size += wav3_.CalculateSize(_repeated_wav3_codec);
+      size += wav1Diff_.CalculateSize(_repeated_wav1Diff_codec);
+      if (_unknownFields != null) {
+        size += _unknownFields.CalculateSize();
+      }
+      return size;
+    }
+
+    [global::System.Diagnostics.DebuggerNonUserCodeAttribute]
+    [global::System.CodeDom.Compiler.GeneratedCode("protoc", null)]
+    public void MergeFrom(WaveForm other) {
+      if (other == null) {
+        return;
+      }
+      wav1_.Add(other.wav1_);
+      wav2_.Add(other.wav2_);
+      wav3_.Add(other.wav3_);
+      wav1Diff_.Add(other.wav1Diff_);
+      _unknownFields = pb::UnknownFieldSet.MergeFrom(_unknownFields, other._unknownFields);
+    }
+
+    [global::System.Diagnostics.DebuggerNonUserCodeAttribute]
+    [global::System.CodeDom.Compiler.GeneratedCode("protoc", null)]
+    public void MergeFrom(pb::CodedInputStream input) {
+    #if !GOOGLE_PROTOBUF_REFSTRUCT_COMPATIBILITY_MODE
+      input.ReadRawMessage(this);
+    #else
+      uint tag;
+      while ((tag = input.ReadTag()) != 0) {
+      if ((tag & 7) == 4) {
+        // Abort on any end group tag.
+        return;
+      }
+      switch(tag) {
+          default:
+            _unknownFields = pb::UnknownFieldSet.MergeFieldFrom(_unknownFields, input);
+            break;
+          case 10:
+          case 13: {
+            wav1_.AddEntriesFrom(input, _repeated_wav1_codec);
+            break;
+          }
+          case 18:
+          case 21: {
+            wav2_.AddEntriesFrom(input, _repeated_wav2_codec);
+            break;
+          }
+          case 26:
+          case 29: {
+            wav3_.AddEntriesFrom(input, _repeated_wav3_codec);
+            break;
+          }
+          case 34:
+          case 37: {
+            wav1Diff_.AddEntriesFrom(input, _repeated_wav1Diff_codec);
+            break;
+          }
+        }
+      }
+    #endif
+    }
+
+    #if !GOOGLE_PROTOBUF_REFSTRUCT_COMPATIBILITY_MODE
+    [global::System.Diagnostics.DebuggerNonUserCodeAttribute]
+    [global::System.CodeDom.Compiler.GeneratedCode("protoc", null)]
+    void pb::IBufferMessage.InternalMergeFrom(ref pb::ParseContext input) {
+      uint tag;
+      while ((tag = input.ReadTag()) != 0) {
+      if ((tag & 7) == 4) {
+        // Abort on any end group tag.
+        return;
+      }
+      switch(tag) {
+          default:
+            _unknownFields = pb::UnknownFieldSet.MergeFieldFrom(_unknownFields, ref input);
+            break;
+          case 10:
+          case 13: {
+            wav1_.AddEntriesFrom(ref input, _repeated_wav1_codec);
+            break;
+          }
+          case 18:
+          case 21: {
+            wav2_.AddEntriesFrom(ref input, _repeated_wav2_codec);
+            break;
+          }
+          case 26:
+          case 29: {
+            wav3_.AddEntriesFrom(ref input, _repeated_wav3_codec);
+            break;
+          }
+          case 34:
+          case 37: {
+            wav1Diff_.AddEntriesFrom(ref input, _repeated_wav1Diff_codec);
+            break;
+          }
+        }
+      }
+    }
+    #endif
+
+  }
+
+  [global::System.Diagnostics.DebuggerDisplayAttribute("{ToString(),nq}")]
   public sealed partial class Audiolink_Data : pb::IMessage<Audiolink_Data>
   #if !GOOGLE_PROTOBUF_REFSTRUCT_COMPATIBILITY_MODE
       , pb::IBufferMessage
@@ -1514,7 +1803,7 @@ namespace PROTO {
     [global::System.Diagnostics.DebuggerNonUserCodeAttribute]
     [global::System.CodeDom.Compiler.GeneratedCode("protoc", null)]
     public static pbr::MessageDescriptor Descriptor {
-      get { return global::PROTO.AudiolinkDataReflection.Descriptor.MessageTypes[5]; }
+      get { return global::PROTO.AudiolinkDataReflection.Descriptor.MessageTypes[6]; }
     }
 
     [global::System.Diagnostics.DebuggerNonUserCodeAttribute]
@@ -1538,6 +1827,7 @@ namespace PROTO {
       themeColors_ = other.themeColors_ != null ? other.themeColors_.Clone() : null;
       dft_ = other.dft_ != null ? other.dft_.Clone() : null;
       filteredAudiolink_ = other.filteredAudiolink_ != null ? other.filteredAudiolink_.Clone() : null;
+      waveform_ = other.waveform_ != null ? other.waveform_.Clone() : null;
       _unknownFields = pb::UnknownFieldSet.Clone(other._unknownFields);
     }
 
@@ -1595,6 +1885,18 @@ namespace PROTO {
       }
     }
 
+    /// <summary>Field number for the "waveform" field.</summary>
+    public const int WaveformFieldNumber = 5;
+    private global::PROTO.WaveForm waveform_;
+    [global::System.Diagnostics.DebuggerNonUserCodeAttribute]
+    [global::System.CodeDom.Compiler.GeneratedCode("protoc", null)]
+    public global::PROTO.WaveForm Waveform {
+      get { return waveform_; }
+      set {
+        waveform_ = value;
+      }
+    }
+
     [global::System.Diagnostics.DebuggerNonUserCodeAttribute]
     [global::System.CodeDom.Compiler.GeneratedCode("protoc", null)]
     public override bool Equals(object other) {
@@ -1614,6 +1916,7 @@ namespace PROTO {
       if (!object.Equals(ThemeColors, other.ThemeColors)) return false;
       if (!object.Equals(Dft, other.Dft)) return false;
       if (!object.Equals(FilteredAudiolink, other.FilteredAudiolink)) return false;
+      if (!object.Equals(Waveform, other.Waveform)) return false;
       return Equals(_unknownFields, other._unknownFields);
     }
 
@@ -1625,6 +1928,7 @@ namespace PROTO {
       if (themeColors_ != null) hash ^= ThemeColors.GetHashCode();
       if (dft_ != null) hash ^= Dft.GetHashCode();
       if (filteredAudiolink_ != null) hash ^= FilteredAudiolink.GetHashCode();
+      if (waveform_ != null) hash ^= Waveform.GetHashCode();
       if (_unknownFields != null) {
         hash ^= _unknownFields.GetHashCode();
       }
@@ -1659,6 +1963,10 @@ namespace PROTO {
         output.WriteRawTag(34);
         output.WriteMessage(FilteredAudiolink);
       }
+      if (waveform_ != null) {
+        output.WriteRawTag(42);
+        output.WriteMessage(Waveform);
+      }
       if (_unknownFields != null) {
         _unknownFields.WriteTo(output);
       }
@@ -1685,6 +1993,10 @@ namespace PROTO {
         output.WriteRawTag(34);
         output.WriteMessage(FilteredAudiolink);
       }
+      if (waveform_ != null) {
+        output.WriteRawTag(42);
+        output.WriteMessage(Waveform);
+      }
       if (_unknownFields != null) {
         _unknownFields.WriteTo(ref output);
       }
@@ -1706,6 +2018,9 @@ namespace PROTO {
       }
       if (filteredAudiolink_ != null) {
         size += 1 + pb::CodedOutputStream.ComputeMessageSize(FilteredAudiolink);
+      }
+      if (waveform_ != null) {
+        size += 1 + pb::CodedOutputStream.ComputeMessageSize(Waveform);
       }
       if (_unknownFields != null) {
         size += _unknownFields.CalculateSize();
@@ -1742,6 +2057,12 @@ namespace PROTO {
           FilteredAudiolink = new global::PROTO.FilteredAudiolink();
         }
         FilteredAudiolink.MergeFrom(other.FilteredAudiolink);
+      }
+      if (other.waveform_ != null) {
+        if (waveform_ == null) {
+          Waveform = new global::PROTO.WaveForm();
+        }
+        Waveform.MergeFrom(other.Waveform);
       }
       _unknownFields = pb::UnknownFieldSet.MergeFrom(_unknownFields, other._unknownFields);
     }
@@ -1788,6 +2109,13 @@ namespace PROTO {
               FilteredAudiolink = new global::PROTO.FilteredAudiolink();
             }
             input.ReadMessage(FilteredAudiolink);
+            break;
+          }
+          case 42: {
+            if (waveform_ == null) {
+              Waveform = new global::PROTO.WaveForm();
+            }
+            input.ReadMessage(Waveform);
             break;
           }
         }
@@ -1837,6 +2165,13 @@ namespace PROTO {
             input.ReadMessage(FilteredAudiolink);
             break;
           }
+          case 42: {
+            if (waveform_ == null) {
+              Waveform = new global::PROTO.WaveForm();
+            }
+            input.ReadMessage(Waveform);
+            break;
+          }
         }
       }
     }
@@ -1859,7 +2194,7 @@ namespace PROTO {
     [global::System.Diagnostics.DebuggerNonUserCodeAttribute]
     [global::System.CodeDom.Compiler.GeneratedCode("protoc", null)]
     public static pbr::MessageDescriptor Descriptor {
-      get { return global::PROTO.AudiolinkDataReflection.Descriptor.MessageTypes[6]; }
+      get { return global::PROTO.AudiolinkDataReflection.Descriptor.MessageTypes[7]; }
     }
 
     [global::System.Diagnostics.DebuggerNonUserCodeAttribute]

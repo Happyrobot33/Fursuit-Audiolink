@@ -9,6 +9,16 @@ dependencies:
       registry_url: https://components.espressif.com/
       type: service
     version: 3.0.3
+  espressif/zlib:
+    component_hash: 64ea2fd6754c5a05951f1ddb312ac835cd782e68cb5bd9dfcd1c3a107c8fbfbc
+    dependencies:
+    - name: idf
+      require: private
+      version: '>=4.4'
+    source:
+      registry_url: https://components.espressif.com/
+      type: service
+    version: 1.3.2
   idf:
     source:
       type: idf
@@ -30,9 +40,10 @@ dependencies:
     version: 5c10ba0bc0c7bfe918217092d8001989eb3d197c
 direct_dependencies:
 - espressif/led_strip
+- espressif/zlib
 - idf
 - livekit/nanopb
 - nopnop2002/mirf
-manifest_hash: 2d3f4b8397d432c9df48fa61c6b26cd94365a8befba82f9732417d0a545c4e69
+manifest_hash: b78fce0fa08168f22948051ea0df7b1b2532745812e2a0d4f4ac129810747e67
 target: esp32
 version: 3.0.0

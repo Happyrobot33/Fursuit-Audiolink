@@ -4,8 +4,6 @@
 #include "freertos/FreeRTOS.h"
 #include "freertos/queue.h"
 #include "freertos/task.h"
-#include "pb_decode.h"
-#include "audiolink_data.pb.h"
 #include "cobs.h"
 #include "receiver.h"
 #include "shared.h"
@@ -54,28 +52,19 @@ void serial_rx_task(void *arg)
                         ESP_LOGD(TAG, "UART RX byte: 0x%02x", byte);
 
                         if (byte == 0x00) {
-                            /* End-of-frame delimiter: decode and queue Audiolink_Data */
+                            /* End-of-frame delimiter: decode COBS and queue raw bytes */
                             if (enc_len > 0) {
                                 ESP_LOGI(TAG, "Frame received, size=%d bytes", enc_len);
                                 cobs_decode_result decode_result = cobs_decode(dec_buf, sizeof(dec_buf), enc_buf, enc_len);
                                 if (decode_result.status == COBS_DECODE_OK) {
                                     size_t dec_len = decode_result.out_len;
-                                    PROTO_Audiolink_Data audio_data = PROTO_Audiolink_Data_init_zero;
-                                    pb_istream_t stream = pb_istream_from_buffer(dec_buf, dec_len);
-                                    bool status = pb_decode(&stream, PROTO_Audiolink_Data_fields, &audio_data);
-                                    
-                                    if (status) {
-                                        ESP_LOGI(TAG, "Audiolink_Data decoded successfully");
-                                        
-                                        QueuedAudioFrame queued_frame;
-                                        queued_frame.data_len = dec_len;
-                                        memcpy(queued_frame.data, dec_buf, dec_len);
-                                        
-                                        if (xQueueSend(audio_queue, &queued_frame, 0) != pdTRUE) {
-                                            ESP_LOGW(TAG, "Audio queue full, frame dropped");
-                                        }
-                                    } else {
-                                        ESP_LOGW(TAG, "Decode failed: %s", PB_GET_ERROR(&stream));
+
+                                    QueuedAudioFrame queued_frame;
+                                    queued_frame.data_len = dec_len;
+                                    memcpy(queued_frame.data, dec_buf, dec_len);
+
+                                    if (xQueueSend(audio_queue, &queued_frame, 0) != pdTRUE) {
+                                        ESP_LOGW(TAG, "Audio queue full, frame dropped");
                                     }
                                 } else {
                                     ESP_LOGW(TAG, "COBS decode error: status=%d", decode_result.status);

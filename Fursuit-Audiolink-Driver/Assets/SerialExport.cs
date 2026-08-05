@@ -1,6 +1,8 @@
 using System;
 using System.Collections;
 using System.Collections.Generic;
+using System.IO;
+using System.IO.Compression;
 using System.IO.Ports;
 using System.Threading;
 using UnityEngine;
@@ -12,7 +14,11 @@ public class SerialExport : MonoBehaviour
 {
     private SerialPort serialPort;
     public AudioLink audioLink;
+    [SerializeField] private string portName = "COM3";
+    [SerializeField] private int baudRate = 921600;
     public float sendInterval = 0.5f; // Send every 10 seconds
+    public bool useZlibCompression = true;
+    public bool logPacketSizeDifference = true;
     private float timeSinceLastSend = 0f;
     
     // Reusable data structures to avoid allocations
@@ -25,37 +31,38 @@ public class SerialExport : MonoBehaviour
     private object queueLock = new object();
     private bool serialThreadRunning = false;
     private List<byte> receivedDataBuffer = new List<byte>(256);
+    private bool serialConfigDirty = false;
 
     public bool generateNewData = true;
+
+    //feature flags
+    public bool waveformEnabled = true;
+    public bool dftEnabled = true;
+    public bool filteredAudiolinkEnabled = true;
+    public bool themeColorsEnabled = true;
+    public bool historyEnabled = true;
+
+    void OnValidate()
+    {
+        serialConfigDirty = true;
+    }
 
     void Start()
     {
         // Initialize reusable data structures
         audiolink_Data = new Audiolink_Data();
-        
-        // Open serial port COM6 at 115200 baud
-        // serialPort = new SerialPort("COM6", 115200);
-        const int baudRate = 921600;
-        const string portName = "COM3"; // Change this to your desired COM port
-        serialPort = new SerialPort(portName, baudRate);
-        serialPort.Open();
-        //automatically derive the write timeout based on the baud rate and data size
-        int bytesToWrite = 4096 * 2; // Example value, adjust as needed
-        int calculatedTimeoutMs = (int)((bytesToWrite * 10.0 / baudRate) * 1000.0 * 2.0);
-        serialPort.WriteTimeout = calculatedTimeoutMs;
-        Debug.Log("Serial port " + portName + " opened successfully");
-        
-        // Start background serial thread
-        serialThreadRunning = true;
-        serialThread = new Thread(SerialWriteThread);
-        serialThread.Name = "SerialWrite";
-        serialThread.Start();
+
+        InitializeSerialPort();
+        serialConfigDirty = false;
     }
 
     void Update()
     {
-        if (serialPort == null || !serialPort.IsOpen)
-            return;
+        if (serialConfigDirty)
+        {
+            serialConfigDirty = false;
+            ReinitializeSerialPort();
+        }
 
         timeSinceLastSend += Time.deltaTime;
 
@@ -63,6 +70,100 @@ public class SerialExport : MonoBehaviour
         {
             SendAudioData();
             timeSinceLastSend = 0f;
+        }
+    }
+
+    private void InitializeSerialPort()
+    {
+        string trimmedPortName = portName == null ? string.Empty : portName.Trim();
+        if (string.IsNullOrEmpty(trimmedPortName))
+        {
+            Debug.LogWarning("Serial port name is empty. Serial export is disabled until a valid port name is set.");
+            return;
+        }
+
+        string[] availablePorts = SerialPort.GetPortNames();
+        bool portExists = false;
+        for (int i = 0; i < availablePorts.Length; i++)
+        {
+            if (string.Equals(availablePorts[i], trimmedPortName, StringComparison.OrdinalIgnoreCase))
+            {
+                portExists = true;
+                break;
+            }
+        }
+
+        if (!portExists)
+        {
+            Debug.LogWarning($"Serial port {trimmedPortName} was not found. Serial export is disabled. Available ports: {string.Join(", ", availablePorts)}");
+        }
+
+        if (portExists)
+        {
+            try
+            {
+                serialPort = new SerialPort(trimmedPortName, baudRate);
+                serialPort.Open();
+                //automatically derive the write timeout based on the baud rate and data size
+                int bytesToWrite = 4096 * 2; // Example value, adjust as needed
+                int calculatedTimeoutMs = (int)((bytesToWrite * 10.0 / baudRate) * 1000.0 * 2.0);
+                serialPort.WriteTimeout = calculatedTimeoutMs;
+                Debug.Log("Serial port " + trimmedPortName + " opened successfully");
+            }
+            catch (Exception ex)
+            {
+                Debug.LogWarning($"Failed to open serial port {trimmedPortName}. Serial export is disabled. Reason: {ex.Message}");
+                serialPort = null;
+            }
+        }
+
+        if (serialPort != null && serialPort.IsOpen)
+        {
+            // Start background serial thread only when serial output is available
+            serialThreadRunning = true;
+            serialThread = new Thread(SerialWriteThread);
+            serialThread.Name = "SerialWrite";
+            serialThread.Start();
+        }
+    }
+
+    private void ReinitializeSerialPort()
+    {
+        ShutdownSerialPort(false);
+        InitializeSerialPort();
+    }
+
+    private void ShutdownSerialPort(bool logClose)
+    {
+        serialThreadRunning = false;
+        if (serialThread != null && serialThread.IsAlive)
+        {
+            serialThread.Join(1000);
+        }
+
+        serialThread = null;
+
+        bool wasOpen = serialPort != null && serialPort.IsOpen;
+        if (serialPort != null)
+        {
+            try
+            {
+                if (serialPort.IsOpen)
+                {
+                    serialPort.Close();
+                }
+            }
+            catch (Exception ex)
+            {
+                Debug.LogWarning($"Failed closing serial port: {ex.Message}");
+            }
+
+            serialPort = null;
+        }
+
+        if (logClose && wasOpen)
+        {
+            Debug.Log("Serial port closed");
         }
     }
 
@@ -74,55 +175,52 @@ public class SerialExport : MonoBehaviour
             if (audioLink == null || audioLink.audioData == null)
                 return;
 
-            //make sure the lists exist
-            if (audiolink_Data.History == null)
-            {
-                audiolink_Data.History = new History();
-            }
-
-            // Clear previous data (reuse lists)
-            audiolink_Data.History.Bass.Clear();
-            audiolink_Data.History.Lowmid.Clear();
-            audiolink_Data.History.Highmid.Clear();
-            audiolink_Data.History.Treble.Clear();
+            if (themeColorsEnabled)
+                audiolink_Data.ThemeColors = getThemeColors();
+            else
+                audiolink_Data.ThemeColors = null;
             
-            // Collect audio bands for the current frame
-            // Using 4 bands: bass, lowmid, highmid, treble
-            for (int i = 0; i < 4; i++)
-            {
-                var targetList = i switch
-                {
-                    0 => audiolink_Data.History.Bass,
-                    1 => audiolink_Data.History.Lowmid,
-                    2 => audiolink_Data.History.Highmid,
-                    3 => audiolink_Data.History.Treble,
-                    _ => audiolink_Data.History.Bass
-                };
-                
-                for (int j = 0; j < 128; j++)
-                {
-                    uint bandValue = floatToUInt32(getBandHistory(i, j));
-                    targetList.Add(bandValue);
-                }
-            }
+            if (historyEnabled)
+                audiolink_Data.History = getHistory();
+            else
+                audiolink_Data.History = null;
 
-            var themeColors = new ThemeColors();
-            themeColors.ThemeColor0 = getThemeColor(0);
-            themeColors.ThemeColor1 = getThemeColor(1);
-            themeColors.ThemeColor2 = getThemeColor(2);
-            themeColors.ThemeColor3 = getThemeColor(3);
-            audiolink_Data.ThemeColors = themeColors;
+            if (dftEnabled)
+                audiolink_Data.Dft = getDFT();
+            else
+                audiolink_Data.Dft = null;
 
-            audiolink_Data.Dft = getDFT();
-            audiolink_Data.FilteredAudiolink = getFilteredAudiolink();
+            if (filteredAudiolinkEnabled)
+                audiolink_Data.FilteredAudiolink = getFilteredAudiolink();
+            else
+                audiolink_Data.FilteredAudiolink = null;
 
-            byte[] cobsEncoded = COBS.NET.COBS.Encode(audiolink_Data.ToByteArray());
+            if (waveformEnabled)
+                audiolink_Data.Waveform = getWaveform();
+            else
+                audiolink_Data.Waveform = null;
+
+            byte[] protobufPacket = audiolink_Data.ToByteArray();
+            byte[] payloadToFrame = useZlibCompression ? CompressZlibPayload(protobufPacket) : protobufPacket;
+            byte[] cobsEncoded = COBS.NET.COBS.Encode(payloadToFrame);
 
             // Queue the data for serial writing on background thread
             // Add 0x00 frame delimiter at the end
             byte[] dataToSend = new byte[cobsEncoded.Length + 1];
             System.Array.Copy(cobsEncoded, 0, dataToSend, 0, cobsEncoded.Length);
             dataToSend[cobsEncoded.Length] = 0x00;
+
+            if (logPacketSizeDifference)
+            {
+                int originalSize = protobufPacket.Length;
+                int compressedSize = payloadToFrame.Length;
+                int framedSize = dataToSend.Length;
+                float savingsPercent = originalSize > 0
+                    ? (1f - (compressedSize / (float)originalSize)) * 100f
+                    : 0f;
+
+                Debug.Log($"Packet size bytes - protobuf: {originalSize}, zlib: {compressedSize}, savings: {savingsPercent:F1}%, framed: {framedSize}");
+            }
 
             //print the first 10 bytes of the data to send for debugging
             // string debugOutput = "Data to send (first 10 bytes): ";
@@ -134,8 +232,8 @@ public class SerialExport : MonoBehaviour
 
             lock (queueLock)
             {
-                //only add to the que if there is not already 2 items in the queue, to avoid flooding the serial port
-                if (dataQueue.Count < 2)
+                // Only queue if serial output is active; generation still runs even without a serial device.
+                if (serialPort != null && serialPort.IsOpen && dataQueue.Count < 2)
                 {
                     dataQueue.Enqueue(dataToSend);
                 }
@@ -145,6 +243,39 @@ public class SerialExport : MonoBehaviour
         {
             Debug.LogError(ex);
         }
+    }
+
+    PROTO.History getHistory()
+    {
+        PROTO.History history = new PROTO.History();
+        for (int i = 0; i < 4; i++)
+        {
+            var targetList = i switch
+            {
+                0 => history.Bass,
+                1 => history.Lowmid,
+                2 => history.Highmid,
+                3 => history.Treble,
+                _ => history.Bass
+            };
+
+            for (int j = 0; j < 128; j++)
+            {
+                uint bandValue = floatToUInt32(getBandHistory(i, j));
+                targetList.Add(bandValue);
+            }
+        }
+        return history;
+    }
+
+    PROTO.ThemeColors getThemeColors()
+    {
+        PROTO.ThemeColors themeColors = new PROTO.ThemeColors();
+        themeColors.ThemeColor0 = getThemeColor(0);
+        themeColors.ThemeColor1 = getThemeColor(1);
+        themeColors.ThemeColor2 = getThemeColor(2);
+        themeColors.ThemeColor3 = getThemeColor(3);
+        return themeColors;
     }
 
     float getBandHistory(int band, int index)
@@ -271,6 +402,51 @@ public class SerialExport : MonoBehaviour
         }
 
         return filteredAudiolink;
+    }
+
+    PROTO.WaveForm getWaveform()
+    {
+        // Validate audioLink is assigned
+        if (audioLink == null)
+        {
+            Debug.LogWarning("AudioLink is not assigned!");
+            return new PROTO.WaveForm();
+        }
+
+        // Validate audioData exists
+        if (audioLink.audioData == null)
+        {
+            Debug.LogWarning("AudioLink.audioData is not initialized!");
+            return new PROTO.WaveForm();
+        }
+
+        Vector2Int startPos = new Vector2Int(0, 6);
+        //size is 128 x 16
+        const int totalWaveform = 128 * 16;
+        float[] wav1 = new float[totalWaveform];
+        float[] wav2 = new float[totalWaveform];
+        float[] wav3 = new float[totalWaveform];
+        float[] wav1diff = new float[totalWaveform];
+
+        for (int index = 0; index < totalWaveform; index++)
+        {
+            var col = audioLink.audioData[interpretMultiline(startPos, index)];
+            wav1[index] = col.r;
+            wav2[index] = col.g;
+            wav3[index] = col.b;
+            wav1diff[index] = col.a;
+        }
+
+        PROTO.WaveForm waveform = new PROTO.WaveForm()
+        {
+            Wav1 = { wav1 },
+            Wav2 = { wav2 },
+            Wav3 = { wav3 },
+            Wav1Diff = { wav1diff }
+        };
+
+
+        return waveform;
     }
 
     PROTO.DFT getDFT()
@@ -450,18 +626,7 @@ public class SerialExport : MonoBehaviour
 
     void OnDestroy()
     {
-        // Stop the serial thread
-        serialThreadRunning = false;
-        if (serialThread != null && serialThread.IsAlive)
-        {
-            serialThread.Join(1000); // Wait up to 1 second
-        }
-        
-        if (serialPort != null && serialPort.IsOpen)
-        {
-            serialPort.Close();
-            Debug.Log("Serial port closed");
-        }
+        ShutdownSerialPort(true);
     }
 
     private PROTO.Color convertUnityColorToProtoColor(UnityEngine.Color unityColor)
@@ -489,5 +654,21 @@ public class SerialExport : MonoBehaviour
         // Clamp the value to [0, 1] range
         value = Mathf.Clamp01(value);
         return (uint)(value * 255.0f);
+    }
+
+    private byte[] CompressZlibPayload(byte[] input)
+    {
+        if (input == null || input.Length == 0)
+            return input;
+
+        using (var output = new MemoryStream())
+        {
+            using (var compressor = new DeflateStream(output, System.IO.Compression.CompressionLevel.Fastest, true))
+            {
+                compressor.Write(input, 0, input.Length);
+            }
+
+            return output.ToArray();
+        }
     }
 }

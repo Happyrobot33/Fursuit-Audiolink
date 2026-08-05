@@ -15,6 +15,7 @@
   <Project Path="UnityEditor.UI.csproj" />
   <Project Path="Unity.Timeline.Editor.csproj" />
   <Project Path="Unity.VisualStudio.Editor.csproj" />
+  <Project Path="NuGetForUnity.csproj" />
   <Project Path="Unity.TextMeshPro.Editor.csproj" />
   <Project Path="Unity.Rider.Editor.csproj" />
   <Project Path="extOSC.Editor.csproj" />
@@ -24,7 +25,6 @@
   <Project Path="Unity.Burst.CodeGen.csproj" />
   <Project Path="Unity.VSCode.Editor.csproj" />
   <Project Path="Unity.Mathematics.Editor.csproj" />
-  <Project Path="com.happyrobot33.fpscontroller.editor.csproj" />
   <Project Path="E7.ProtobufUnity.Editor.csproj" />
-  <Project Path="NuGetForUnity.csproj" />
+  <Project Path="com.happyrobot33.fpscontroller.editor.csproj" />
 </Solution>

@@ -20,6 +20,7 @@ idf_component_register(
                 esp_event
                 esp_netif
                 nanopb
+                zlib
 )
 
 # 3. Locate Python and build custom targets (Only safe AFTER registration)
