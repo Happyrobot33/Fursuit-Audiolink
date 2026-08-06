@@ -99,16 +99,13 @@ static bool decode_streaming_zlib_payload(const std::vector<uint8_t> &compressed
         return false;
     }
 
-    constexpr size_t kChunkSize = 512;
-    uint8_t chunk[kChunkSize];
-    std::vector<uint8_t> decompressed_data;
-    decompressed_data.reserve(std::min<size_t>(compressed_data.size() * 4 + kChunkSize,
-                                               MAX_AUDIO_DATA_SIZE));
+    static uint8_t decompressed_data[MAX_AUDIO_DATA_SIZE];
+    size_t decompressed_size = 0;
 
     int zlib_result = Z_OK;
     do {
-        zstream.next_out = chunk;
-        zstream.avail_out = sizeof(chunk);
+        zstream.next_out = decompressed_data + decompressed_size;
+        zstream.avail_out = static_cast<uInt>(MAX_AUDIO_DATA_SIZE - decompressed_size);
         zlib_result = inflate(&zstream, Z_NO_FLUSH);
 
         if (zlib_result != Z_OK && zlib_result != Z_STREAM_END) {
@@ -117,22 +114,20 @@ static bool decode_streaming_zlib_payload(const std::vector<uint8_t> &compressed
             return false;
         }
 
-        size_t produced = sizeof(chunk) - zstream.avail_out;
-        if (produced > 0) {
-            if (decompressed_data.size() + produced > MAX_AUDIO_DATA_SIZE) {
-                ESP_LOGW(TAG, "Decompressed payload exceeds maximum size limit");
-                inflateEnd(&zstream);
-                return false;
-            }
+        size_t produced = MAX_AUDIO_DATA_SIZE - decompressed_size - zstream.avail_out;
+        decompressed_size += produced;
 
-            decompressed_data.insert(decompressed_data.end(), chunk, chunk + produced);
+        if (zlib_result == Z_OK && zstream.avail_out == 0) {
+            ESP_LOGW(TAG, "Decompressed payload exceeds maximum size limit");
+            inflateEnd(&zstream);
+            return false;
         }
     } while (zlib_result != Z_STREAM_END);
 
     inflateEnd(&zstream);
 
-    pb_istream_t pb_stream = pb_istream_from_buffer(decompressed_data.data(),
-                                                    decompressed_data.size());
+    pb_istream_t pb_stream = pb_istream_from_buffer(decompressed_data,
+                                                    decompressed_size);
 
     bool decode_ok = NanoPb::decode<AudiolinkDataConverter>(pb_stream, decoded_audio);
 
@@ -145,7 +140,7 @@ static bool decode_streaming_zlib_payload(const std::vector<uint8_t> &compressed
     }
 
     if (decompressed_size_out) {
-        *decompressed_size_out = decompressed_data.size();
+        *decompressed_size_out = decompressed_size;
     }
 
     return true;
