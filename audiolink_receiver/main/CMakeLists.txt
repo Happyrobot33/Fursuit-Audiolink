@@ -6,7 +6,7 @@ set(GENERATED_C "${CMAKE_CURRENT_BINARY_DIR}/audiolink_data.pb.c")
 
 # 2. Register the component immediately
 idf_component_register(
-    SRCS "hello_world_main.cpp"
+    SRCS "main.cpp"
          "led_controller.cpp"
          "receiver.cpp"
          "nanopb_cpp.cpp"

@@ -14,7 +14,7 @@
   "clangd.arguments": [
     "--background-index",
     "--query-driver=**",
-    "--compile-commands-dir=e:\\Storage\\Personal\\Coding\\Fursuit-Audiolink\\hello_world\\build"
+    "--compile-commands-dir=e:\\Storage\\Personal\\Coding\\Fursuit-Audiolink\\audiolink_receiver\\build"
   ],
   "idf.flashType": "UART"
 }
