@@ -1,4 +1,5 @@
 #include <string.h>
+#include <atomic>
 #include "esp_log.h"
 #include "esp_now.h"
 #include "esp_wifi.h"
@@ -12,7 +13,7 @@
 static const char *TAG = "espnow_sender";
 static const uint8_t BROADCAST_MAC[ESP_NOW_ETH_ALEN] = {0xFF, 0xFF, 0xFF, 0xFF, 0xFF, 0xFF};
 
-static volatile bool send_done = true;
+static std::atomic<uint32_t> send_callbacks{0};
 
 /* Callback for encoding the repeated bytes field */
 typedef struct {
@@ -33,7 +34,9 @@ static bool encode_data_callback(pb_ostream_t *stream, const pb_field_t *field, 
 
 static void on_data_sent(const esp_now_send_info_t *tx_info, esp_now_send_status_t status)
 {
-    send_done = true;
+    (void)tx_info;
+    (void)status;
+    send_callbacks.fetch_add(1, std::memory_order_relaxed);
 }
 
 void espnow_init(void)
@@ -46,7 +49,14 @@ void espnow_init(void)
     peer.ifidx   = WIFI_IF_STA;
     peer.encrypt = false;
     memcpy(peer.peer_addr, BROADCAST_MAC, ESP_NOW_ETH_ALEN);
+    // esp_now_rate_config_t rate_config{};
+    // rate_config.phymode = WIFI_PHY_MODE_11A;
+    // rate_config.rate    = WIFI_PHY_RATE_54M;
+    // rate_config.ersu    = false;
+    // rate_config.dcm     = false;
     ESP_ERROR_CHECK(esp_now_add_peer(&peer));
+    // ESP_ERROR_CHECK(esp_now_set_peer_rate_config(peer.peer_addr, &rate_config));
+    esp_wifi_config_80211_tx_rate(WIFI_IF_STA, WIFI_PHY_RATE_54M);
 }
 
 void espnow_sender_task(void *arg)
@@ -66,6 +76,8 @@ void espnow_sender_task(void *arg)
             
             int packet_index = 0;
             size_t offset = 0;
+            uint32_t frame_send_start = send_callbacks.load(std::memory_order_relaxed);
+            int packets_queued = 0;
 
             while (offset < frame.data_len || packet_index == 0) {
                 PROTO_Sub_Packet sub_pkt = PROTO_Sub_Packet_init_zero;
@@ -93,17 +105,12 @@ void espnow_sender_task(void *arg)
                 
                 if (encode_status) {
                     size_t pkt_len = stream.bytes_written;
-                    
-                    /* Wait for previous send to complete */
-                    while (!send_done) {
-                        vTaskDelay(1);
-                    }
-                    send_done = false;
 
                     esp_err_t err = esp_now_send(BROADCAST_MAC, pkt_buf, pkt_len);
                     if (err != ESP_OK) {
                         ESP_LOGE(TAG, "esp_now_send failed: %s", esp_err_to_name(err));
-                        send_done = true;
+                    } else {
+                        packets_queued++;
                     }
                     
                     ESP_LOGI(TAG, "Sent Sub_Packet %d/%d, chunk_size=%zu, encoded_size=%zu bytes", 
@@ -114,7 +121,6 @@ void espnow_sender_task(void *arg)
                     }
                 } else {
                     ESP_LOGE(TAG, "Failed to encode Sub_Packet: %s", PB_GET_ERROR(&stream));
-                    send_done = true;
                     break;
                 }
 
@@ -122,6 +128,10 @@ void espnow_sender_task(void *arg)
                 if (offset >= frame.data_len) {
                     break;
                 }
+            }
+
+            while ((send_callbacks.load(std::memory_order_relaxed) - frame_send_start) < (uint32_t)packets_queued) {
+                vTaskDelay(1);
             }
         }
     }
