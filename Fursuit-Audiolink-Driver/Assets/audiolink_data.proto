@@ -141,9 +141,9 @@ message GeneralVU {
 }
 
 message ColorChord {
-    repeated float colors = 1 [packed=true];
-    repeated float strip = 2 [packed=true];
-    repeated float lights = 3 [packed=true];
+    repeated Color colors = 1 [packed=true];
+    repeated Color strip = 2 [packed=true];
+    repeated Color lights = 3 [packed=true];
 }
 
 message AutoCorrelator {
