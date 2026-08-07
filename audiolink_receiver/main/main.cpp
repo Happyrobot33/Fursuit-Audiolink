@@ -49,16 +49,23 @@ static void led_update_task(void *arg) {
             }
 
             g_led_controller->clear(g_led_strip);
+            // Previous bass-based rendering path (kept for quick fallback/testing):
             // g_led_controller->map_to_leds(g_led_strip,
-            //                               local_audio_data.dft.mag,
+            //                               local_audio_data.history.bass,
             //                               0,
             //                               LED_STRIP_LED_NUMBERS,
-            //                               local_audio_data.theme_colors.ThemeColor0);
-            g_led_controller->map_to_leds(g_led_strip,
-                                          local_audio_data.history.bass,
-                                          0,
-                                          LED_STRIP_LED_NUMBERS,
-                                          Color{1.0f, 0.0f, 0.0f}); // Red for bass
+            //                               Color{1.0f, 0.0f, 0.0f}); // Red for bass
+            const std::vector<Color> &strip_colors = local_audio_data.colorchord.lights;
+            if (!strip_colors.empty()) {
+                for (int led_index = 0; led_index < LED_STRIP_LED_NUMBERS; ++led_index) {
+                    size_t color_index = (static_cast<size_t>(led_index) * strip_colors.size()) /
+                                         static_cast<size_t>(LED_STRIP_LED_NUMBERS);
+                    if (color_index >= strip_colors.size()) {
+                        color_index = strip_colors.size() - 1;
+                    }
+                    g_led_controller->set_pixel(g_led_strip, led_index, strip_colors[color_index]);
+                }
+            }
             ESP_ERROR_CHECK(led_strip_refresh(g_led_strip));
         }
 
