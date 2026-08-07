@@ -3,10 +3,29 @@ syntax = "proto3";
 //Used to prefix so CPP native code can directly use the message name
 package PROTO;
 
-//TODO: Do this
-//float should be avoided, use uint32 to leverage varint encoding
-//these can be declared remapped to float when used or serializes
-//any cases like this are assumed 0 to 1 range
+//Audiolink feature set support checklist
+/*
+Waveform ✓
+Spectrogram ✓
+4 Band (32 history) ✓
+4 Band (128 history) ✓
+4 Band Filtered ✓
+ColorChord
+Autocorrelator
+Floating Autocorrelator
+VU Meter Left
+VU Meter Left+Right
+Filtered VU meter
+AudioLink FPS
+AudioLink Version Read
+Synced Instance Time
+Chronotensity
+ColorChord Index Colors
+Theme Colors ✓
+UTC Time
+Global Strings
+Media States
+*/
 
 //"Primitive" type
 message Color {
@@ -57,17 +76,134 @@ message WaveForm {
     repeated float wav1diff = 4 [packed=true];
 }
 
+//enum for playback state
+enum PlaybackState {
+    NONE = 0;
+    PLAYING = 1;
+    PAUSED = 2;
+    STOPPED = 3;
+    LOADING = 4;
+    STREAMING = 5;
+    ERROR = 6;
+}
+
+enum LoopOrRandom {
+    NONE = 0;
+    LOOP = 1;
+    LOOP_ONE = 2;
+    RANDOM = 3;
+    RANDOM_AND_LOOP = 4;
+}
+
+message MediaState {
+    //0 to 1
+    float mediaVolume = 1;
+    //0 to 1
+    float mediaTime = 2;
+    PlaybackState mediaPlayback = 3;
+    LoopOrRandom mediaLoop = 4;
+}
+
+message PlayerData {
+    int32 numberOfPlayers = 1;
+    bool isMaster = 2;
+    bool isOwner = 3;
+}
+
+message Intensity {
+    float RMSLeft = 1;
+    float PeakLeft = 2;
+    float RMSRight = 3;
+    float PeakRight = 4;
+}
+
+message Autogain {
+    float asymmetricGain = 1;
+    float symmetricGain = 2;
+}
+
+message GeneralVU {
+    float versionMajor = 1;
+    float versionMinor = 2;
+    float systemFPS = 3;
+    float audioLinkFPS = 4;
+    double msSinceInstanceStart = 5;
+    double msSinceMidnightLocal = 6;
+    double msInNetworkTime = 7;
+    MediaState media_state = 8;
+    PlayerData player_data = 9;
+    Intensity current_intensity = 10;
+    Intensity marker_value = 11;
+    Intensity marker_times = 12;
+    Autogain autogain = 13;
+    double UTCDaysSinceEpoch = 14;
+    double msSinceUTCDayStart = 15;
+}
+
+message ColorChord {
+    repeated float colors = 1 [packed=true];
+    repeated float strip = 2 [packed=true];
+    repeated float lights = 3 [packed=true];
+}
+
+message AutoCorrelator {
+    repeated float autocorrelation = 1 [packed=true];
+    repeated float uncorrelated = 2 [packed=true];
+}
+
+//from audiolink docs
+/*
+0	Motion increases as intensity of band increases. It does not go backwards.
+1	Same as above but uses ALPASS_FILTERAUDIOLINK instead of ALPASS_AUDIOLINK
+2	Motion moves back and forth as a function of intensity.
+3	Same as above but uses ALPASS_FILTERAUDIOLINK instead of ALPASS_AUDIOLINK
+4	Fixed speed increase when the band is dark. Stationary when light.
+5	Same as above but uses ALPASS_FILTERAUDIOLINK instead of ALPASS_AUDIOLINK
+6	Fixed speed increase when the band is dark. Fixed speed decrease when light.
+7	Same as above but uses ALPASS_FILTERAUDIOLINK instead of ALPASS_AUDIOLINK.
+*/
+message ChronotensityBand {
+    float increasing = 1;
+    float filtered_increasing = 2;
+    float bounce = 3;
+    float filtered_bounce = 4;
+    float intensity_pause = 5;
+    float filtered_intensity_pause = 6;
+    float bounce_pause = 7;
+    float filtered_bounce_pause = 8;
+}
+
+message Chronotensity {
+    ChronotensityBand bass = 1;
+    ChronotensityBand lowmid = 2;
+    ChronotensityBand highmid = 3;
+    ChronotensityBand treble = 4;
+}
+
+//each string is 0 to 31 long
+message GlobalStrings {
+    string playerName = 1;
+    string masterName = 2;
+    string customString1 = 3;
+    string customString2 = 4;
+}
+
 message Audiolink_Data {
     History history = 1;
     ThemeColors theme_colors = 2;
     DFT dft = 3;
     FilteredAudiolink filtered_audiolink = 4;
     WaveForm waveform = 5;
+    GeneralVU general_vu = 6;
+    ColorChord colorchord = 7;
+    AutoCorrelator autocorrelator = 8;
+    Chronotensity chronotensity = 9;
+    GlobalStrings global_strings = 10;
 }
 
 message Sub_Packet {
     int32 packet_index = 1;
     int32 packet_count = 3;
     //arbitrary data
-    repeated bytes data = 2;
+    repeated bytes data = 2 [packed=true];
 }
