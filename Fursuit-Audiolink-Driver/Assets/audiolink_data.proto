@@ -78,21 +78,21 @@ message WaveForm {
 
 //enum for playback state
 enum PlaybackState {
-    NONE = 0;
-    PLAYING = 1;
-    PAUSED = 2;
-    STOPPED = 3;
-    LOADING = 4;
-    STREAMING = 5;
-    ERROR = 6;
+    PLAYBACK_STATE_NONE = 0;
+    PLAYBACK_STATE_PLAYING = 1;
+    PLAYBACK_STATE_PAUSED = 2;
+    PLAYBACK_STATE_STOPPED = 3;
+    PLAYBACK_STATE_LOADING = 4;
+    PLAYBACK_STATE_STREAMING = 5;
+    PLAYBACK_STATE_ERROR = 6;
 }
 
 enum LoopOrRandom {
-    NONE = 0;
-    LOOP = 1;
-    LOOP_ONE = 2;
-    RANDOM = 3;
-    RANDOM_AND_LOOP = 4;
+    LOOP_OR_RANDOM_NONE = 0;
+    LOOP_OR_RANDOM_LOOP = 1;
+    LOOP_OR_RANDOM_LOOP_ONE = 2;
+    LOOP_OR_RANDOM_RANDOM = 3;
+    LOOP_OR_RANDOM_RANDOM_AND_LOOP = 4;
 }
 
 message MediaState {
@@ -141,9 +141,10 @@ message GeneralVU {
 }
 
 message ColorChord {
-    repeated Color colors = 1 [packed=true];
-    repeated Color strip = 2 [packed=true];
-    repeated Color lights = 3 [packed=true];
+    repeated Color colors = 1;
+    repeated Color strip = 2;
+    repeated Color lights_internal = 3;
+    repeated Color lights = 4;
 }
 
 message AutoCorrelator {
@@ -205,5 +206,5 @@ message Sub_Packet {
     int32 packet_index = 1;
     int32 packet_count = 3;
     //arbitrary data
-    repeated bytes data = 2 [packed=true];
+    repeated bytes data = 2;
 }

@@ -199,6 +199,8 @@ public class SerialExport : MonoBehaviour
                 audiolink_Data.Waveform = getWaveform();
             else
                 audiolink_Data.Waveform = null;
+            
+            audiolink_Data.Colorchord = GetColorChord();
 
             byte[] protobufPacket = audiolink_Data.ToByteArray();
             byte[] payloadToFrame = useZlibCompression ? CompressZlibPayload(protobufPacket) : protobufPacket;
@@ -499,6 +501,52 @@ public class SerialExport : MonoBehaviour
         int x = startPos.x + (index % width);
         int y = startPos.y + (index / width);
         return getIndexFromXY(x, y);
+    }
+
+    PROTO.ColorChord GetColorChord()
+    {
+        // #define ALPASS_CCCOLORS                 uint2(25,22) //Size: 11, 1
+        Vector2Int colorsStartPos = new Vector2Int(25, 22);
+        int colorsCount = 11;
+        // #define ALPASS_CCSTRIP                  uint2(0,24)  //Size: 128, 1
+        Vector2Int stripStartPos = new Vector2Int(0, 24);
+        int stripCount = 128;
+        // #define ALPASS_CCLIGHTS                 uint2(0,25)  //Size: 128, 2
+        Vector2Int lightsStartPos = new Vector2Int(0, 25);
+        int lightsCount = 128;
+
+        //get the color sets from the data
+        PROTO.Color[] colors = new PROTO.Color[colorsCount];
+        for (int i = 0; i < colorsCount; i++)
+        {
+            colors[i] = convertUnityColorToProtoColor(audioLink.audioData[interpretMultiline(colorsStartPos, i)]);
+        }
+
+        PROTO.Color[] strip = new PROTO.Color[stripCount];
+        for (int i = 0; i < stripCount; i++)
+        {
+            strip[i] = convertUnityColorToProtoColor(audioLink.audioData[interpretMultiline(stripStartPos, i)]);
+        }
+
+        //lights are represented in two discrete chunks in the actual proto
+        //first line is the user facing, second line is internal
+        PROTO.Color[] lights = new PROTO.Color[lightsCount];
+        PROTO.Color[] lightsInternal = new PROTO.Color[lightsCount];
+        for (int i = 0; i < lightsCount; i++)
+        {
+            lights[i] = convertUnityColorToProtoColor(audioLink.audioData[interpretMultiline(lightsStartPos, i)]);
+            lightsInternal[i] = convertUnityColorToProtoColor(audioLink.audioData[interpretMultiline(new Vector2Int(lightsStartPos.x, lightsStartPos.y + 1), i)]);
+        }
+
+        PROTO.ColorChord chord = new PROTO.ColorChord
+        {
+            Colors = { colors },
+            Strip = { strip },
+            Lights = { lights },
+            LightsInternal = { lightsInternal }
+        };
+
+        return chord;
     }
 
     PROTO.Color getThemeColor(int index)
