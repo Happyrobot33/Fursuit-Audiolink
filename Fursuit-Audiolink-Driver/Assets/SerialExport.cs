@@ -383,7 +383,7 @@ public class SerialExport : MonoBehaviour
                     continue;
                 }
 
-                uint bandValue = floatToUInt32(audioLink.audioData[dataIndex].grayscale);
+                float bandValue = audioLink.audioData[dataIndex].grayscale;
 
                 switch (band)
                 {

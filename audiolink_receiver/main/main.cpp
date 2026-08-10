@@ -5,6 +5,8 @@
  */
 #include <cstdio>
 #include <vector>
+//TODO: Figure out how to add this to idf_component.yml without cmake complaining due to esp-idf
+#include "include/magic_enum/magic_enum.hpp"
 #include "freertos/FreeRTOS.h"
 #include "freertos/task.h"
 #include "esp_log.h"
@@ -22,6 +24,157 @@ static uint32_t last_log_time_ms = 0;
 static led_strip_handle_t g_led_strip = nullptr;
 static LEDController *g_led_controller = nullptr;
 
+static constexpr gpio_num_t BOOT_BUTTON_GPIO = GPIO_NUM_0;
+static constexpr TickType_t BOOT_BUTTON_DEBOUNCE_TICKS = pdMS_TO_TICKS(200);
+
+enum class LedMappingMode : uint8_t {
+    Bass = 0,
+    Lowmid,
+    Highmid,
+    Treble,
+    ColorChordStrip,
+    ColorChordLights,
+    Dft,
+    BassFiltered,
+    LowmidFiltered,
+    HighmidFiltered,
+    TrebleFiltered,
+    Count
+};
+
+static LedMappingMode g_mapping_mode = LedMappingMode::Bass;
+static int g_last_button_level = 1;
+static TickType_t g_last_button_change_tick = 0;
+static bool g_button_pressed_latched = false;
+
+static void cycle_mapping_mode() {
+    uint8_t next_mode = static_cast<uint8_t>(g_mapping_mode) + 1;
+    if (next_mode >= static_cast<uint8_t>(LedMappingMode::Count)) {
+        next_mode = 0;
+    }
+    g_mapping_mode = static_cast<LedMappingMode>(next_mode);
+    const auto mode_name = magic_enum::enum_name(g_mapping_mode);
+    ESP_LOGI(TAG,
+             "LED mapping switched to: %.*s",
+             static_cast<int>(mode_name.size()),
+             mode_name.data());
+}
+
+static float clamp01(float value) {
+    if (value < 0.0f) {
+        return 0.0f;
+    }
+    if (value > 1.0f) {
+        return 1.0f;
+    }
+    return value;
+}
+
+static void render_frequency_mapping(const std::vector<float> &frequency_values, const Color &color) {
+    if (!g_led_controller || !g_led_strip || frequency_values.empty()) {
+        return;
+    }
+
+    g_led_controller->map_to_leds(g_led_strip, frequency_values, 0, LED_STRIP_LED_NUMBERS, color);
+}
+
+static void render_color_mapping(const std::vector<Color> &colors) {
+    if (!g_led_controller || !g_led_strip || colors.empty()) {
+        return;
+    }
+
+    const int led_count = LED_STRIP_LED_NUMBERS;
+    const size_t color_count = colors.size();
+    for (int led_index = 0; led_index < led_count; ++led_index) {
+        size_t idx = (static_cast<size_t>(led_index) * color_count) /
+                     static_cast<size_t>(led_count);
+        if (idx >= color_count) {
+            idx = color_count - 1;
+        }
+        const Color &src = colors[idx];
+        g_led_controller->set_pixel(g_led_strip,
+                                    led_index,
+                                    Color{clamp01(src.R), clamp01(src.G), clamp01(src.B)});
+    }
+}
+
+static void render_selected_mapping(const AudiolinkData &audio_data) {
+    switch (g_mapping_mode) {
+        case LedMappingMode::Bass:
+            render_frequency_mapping(audio_data.history.bass, Color{1.0f, 0.0f, 0.0f});
+            break;
+        case LedMappingMode::Lowmid:
+            render_frequency_mapping(audio_data.history.lowmid, Color{1.0f, 0.5f, 0.0f});
+            break;
+        case LedMappingMode::Highmid:
+            render_frequency_mapping(audio_data.history.highmid, Color{0.0f, 1.0f, 0.0f});
+            break;
+        case LedMappingMode::Treble:
+            render_frequency_mapping(audio_data.history.treble, Color{0.0f, 0.5f, 1.0f});
+            break;
+        case LedMappingMode::ColorChordStrip:
+            render_color_mapping(audio_data.colorchord.strip);
+            break;
+        case LedMappingMode::ColorChordLights:
+            render_color_mapping(audio_data.colorchord.lights);
+            break;
+        case LedMappingMode::Dft:
+            render_frequency_mapping(audio_data.dft.mag, Color{0.7f, 0.0f, 1.0f});
+            break;
+        case LedMappingMode::BassFiltered:
+            render_frequency_mapping(audio_data.filtered_audiolink.bass, Color{1.0f, 0.0f, 0.3f});
+            break;
+        case LedMappingMode::LowmidFiltered:
+            render_frequency_mapping(audio_data.filtered_audiolink.lowmid, Color{1.0f, 0.7f, 0.0f});
+            break;
+        case LedMappingMode::HighmidFiltered:
+            render_frequency_mapping(audio_data.filtered_audiolink.highmid, Color{0.0f, 1.0f, 0.3f});
+            break;
+        case LedMappingMode::TrebleFiltered:
+            render_frequency_mapping(audio_data.filtered_audiolink.treble, Color{0.2f, 0.7f, 1.0f});
+            break;
+        default:
+            break;
+    }
+}
+
+static void boot_button_init() {
+    gpio_config_t io_conf = {};
+    io_conf.intr_type = GPIO_INTR_DISABLE;
+    io_conf.mode = GPIO_MODE_INPUT;
+    io_conf.pin_bit_mask = (1ULL << BOOT_BUTTON_GPIO);
+    io_conf.pull_down_en = GPIO_PULLDOWN_DISABLE;
+    io_conf.pull_up_en = GPIO_PULLUP_ENABLE;
+    ESP_ERROR_CHECK(gpio_config(&io_conf));
+
+    g_last_button_level = gpio_get_level(BOOT_BUTTON_GPIO);
+    g_last_button_change_tick = xTaskGetTickCount();
+    g_button_pressed_latched = false;
+    ESP_LOGI(TAG, "BOOT button ready on GPIO %d", static_cast<int>(BOOT_BUTTON_GPIO));
+}
+
+static void poll_boot_button() {
+    int current_level = gpio_get_level(BOOT_BUTTON_GPIO);
+    TickType_t now = xTaskGetTickCount();
+
+    if (current_level != g_last_button_level) {
+        g_last_button_level = current_level;
+        g_last_button_change_tick = now;
+    }
+
+    if ((now - g_last_button_change_tick) < BOOT_BUTTON_DEBOUNCE_TICKS) {
+        return;
+    }
+
+    const bool button_pressed = (current_level == 0);
+    if (button_pressed && !g_button_pressed_latched) {
+        g_button_pressed_latched = true;
+        cycle_mapping_mode();
+    } else if (!button_pressed && g_button_pressed_latched) {
+        g_button_pressed_latched = false;
+    }
+}
+
 static void receiver_process_task(void *arg) {
     while (1) {
         /* Block until callback signals a completed frame, with periodic timeout as safeguard. */
@@ -34,6 +187,8 @@ static void receiver_process_task(void *arg) {
 static void led_update_task(void *arg) {
     while (1) {
         AudiolinkData local_audio_data;
+
+        poll_boot_button();
 
         bool should_update = receiver_take_decoded_frame(local_audio_data, pdMS_TO_TICKS(5));
 
@@ -55,17 +210,7 @@ static void led_update_task(void *arg) {
             //                               0,
             //                               LED_STRIP_LED_NUMBERS,
             //                               Color{1.0f, 0.0f, 0.0f}); // Red for bass
-            const std::vector<Color> &strip_colors = local_audio_data.colorchord.lights;
-            if (!strip_colors.empty()) {
-                for (int led_index = 0; led_index < LED_STRIP_LED_NUMBERS; ++led_index) {
-                    size_t color_index = (static_cast<size_t>(led_index) * strip_colors.size()) /
-                                         static_cast<size_t>(LED_STRIP_LED_NUMBERS);
-                    if (color_index >= strip_colors.size()) {
-                        color_index = strip_colors.size() - 1;
-                    }
-                    g_led_controller->set_pixel(g_led_strip, led_index, strip_colors[color_index]);
-                }
-            }
+            render_selected_mapping(local_audio_data);
             ESP_ERROR_CHECK(led_strip_refresh(g_led_strip));
         }
 
@@ -75,6 +220,7 @@ static void led_update_task(void *arg) {
 
 extern "C" void app_main(void) {
     /* Initialize GPIO and LED strip */
+    boot_button_init();
     gpio_set_drive_capability(LED_STRIP_BLINK_GPIO, GPIO_DRIVE_CAP_3);
     led_strip_handle_t led_strip = led_controller.init();
     g_led_strip = led_strip;
