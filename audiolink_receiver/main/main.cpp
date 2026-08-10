@@ -23,11 +23,15 @@ static led_strip_handle_t g_led_strip = nullptr;
 static LEDController *g_led_controller = nullptr;
 
 static void receiver_process_task(void *arg) {
+
+    while (true) {
+        receiver_test();
+    }
+
     while (1) {
-        /* Block until callback signals a completed frame, with periodic timeout as safeguard. */
-        (void)ulTaskNotifyTake(pdTRUE, pdMS_TO_TICKS(50));
+        (void)ulTaskNotifyTake(pdTRUE, portMAX_DELAY);
+        receiver_rf24_poll();
         receiver_process_pending();
-        vTaskDelay(pdMS_TO_TICKS(1));
     }
 }
 
@@ -93,12 +97,15 @@ extern "C" void app_main(void) {
         ESP_LOGE(TAG, "Failed to create LED update task");
     }
 
+    /* Initialize RF24 receiver before starting receiver task so test loop has hardware ready. */
+    receiver_rf24_init();
+
     /* Run decompress/decode work on CPU0 to keep CPU1 IDLE alive for task watchdog */
     TaskHandle_t receiver_task_handle = nullptr;
     BaseType_t receiver_task_created = xTaskCreatePinnedToCore(
         receiver_process_task,
         "receiver_process_task",
-        6144,
+        8192,
         nullptr,
         2,
         &receiver_task_handle,
@@ -108,10 +115,6 @@ extern "C" void app_main(void) {
     } else {
         receiver_set_process_task_handle(receiver_task_handle);
     }
-
-    /* Initialize WiFi and ESP-NOW */
-    receiver_wifi_init();
-    receiver_espnow_init();
 
     ESP_LOGI(TAG, "Application started - waiting for audio data...");
 

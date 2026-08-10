@@ -1,4 +1,14 @@
 dependencies:
+  RF24:
+    component_hash: 2ee3ce3a34d0437d89cb98cca9b9dd012a5c65654d387f5cda57d5492f2a72ad
+    dependencies:
+    - name: idf
+      version: '>=5.1.0'
+    source:
+      git: git@github.com:Happyrobot33/RF24.git
+      path: .
+      type: git
+    version: b4c984488cd76e6f1dd362f848a58e2541153e41
   idf:
     source:
       type: idf
@@ -11,8 +21,9 @@ dependencies:
       type: service
     version: 0.4.9
 direct_dependencies:
+- RF24
 - idf
 - livekit/nanopb
-manifest_hash: 065e3c9a5565adaf3916692b8c2dcb0c2d9c52262309bd603974a79266ffc08f
+manifest_hash: c64ff562cf5a8ff66df051ab432643373e477bfe333589c24a440c9529db2088
 target: esp32
 version: 3.0.0

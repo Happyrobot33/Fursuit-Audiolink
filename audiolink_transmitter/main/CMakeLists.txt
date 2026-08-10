@@ -4,13 +4,12 @@ set(PROTO_FILE "${PROTO_FOLDER}/audiolink_data.proto")
 set(GENERATED_H "${CMAKE_CURRENT_BINARY_DIR}/audiolink_data.pb.h")
 set(GENERATED_C "${CMAKE_CURRENT_BINARY_DIR}/audiolink_data.pb.c")
 
+FILE(GLOB_RECURSE app_sources ${CMAKE_SOURCE_DIR}/main/*.*)
+list(APPEND app_sources "${GENERATED_C}")
+
 # 2. Register the component immediately
 idf_component_register(
-    SRCS "main.cpp"
-         "sender.cpp"
-         "receiver.cpp"
-         "cobs.cpp"
-         "${GENERATED_C}"
+    SRCS ${app_sources}
     INCLUDE_DIRS "."
                  "${CMAKE_CURRENT_BINARY_DIR}"
     REQUIRES nvs_flash
@@ -18,7 +17,9 @@ idf_component_register(
              esp_netif
              esp_timer
              esp_driver_uart
+             esp_driver_spi
              nanopb
+             RF24
 )
 
 # 3. Locate Python and build custom targets (Only safe AFTER registration)

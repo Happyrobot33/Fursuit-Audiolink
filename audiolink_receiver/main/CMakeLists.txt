@@ -19,6 +19,7 @@ idf_component_register(
                 nvs_flash
                 esp_event
                 esp_netif
+                esp_driver_spi
                 nanopb
                 zlib
 )

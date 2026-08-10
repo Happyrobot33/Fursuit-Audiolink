@@ -1,4 +1,14 @@
 dependencies:
+  RF24:
+    component_hash: 2ee3ce3a34d0437d89cb98cca9b9dd012a5c65654d387f5cda57d5492f2a72ad
+    dependencies:
+    - name: idf
+      version: '>=5.1.0'
+    source:
+      git: git@github.com:Happyrobot33/RF24.git
+      path: .
+      type: git
+    version: b4c984488cd76e6f1dd362f848a58e2541153e41
   espressif/led_strip:
     component_hash: 28621486f77229aaf81c71f5e15d6fbf36c2949cf11094e07090593e659e7639
     dependencies:
@@ -39,11 +49,12 @@ dependencies:
       type: git
     version: 5c10ba0bc0c7bfe918217092d8001989eb3d197c
 direct_dependencies:
+- RF24
 - espressif/led_strip
 - espressif/zlib
 - idf
 - livekit/nanopb
 - nopnop2002/mirf
-manifest_hash: b78fce0fa08168f22948051ea0df7b1b2532745812e2a0d4f4ac129810747e67
+manifest_hash: 778b3c19094c29c62ffe8696c66690ccf85383c46b6210958ca01bb15f6e22b7
 target: esp32
 version: 3.0.0
