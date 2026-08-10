@@ -194,6 +194,8 @@ message Audiolink_Data {
     ThemeColors theme_colors = 2;
     DFT dft = 3;
     FilteredAudiolink filtered_audiolink = 4;
+    //Not sent currently as it utterly packs the data and causes a bunch of packets to be sent
+    //Unclear if anyone will ever use it. Potentially look into higher data rate systems to resolve this
     WaveForm waveform = 5;
     GeneralVU general_vu = 6;
     ColorChord colorchord = 7;
@@ -203,8 +205,21 @@ message Audiolink_Data {
 }
 
 message Sub_Packet {
+    //current packet INSIDE the full packet
     int32 packet_index = 1;
+    //total packets in the full packet
     int32 packet_count = 3;
+    //commented out to explore zh_network instead https://github.com/aZholtikov/zh_network
+    // //UNIMPLEMENTED:
+    // //TODO: Create a NEW project that is purely for retransmitters
+    // //take in esp-now packets with sub_packet definition, add themselves to the retransmitters list, and retransmit them. This will allow for a mesh network of audiolink data to be sent around to help with range and reliability
+    // //current frame number of the full packet. This is incremented and looped around at 2^31-1. This is used to determine if a packet is old or new at the receiver
+    // //IE, if the receiver gets frame number 5, and a retransmitter is delayed and sends out a packet for frame 4, we know its invalid as its behind, so we can just ignore it.
+    // //ANOTHER TODO: Receivers should try to wait until until the last possible moment that all packets could have arrived to decode.
+    // int32 frame_number = 4;
+    // //list of mac addresses (truncated) that have already retransmitted this packet. This is used to prevent infinite loops of retransmission
+    // //this list should also be hardcoded to a limit to prevent growing the sub packet size beyond esp-nows limit. if we hit that count limit, even if we arent in the list, just drop the packet.
+    // repeated int32 retransmitters = 6;
     //arbitrary data
     repeated bytes data = 2;
 }
