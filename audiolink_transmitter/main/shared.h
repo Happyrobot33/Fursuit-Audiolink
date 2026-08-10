@@ -14,7 +14,7 @@
 /* Buffer sizes */
 #define COBS_MAX_ENC        4096 * 2
 #define COBS_MAX_DEC        4000 * 2
-#define SUB_PACKET_DATA_COUNT 32
+#define SUB_PACKET_DATA_COUNT 1024
 
 /* Queue message for passing decoded audio data to sender task */
 typedef struct {
@@ -28,7 +28,7 @@ extern QueueHandle_t audio_queue;
 /* COBS decoding is provided by espp/cobs library */
 
 /* Task function declarations */
-void sender_task(void *arg);
+void espnow_sender_task(void *arg);
 void serial_rx_task(void *arg);
 
 #endif /* SHARED_H */

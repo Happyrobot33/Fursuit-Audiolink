@@ -4,14 +4,14 @@
 #include "audiolink_data.h"
 
 /**
- * Initialize RF24 radio receiver.
+ * Initialize WiFi in STA mode (for ESP-NOW receiver)
  */
-void receiver_rf24_init(void);
+void receiver_wifi_init(void);
 
 /**
- * Poll RF24 for newly received packets and queue complete frames.
+ * Initialize and register ESP-NOW receiver callback
  */
-void receiver_rf24_poll(void);
+void receiver_espnow_init(void);
 
 /**
  * Process completed frames outside the ESP-NOW callback context
@@ -27,5 +27,3 @@ void receiver_set_process_task_handle(TaskHandle_t task_handle);
  * Retrieve one decoded audio frame if available.
  */
 bool receiver_take_decoded_frame(AudiolinkData &out_audio, TickType_t wait_ticks);
-
-void receiver_test(void);

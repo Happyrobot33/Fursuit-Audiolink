@@ -15,7 +15,3 @@ dependencies:
   #   # All dependencies of `main` are public by default.
   #   public: true
   livekit/nanopb: ^0.4.9
-  RF24:
-    git: git@github.com:Happyrobot33/RF24.git
-    # version: esp-idf
-    version: esp-idf

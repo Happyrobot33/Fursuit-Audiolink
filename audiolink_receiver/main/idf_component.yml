@@ -20,7 +20,3 @@ dependencies:
     git: https://github.com/nopnop2002/esp-idf-mirf.git
   livekit/nanopb: ^0.4.9
   espressif/zlib: ^1.3.2
-  RF24:
-    git: git@github.com:Happyrobot33/RF24.git
-    # version: esp-idf
-    version: esp-idf
