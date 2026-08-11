@@ -469,6 +469,9 @@ namespace PROTO {
     /// <summary>Field number for the "ThemeColor0" field.</summary>
     public const int ThemeColor0FieldNumber = 1;
     private global::PROTO.Color themeColor0_;
+    /// <summary>
+    /// ✓
+    /// </summary>
     [global::System.Diagnostics.DebuggerNonUserCodeAttribute]
     [global::System.CodeDom.Compiler.GeneratedCode("protoc", null)]
     public global::PROTO.Color ThemeColor0 {
@@ -481,6 +484,9 @@ namespace PROTO {
     /// <summary>Field number for the "ThemeColor1" field.</summary>
     public const int ThemeColor1FieldNumber = 2;
     private global::PROTO.Color themeColor1_;
+    /// <summary>
+    /// ✓
+    /// </summary>
     [global::System.Diagnostics.DebuggerNonUserCodeAttribute]
     [global::System.CodeDom.Compiler.GeneratedCode("protoc", null)]
     public global::PROTO.Color ThemeColor1 {
@@ -493,6 +499,9 @@ namespace PROTO {
     /// <summary>Field number for the "ThemeColor2" field.</summary>
     public const int ThemeColor2FieldNumber = 3;
     private global::PROTO.Color themeColor2_;
+    /// <summary>
+    /// ✓
+    /// </summary>
     [global::System.Diagnostics.DebuggerNonUserCodeAttribute]
     [global::System.CodeDom.Compiler.GeneratedCode("protoc", null)]
     public global::PROTO.Color ThemeColor2 {
@@ -505,6 +514,9 @@ namespace PROTO {
     /// <summary>Field number for the "ThemeColor3" field.</summary>
     public const int ThemeColor3FieldNumber = 4;
     private global::PROTO.Color themeColor3_;
+    /// <summary>
+    /// ✓
+    /// </summary>
     [global::System.Diagnostics.DebuggerNonUserCodeAttribute]
     [global::System.CodeDom.Compiler.GeneratedCode("protoc", null)]
     public global::PROTO.Color ThemeColor3 {
@@ -816,6 +828,9 @@ namespace PROTO {
     private static readonly pb::FieldCodec<float> _repeated_mag_codec
         = pb::FieldCodec.ForFloat(10);
     private readonly pbc::RepeatedField<float> mag_ = new pbc::RepeatedField<float>();
+    /// <summary>
+    /// ✓
+    /// </summary>
     [global::System.Diagnostics.DebuggerNonUserCodeAttribute]
     [global::System.CodeDom.Compiler.GeneratedCode("protoc", null)]
     public pbc::RepeatedField<float> Mag {
@@ -827,6 +842,9 @@ namespace PROTO {
     private static readonly pb::FieldCodec<float> _repeated_magEQ_codec
         = pb::FieldCodec.ForFloat(18);
     private readonly pbc::RepeatedField<float> magEQ_ = new pbc::RepeatedField<float>();
+    /// <summary>
+    /// ✓
+    /// </summary>
     [global::System.Diagnostics.DebuggerNonUserCodeAttribute]
     [global::System.CodeDom.Compiler.GeneratedCode("protoc", null)]
     public pbc::RepeatedField<float> MagEQ {
@@ -838,6 +856,9 @@ namespace PROTO {
     private static readonly pb::FieldCodec<float> _repeated_magfilt_codec
         = pb::FieldCodec.ForFloat(26);
     private readonly pbc::RepeatedField<float> magfilt_ = new pbc::RepeatedField<float>();
+    /// <summary>
+    /// ✓
+    /// </summary>
     [global::System.Diagnostics.DebuggerNonUserCodeAttribute]
     [global::System.CodeDom.Compiler.GeneratedCode("protoc", null)]
     public pbc::RepeatedField<float> Magfilt {
@@ -849,6 +870,9 @@ namespace PROTO {
     private static readonly pb::FieldCodec<float> _repeated_magPhase_codec
         = pb::FieldCodec.ForFloat(34);
     private readonly pbc::RepeatedField<float> magPhase_ = new pbc::RepeatedField<float>();
+    /// <summary>
+    /// ✓
+    /// </summary>
     [global::System.Diagnostics.DebuggerNonUserCodeAttribute]
     [global::System.CodeDom.Compiler.GeneratedCode("protoc", null)]
     public pbc::RepeatedField<float> MagPhase {
@@ -1089,6 +1113,9 @@ namespace PROTO {
     private static readonly pb::FieldCodec<float> _repeated_bass_codec
         = pb::FieldCodec.ForFloat(10);
     private readonly pbc::RepeatedField<float> bass_ = new pbc::RepeatedField<float>();
+    /// <summary>
+    /// ✓
+    /// </summary>
     [global::System.Diagnostics.DebuggerNonUserCodeAttribute]
     [global::System.CodeDom.Compiler.GeneratedCode("protoc", null)]
     public pbc::RepeatedField<float> Bass {
@@ -1100,6 +1127,9 @@ namespace PROTO {
     private static readonly pb::FieldCodec<float> _repeated_lowmid_codec
         = pb::FieldCodec.ForFloat(18);
     private readonly pbc::RepeatedField<float> lowmid_ = new pbc::RepeatedField<float>();
+    /// <summary>
+    /// ✓
+    /// </summary>
     [global::System.Diagnostics.DebuggerNonUserCodeAttribute]
     [global::System.CodeDom.Compiler.GeneratedCode("protoc", null)]
     public pbc::RepeatedField<float> Lowmid {
@@ -1111,6 +1141,9 @@ namespace PROTO {
     private static readonly pb::FieldCodec<float> _repeated_highmid_codec
         = pb::FieldCodec.ForFloat(26);
     private readonly pbc::RepeatedField<float> highmid_ = new pbc::RepeatedField<float>();
+    /// <summary>
+    /// ✓
+    /// </summary>
     [global::System.Diagnostics.DebuggerNonUserCodeAttribute]
     [global::System.CodeDom.Compiler.GeneratedCode("protoc", null)]
     public pbc::RepeatedField<float> Highmid {
@@ -1122,6 +1155,9 @@ namespace PROTO {
     private static readonly pb::FieldCodec<float> _repeated_treble_codec
         = pb::FieldCodec.ForFloat(34);
     private readonly pbc::RepeatedField<float> treble_ = new pbc::RepeatedField<float>();
+    /// <summary>
+    /// ✓
+    /// </summary>
     [global::System.Diagnostics.DebuggerNonUserCodeAttribute]
     [global::System.CodeDom.Compiler.GeneratedCode("protoc", null)]
     public pbc::RepeatedField<float> Treble {
@@ -1365,6 +1401,9 @@ namespace PROTO {
     private static readonly pb::FieldCodec<float> _repeated_bass_codec
         = pb::FieldCodec.ForFloat(10);
     private readonly pbc::RepeatedField<float> bass_ = new pbc::RepeatedField<float>();
+    /// <summary>
+    /// ✓
+    /// </summary>
     [global::System.Diagnostics.DebuggerNonUserCodeAttribute]
     [global::System.CodeDom.Compiler.GeneratedCode("protoc", null)]
     public pbc::RepeatedField<float> Bass {
@@ -1376,6 +1415,9 @@ namespace PROTO {
     private static readonly pb::FieldCodec<float> _repeated_lowmid_codec
         = pb::FieldCodec.ForFloat(18);
     private readonly pbc::RepeatedField<float> lowmid_ = new pbc::RepeatedField<float>();
+    /// <summary>
+    /// ✓
+    /// </summary>
     [global::System.Diagnostics.DebuggerNonUserCodeAttribute]
     [global::System.CodeDom.Compiler.GeneratedCode("protoc", null)]
     public pbc::RepeatedField<float> Lowmid {
@@ -1387,6 +1429,9 @@ namespace PROTO {
     private static readonly pb::FieldCodec<float> _repeated_highmid_codec
         = pb::FieldCodec.ForFloat(26);
     private readonly pbc::RepeatedField<float> highmid_ = new pbc::RepeatedField<float>();
+    /// <summary>
+    /// ✓
+    /// </summary>
     [global::System.Diagnostics.DebuggerNonUserCodeAttribute]
     [global::System.CodeDom.Compiler.GeneratedCode("protoc", null)]
     public pbc::RepeatedField<float> Highmid {
@@ -1398,6 +1443,9 @@ namespace PROTO {
     private static readonly pb::FieldCodec<float> _repeated_treble_codec
         = pb::FieldCodec.ForFloat(34);
     private readonly pbc::RepeatedField<float> treble_ = new pbc::RepeatedField<float>();
+    /// <summary>
+    /// ✓
+    /// </summary>
     [global::System.Diagnostics.DebuggerNonUserCodeAttribute]
     [global::System.CodeDom.Compiler.GeneratedCode("protoc", null)]
     public pbc::RepeatedField<float> Treble {
@@ -3824,6 +3872,9 @@ namespace PROTO {
     private static readonly pb::FieldCodec<global::PROTO.Color> _repeated_colors_codec
         = pb::FieldCodec.ForMessage(10, global::PROTO.Color.Parser);
     private readonly pbc::RepeatedField<global::PROTO.Color> colors_ = new pbc::RepeatedField<global::PROTO.Color>();
+    /// <summary>
+    /// ✓
+    /// </summary>
     [global::System.Diagnostics.DebuggerNonUserCodeAttribute]
     [global::System.CodeDom.Compiler.GeneratedCode("protoc", null)]
     public pbc::RepeatedField<global::PROTO.Color> Colors {
@@ -3835,6 +3886,9 @@ namespace PROTO {
     private static readonly pb::FieldCodec<global::PROTO.Color> _repeated_strip_codec
         = pb::FieldCodec.ForMessage(18, global::PROTO.Color.Parser);
     private readonly pbc::RepeatedField<global::PROTO.Color> strip_ = new pbc::RepeatedField<global::PROTO.Color>();
+    /// <summary>
+    /// ✓
+    /// </summary>
     [global::System.Diagnostics.DebuggerNonUserCodeAttribute]
     [global::System.CodeDom.Compiler.GeneratedCode("protoc", null)]
     public pbc::RepeatedField<global::PROTO.Color> Strip {
@@ -3846,6 +3900,9 @@ namespace PROTO {
     private static readonly pb::FieldCodec<global::PROTO.Color> _repeated_lightsInternal_codec
         = pb::FieldCodec.ForMessage(26, global::PROTO.Color.Parser);
     private readonly pbc::RepeatedField<global::PROTO.Color> lightsInternal_ = new pbc::RepeatedField<global::PROTO.Color>();
+    /// <summary>
+    /// ✓
+    /// </summary>
     [global::System.Diagnostics.DebuggerNonUserCodeAttribute]
     [global::System.CodeDom.Compiler.GeneratedCode("protoc", null)]
     public pbc::RepeatedField<global::PROTO.Color> LightsInternal {
@@ -3857,6 +3914,9 @@ namespace PROTO {
     private static readonly pb::FieldCodec<global::PROTO.Color> _repeated_lights_codec
         = pb::FieldCodec.ForMessage(34, global::PROTO.Color.Parser);
     private readonly pbc::RepeatedField<global::PROTO.Color> lights_ = new pbc::RepeatedField<global::PROTO.Color>();
+    /// <summary>
+    /// ✓
+    /// </summary>
     [global::System.Diagnostics.DebuggerNonUserCodeAttribute]
     [global::System.CodeDom.Compiler.GeneratedCode("protoc", null)]
     public pbc::RepeatedField<global::PROTO.Color> Lights {
@@ -5435,6 +5495,9 @@ namespace PROTO {
     /// <summary>Field number for the "history" field.</summary>
     public const int HistoryFieldNumber = 1;
     private global::PROTO.History history_;
+    /// <summary>
+    /// ✓
+    /// </summary>
     [global::System.Diagnostics.DebuggerNonUserCodeAttribute]
     [global::System.CodeDom.Compiler.GeneratedCode("protoc", null)]
     public global::PROTO.History History {
@@ -5447,6 +5510,9 @@ namespace PROTO {
     /// <summary>Field number for the "theme_colors" field.</summary>
     public const int ThemeColorsFieldNumber = 2;
     private global::PROTO.ThemeColors themeColors_;
+    /// <summary>
+    /// ✓
+    /// </summary>
     [global::System.Diagnostics.DebuggerNonUserCodeAttribute]
     [global::System.CodeDom.Compiler.GeneratedCode("protoc", null)]
     public global::PROTO.ThemeColors ThemeColors {
@@ -5459,6 +5525,9 @@ namespace PROTO {
     /// <summary>Field number for the "dft" field.</summary>
     public const int DftFieldNumber = 3;
     private global::PROTO.DFT dft_;
+    /// <summary>
+    /// ✓
+    /// </summary>
     [global::System.Diagnostics.DebuggerNonUserCodeAttribute]
     [global::System.CodeDom.Compiler.GeneratedCode("protoc", null)]
     public global::PROTO.DFT Dft {
@@ -5471,6 +5540,9 @@ namespace PROTO {
     /// <summary>Field number for the "filtered_audiolink" field.</summary>
     public const int FilteredAudiolinkFieldNumber = 4;
     private global::PROTO.FilteredAudiolink filteredAudiolink_;
+    /// <summary>
+    /// ✓
+    /// </summary>
     [global::System.Diagnostics.DebuggerNonUserCodeAttribute]
     [global::System.CodeDom.Compiler.GeneratedCode("protoc", null)]
     public global::PROTO.FilteredAudiolink FilteredAudiolink {
@@ -5483,6 +5555,10 @@ namespace PROTO {
     /// <summary>Field number for the "waveform" field.</summary>
     public const int WaveformFieldNumber = 5;
     private global::PROTO.WaveForm waveform_;
+    /// <summary>
+    ///Not sent currently as it utterly packs the data and causes a bunch of packets to be sent
+    ///Unclear if anyone will ever use it. Potentially look into higher data rate systems to resolve this
+    /// </summary>
     [global::System.Diagnostics.DebuggerNonUserCodeAttribute]
     [global::System.CodeDom.Compiler.GeneratedCode("protoc", null)]
     public global::PROTO.WaveForm Waveform {
@@ -5507,6 +5583,9 @@ namespace PROTO {
     /// <summary>Field number for the "colorchord" field.</summary>
     public const int ColorchordFieldNumber = 7;
     private global::PROTO.ColorChord colorchord_;
+    /// <summary>
+    /// ✓
+    /// </summary>
     [global::System.Diagnostics.DebuggerNonUserCodeAttribute]
     [global::System.CodeDom.Compiler.GeneratedCode("protoc", null)]
     public global::PROTO.ColorChord Colorchord {
@@ -6049,6 +6128,9 @@ namespace PROTO {
     /// <summary>Field number for the "packet_index" field.</summary>
     public const int PacketIndexFieldNumber = 1;
     private int packetIndex_;
+    /// <summary>
+    ///current packet INSIDE the full packet
+    /// </summary>
     [global::System.Diagnostics.DebuggerNonUserCodeAttribute]
     [global::System.CodeDom.Compiler.GeneratedCode("protoc", null)]
     public int PacketIndex {
@@ -6061,6 +6143,9 @@ namespace PROTO {
     /// <summary>Field number for the "packet_count" field.</summary>
     public const int PacketCountFieldNumber = 3;
     private int packetCount_;
+    /// <summary>
+    ///total packets in the full packet
+    /// </summary>
     [global::System.Diagnostics.DebuggerNonUserCodeAttribute]
     [global::System.CodeDom.Compiler.GeneratedCode("protoc", null)]
     public int PacketCount {
@@ -6076,6 +6161,17 @@ namespace PROTO {
         = pb::FieldCodec.ForBytes(18);
     private readonly pbc::RepeatedField<pb::ByteString> data_ = new pbc::RepeatedField<pb::ByteString>();
     /// <summary>
+    ///commented out to explore zh_network instead https://github.com/aZholtikov/zh_network
+    /// //UNIMPLEMENTED:
+    /// //TODO: Create a NEW project that is purely for retransmitters
+    /// //take in esp-now packets with sub_packet definition, add themselves to the retransmitters list, and retransmit them. This will allow for a mesh network of audiolink data to be sent around to help with range and reliability
+    /// //current frame number of the full packet. This is incremented and looped around at 2^31-1. This is used to determine if a packet is old or new at the receiver
+    /// //IE, if the receiver gets frame number 5, and a retransmitter is delayed and sends out a packet for frame 4, we know its invalid as its behind, so we can just ignore it.
+    /// //ANOTHER TODO: Receivers should try to wait until until the last possible moment that all packets could have arrived to decode.
+    /// int32 frame_number = 4;
+    /// //list of mac addresses (truncated) that have already retransmitted this packet. This is used to prevent infinite loops of retransmission
+    /// //this list should also be hardcoded to a limit to prevent growing the sub packet size beyond esp-nows limit. if we hit that count limit, even if we arent in the list, just drop the packet.
+    /// repeated int32 retransmitters = 6;
     ///arbitrary data
     /// </summary>
     [global::System.Diagnostics.DebuggerNonUserCodeAttribute]

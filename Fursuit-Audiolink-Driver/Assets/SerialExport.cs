@@ -4,8 +4,10 @@ using System.Collections.Generic;
 using System.IO;
 using System.IO.Compression;
 using System.IO.Ports;
+using System.Text;
 using System.Threading;
 using UnityEngine;
+using TMPro;
 using VRCAudioLink;
 using PROTO;
 using Google.Protobuf;
@@ -19,6 +21,8 @@ public class SerialExport : MonoBehaviour
     public float sendInterval = 0.5f; // Send every 10 seconds
     public bool useZlibCompression = true;
     public bool logPacketSizeDifference = true;
+    [SerializeField] private TMP_Text packetSizeText;
+    public bool logReceivedSerialData = false;
     private float timeSinceLastSend = 0f;
     
     // Reusable data structures to avoid allocations
@@ -32,15 +36,7 @@ public class SerialExport : MonoBehaviour
     private bool serialThreadRunning = false;
     private List<byte> receivedDataBuffer = new List<byte>(256);
     private bool serialConfigDirty = false;
-
     public bool generateNewData = true;
-
-    //feature flags
-    public bool waveformEnabled = true;
-    public bool dftEnabled = true;
-    public bool filteredAudiolinkEnabled = true;
-    public bool themeColorsEnabled = true;
-    public bool historyEnabled = true;
 
     void OnValidate()
     {
@@ -175,32 +171,17 @@ public class SerialExport : MonoBehaviour
             if (audioLink == null || audioLink.audioData == null)
                 return;
 
-            if (themeColorsEnabled)
-                audiolink_Data.ThemeColors = getThemeColors();
-            else
-                audiolink_Data.ThemeColors = null;
+            audiolink_Data.ThemeColors = getThemeColors();
+            audiolink_Data.History = getHistory();
+            audiolink_Data.Dft = getDFT();
+            audiolink_Data.FilteredAudiolink = getFilteredAudiolink();
+            audiolink_Data.Colorchord = getColorChord();
+            audiolink_Data.GeneralVu = getGeneralVU();
+            audiolink_Data.GlobalStrings = getGlobalStrings();
             
-            if (historyEnabled)
-                audiolink_Data.History = getHistory();
-            else
-                audiolink_Data.History = null;
-
-            if (dftEnabled)
-                audiolink_Data.Dft = getDFT();
-            else
-                audiolink_Data.Dft = null;
-
-            if (filteredAudiolinkEnabled)
-                audiolink_Data.FilteredAudiolink = getFilteredAudiolink();
-            else
-                audiolink_Data.FilteredAudiolink = null;
-
-            if (waveformEnabled)
-                audiolink_Data.Waveform = getWaveform();
-            else
-                audiolink_Data.Waveform = null;
+            //waveform is hard disabled for now, adds WAY too many bytes at the moment
+            //audiolink_Data.Waveform = getWaveform();
             
-            audiolink_Data.Colorchord = GetColorChord();
 
             byte[] protobufPacket = audiolink_Data.ToByteArray();
             byte[] payloadToFrame = useZlibCompression ? CompressZlibPayload(protobufPacket) : protobufPacket;
@@ -221,7 +202,16 @@ public class SerialExport : MonoBehaviour
                     ? (1f - (compressedSize / (float)originalSize)) * 100f
                     : 0f;
 
-                Debug.Log($"Packet size bytes - protobuf: {originalSize}, zlib: {compressedSize}, savings: {savingsPercent:F1}%, framed: {framedSize}");
+                string packetSizeMessage = $"Packet size bytes - protobuf: {originalSize}, zlib: {compressedSize}, savings: {savingsPercent:F1}%, framed: {framedSize}";
+
+                if (packetSizeText != null)
+                {
+                    packetSizeText.text = packetSizeMessage;
+                }
+                else
+                {
+                    Debug.Log(packetSizeMessage);
+                }
             }
 
             //print the first 10 bytes of the data to send for debugging
@@ -247,6 +237,172 @@ public class SerialExport : MonoBehaviour
         }
     }
 
+    private uint ReadGlobalStringCodePoint(int stringNum, int charIndex)
+    {
+        if (audioLink == null || audioLink.audioData == null)
+            return 0;
+
+        Vector2Int globalStringsPos = new Vector2Int(40, 28);
+        int pixelIndex = charIndex / 4;
+        int dataIndex = getIndexFromXY(globalStringsPos.x + pixelIndex, globalStringsPos.y + stringNum);
+        if (dataIndex < 0)
+            return 0;
+
+        UnityEngine.Color col = audioLink.audioData[dataIndex];
+        float channelValue = charIndex % 4 switch
+        {
+            0 => col.r,
+            1 => col.g,
+            2 => col.b,
+            _ => col.a
+        };
+
+        uint bits = BitConverter.ToUInt32(BitConverter.GetBytes(channelValue), 0);
+        return bits & 0x007FFFFF;
+    }
+
+    private static uint FloatToIntBits24Bit(float value)
+    {
+        return (uint)Math.Round(
+            (value / 1.1754944e-38F) * 8388608F
+        ) & 0x007FFFFF;
+    }
+
+    private string getGlobalString(int num)
+    {
+        Vector2Int globalStringsPos = new Vector2Int(40, 28);
+        Vector4[] vecs = new Vector4[8];
+        for (int i = 0; i < vecs.Length; i++)
+        {
+            int pixelIndex = i;
+            int dataIndex = getIndexFromXY(globalStringsPos.x + pixelIndex, globalStringsPos.y + num);
+            
+            //sample color
+            UnityEngine.Color col = audioLink.audioData[dataIndex];
+            //convert to Vector4
+            vecs[i] = new Vector4(col.r, col.g, col.b, col.a);
+        }
+        System.Text.StringBuilder sb = new System.Text.StringBuilder();
+
+        for (int i = 0; i < vecs.Length; i++)
+        {
+            uint[] codePoints =
+            {
+                FloatToIntBits24Bit(vecs[i].x),
+                FloatToIntBits24Bit(vecs[i].y),
+                FloatToIntBits24Bit(vecs[i].z),
+                FloatToIntBits24Bit(vecs[i].w)
+            };
+
+            for (int j = 0; j < codePoints.Length; j++)
+            {
+                // 0 represents unused/padding entries
+                // if (codePoints[j] == 0)
+                //     return sb.ToString();
+
+                sb.Append(char.ConvertFromUtf32((int)codePoints[j]));
+            }
+        }
+
+        return sb.ToString();
+    }
+
+    //FML NONE OF THIS SHIT BE WORKIN
+    PROTO.GlobalStrings getGlobalStrings()
+    {
+        PROTO.GlobalStrings globalStrings = new GlobalStrings()
+        {
+            PlayerName = getGlobalString(0),
+            MasterName = getGlobalString(1),
+            CustomString1 = getGlobalString(2),
+            CustomString2 = getGlobalString(3)
+        };
+        string test = "";
+        test += getGlobalString(0) + "\n";
+        test += getGlobalString(1) + "\n";
+        test += getGlobalString(2) + "\n";
+        test += getGlobalString(3) + "\n";
+        Debug.Log(test);
+        // Debug.Log(getGlobalString(2)[0]);
+        return globalStrings;
+    }
+
+    PROTO.GeneralVU getGeneralVU()
+    {
+        PROTO.GeneralVU generalVU = new PROTO.GeneralVU();
+        generalVU.MediaState = getMediaState();
+        return generalVU;
+    }
+
+    PROTO.MediaState getMediaState()
+    {
+        Vector2Int mediaStatePos = new Vector2Int(5, 22);
+        //single pixel control
+        var col = audioLink.audioData[getIndexFromXY(mediaStatePos.x, mediaStatePos.y)];
+        float volume = col.r;
+        float time = col.g;
+        PROTO.PlaybackState playbackState;
+        switch (Mathf.RoundToInt(col.b))
+        {
+            case 0:
+                playbackState = PROTO.PlaybackState.None;
+                break;
+            case 1:
+                playbackState = PROTO.PlaybackState.Playing;
+                break;
+            case 2:
+                playbackState = PROTO.PlaybackState.Paused;
+                break;
+            case 3:
+                playbackState = PROTO.PlaybackState.Stopped;
+                break;
+            case 4:
+                playbackState = PROTO.PlaybackState.Loading;
+                break;
+            case 5:
+                playbackState = PROTO.PlaybackState.Streaming;
+                break;
+            case 6:
+                playbackState = PROTO.PlaybackState.Error;
+                break;
+            default:
+                playbackState = PROTO.PlaybackState.None;
+                break;
+        }
+
+        PROTO.LoopOrRandom loopOrRandom;
+        switch (Mathf.RoundToInt(col.a))
+        {
+            case 0:
+                loopOrRandom = PROTO.LoopOrRandom.None;
+                break;
+            case 1:
+                loopOrRandom = PROTO.LoopOrRandom.Loop;
+                break;
+            case 2:
+                loopOrRandom = PROTO.LoopOrRandom.LoopOne;
+                break;
+            case 3:
+                loopOrRandom = PROTO.LoopOrRandom.Random;
+                break;
+            case 4:
+                loopOrRandom = PROTO.LoopOrRandom.RandomAndLoop;
+                break;
+            default:
+                loopOrRandom = PROTO.LoopOrRandom.None;
+                break;
+        }
+
+        PROTO.MediaState mediaState = new PROTO.MediaState
+        {
+            MediaVolume = volume,
+            MediaTime = time,
+            MediaPlayback = playbackState,
+            MediaLoop = loopOrRandom
+        };
+        return mediaState;
+    }
+
     PROTO.History getHistory()
     {
         PROTO.History history = new PROTO.History();
@@ -263,7 +419,7 @@ public class SerialExport : MonoBehaviour
 
             for (int j = 0; j < 128; j++)
             {
-                uint bandValue = floatToUInt32(getBandHistory(i, j));
+                float bandValue = getBandHistory(i, j);
                 targetList.Add(bandValue);
             }
         }
@@ -503,7 +659,7 @@ public class SerialExport : MonoBehaviour
         return getIndexFromXY(x, y);
     }
 
-    PROTO.ColorChord GetColorChord()
+    PROTO.ColorChord getColorChord()
     {
         // #define ALPASS_CCCOLORS                 uint2(25,22) //Size: 11, 1
         Vector2Int colorsStartPos = new Vector2Int(25, 22);
@@ -635,34 +791,36 @@ public class SerialExport : MonoBehaviour
             }
             
             // Read incoming data
-            // try
-            // {
-            //     if (serialPort != null && serialPort.IsOpen && serialPort.BytesToRead > 0)
-            //     {
-            //         byte[] buffer = new byte[Mathf.Min(serialPort.BytesToRead, 4096)];
-            //         int bytesRead = serialPort.Read(buffer, 0, buffer.Length);
-                    
-            //         if (bytesRead > 0)
-            //         {
-            //             lock (queueLock)
-            //             {
-            //                 for (int i = 0; i < bytesRead; i++)
-            //                 {
-            //                     receivedDataBuffer.Add(buffer[i]);
-            //                 }
-                            
-            //                 // Log batched received data
-            //                 string dataString = System.Text.Encoding.ASCII.GetString(receivedDataBuffer.ToArray());
-            //                 Debug.Log($"Received {receivedDataBuffer.Count} bytes: {dataString}");
-            //                 receivedDataBuffer.Clear();
-            //             }
-            //         }
-            //     }
-            // }
-            // catch (System.Exception ex)
-            // {
-            //     Debug.LogError("Serial read error: " + ex.Message);
-            // }
+            if (logReceivedSerialData)
+            {
+                try
+                {
+                    if (serialPort != null && serialPort.IsOpen && serialPort.BytesToRead > 0)
+                    {
+                        byte[] buffer = new byte[Mathf.Min(serialPort.BytesToRead, 4096)];
+                        int bytesRead = serialPort.Read(buffer, 0, buffer.Length);
+                        
+                        if (bytesRead > 0)
+                        {
+                            lock (queueLock)
+                            {
+                                for (int i = 0; i < bytesRead; i++)
+                                {
+                                    receivedDataBuffer.Add(buffer[i]);
+                                }
+                                
+                                string dataString = System.Text.Encoding.ASCII.GetString(receivedDataBuffer.ToArray());
+                                Debug.Log($"Received {receivedDataBuffer.Count} bytes: {dataString}");
+                                receivedDataBuffer.Clear();
+                            }
+                        }
+                    }
+                }
+                catch (System.Exception ex)
+                {
+                    Debug.LogError("Serial read error: " + ex.Message);
+                }
+            }
             
             if (dataToWrite == null)
             {
@@ -681,28 +839,28 @@ public class SerialExport : MonoBehaviour
     {
         return new PROTO.Color
         {
-            R = floatToUInt32(unityColor.r),
-            G = floatToUInt32(unityColor.g),
-            B = floatToUInt32(unityColor.b)
+            R = unityColor.r,
+            G = unityColor.g,
+            B = unityColor.b
         };
     }
 
-    private uint[] floatArrayToUInt32Array(float[] floatArray)
-    {
-        uint[] uintArray = new uint[floatArray.Length];
-        for (int i = 0; i < floatArray.Length; i++)
-        {
-            uintArray[i] = floatToUInt32(floatArray[i]);
-        }
-        return uintArray;
-    }
+    // private uint[] floatArrayToUInt32Array(float[] floatArray)
+    // {
+    //     uint[] uintArray = new uint[floatArray.Length];
+    //     for (int i = 0; i < floatArray.Length; i++)
+    //     {
+    //         uintArray[i] = floatToUInt32(floatArray[i]);
+    //     }
+    //     return uintArray;
+    // }
 
-    private uint floatToUInt32(float value)
-    {
-        // Clamp the value to [0, 1] range
-        value = Mathf.Clamp01(value);
-        return (uint)(value * 255.0f);
-    }
+    // private uint floatToUInt32(float value)
+    // {
+    //     // Clamp the value to [0, 1] range
+    //     value = Mathf.Clamp01(value);
+    //     return (uint)(value * 255.0f);
+    // }
 
     private byte[] CompressZlibPayload(byte[] input)
     {
