@@ -125,72 +125,98 @@ static bool decode_streaming_zlib_payload(const std::vector<uint8_t> &compressed
         return false;
     }
 
-    z_stream zstream = {};
-    zstream.next_in = const_cast<Bytef *>(compressed_data.data());
-    zstream.avail_in = static_cast<uInt>(compressed_data.size());
+    if (compressed_data.size() > MAX_AUDIO_DATA_SIZE) {
+        ESP_LOGW(TAG, "Compressed payload exceeds maximum decode size: compressed=%zu max=%u",
+                 compressed_data.size(),
+                 MAX_AUDIO_DATA_SIZE);
+        return false;
+    }
 
-    if (inflateInit2(&zstream, -15) != Z_OK) {
-        ESP_LOGW(TAG, "Raw DEFLATE inflate initialization failed");
+    const size_t heap_limit = 16 * 1024;
+    size_t free_heap = heap_caps_get_free_size(MALLOC_CAP_8BIT);
+    size_t largest_block = heap_caps_get_largest_free_block(MALLOC_CAP_8BIT);
+    if (largest_block < heap_limit) {
+        ESP_LOGW(TAG,
+                 "Skipping zlib inflate: free_heap=%u largest_block=%u compressed_size=%zu",
+                 static_cast<unsigned>(free_heap),
+                 static_cast<unsigned>(largest_block),
+                 compressed_data.size());
         return false;
     }
 
     static uint8_t decompressed_data[MAX_AUDIO_DATA_SIZE];
-    size_t decompressed_size = 0;
-
     const uint64_t zlib_start_us = now_us();
+    bool decode_ok = false;
+    size_t decompressed_size = 0;
     int zlib_result = Z_OK;
-    do {
-        zstream.next_out = decompressed_data + decompressed_size;
-        zstream.avail_out = static_cast<uInt>(MAX_AUDIO_DATA_SIZE - decompressed_size);
-        zlib_result = inflate(&zstream, Z_SYNC_FLUSH);
 
-        if (zlib_result != Z_OK && zlib_result != Z_STREAM_END) {
-            if (zlib_result == Z_MEM_ERROR) {
-                size_t free_heap = heap_caps_get_free_size(MALLOC_CAP_8BIT);
-                size_t largest_block = heap_caps_get_largest_free_block(MALLOC_CAP_8BIT);
-                ESP_LOGW(TAG,
-                         "ZLIB memory error: free_heap=%u largest_block=%u compressed_size=%zu",
-                         static_cast<unsigned>(free_heap),
-                         static_cast<unsigned>(largest_block),
-                         compressed_data.size());
-            }
-            ESP_LOGW(TAG, "ZLIB decompression failed with code %d", zlib_result);
-            inflateEnd(&zstream);
-            if (zlib_time_us_out) {
-                *zlib_time_us_out = now_us() - zlib_start_us;
-            }
-            if (nanopb_time_us_out) {
-                *nanopb_time_us_out = 0;
-            }
-            return false;
+    for (int window_bits : { -MAX_WBITS, MAX_WBITS }) {
+        z_stream zstream = {};
+        zstream.next_in = const_cast<Bytef *>(compressed_data.data());
+        zstream.avail_in = static_cast<uInt>(compressed_data.size());
+
+        if (inflateInit2(&zstream, window_bits) != Z_OK) {
+            continue;
         }
 
-        size_t produced = MAX_AUDIO_DATA_SIZE - decompressed_size - zstream.avail_out;
-        decompressed_size += produced;
+        decompressed_size = 0;
+        zlib_result = Z_OK;
 
-        if (zlib_result == Z_OK && zstream.avail_out == 0) {
-            ESP_LOGW(TAG, "Decompressed payload exceeds maximum size limit");
+        do {
+            zstream.next_out = decompressed_data + decompressed_size;
+            zstream.avail_out = static_cast<uInt>(MAX_AUDIO_DATA_SIZE - decompressed_size);
+            zlib_result = inflate(&zstream, Z_SYNC_FLUSH);
+
+            if (zlib_result != Z_OK && zlib_result != Z_STREAM_END) {
+                if (zlib_result == Z_MEM_ERROR) {
+                    ESP_LOGW(TAG,
+                             "ZLIB memory error: free_heap=%u largest_block=%u compressed_size=%zu window_bits=%d",
+                             static_cast<unsigned>(free_heap),
+                             static_cast<unsigned>(largest_block),
+                             compressed_data.size(),
+                             window_bits);
+                } else {
+                    ESP_LOGW(TAG, "ZLIB decompression failed with code %d (window_bits=%d)", zlib_result, window_bits);
+                }
+                inflateEnd(&zstream);
+                break;
+            }
+
+            size_t produced = MAX_AUDIO_DATA_SIZE - decompressed_size - zstream.avail_out;
+            decompressed_size += produced;
+
+            if (zlib_result == Z_OK && zstream.avail_out == 0) {
+                ESP_LOGW(TAG, "Decompressed payload exceeds maximum size limit (window_bits=%d)", window_bits);
+                inflateEnd(&zstream);
+                zlib_result = Z_BUF_ERROR;
+                break;
+            }
+        } while (zlib_result != Z_STREAM_END);
+
+        if (zlib_result == Z_STREAM_END) {
             inflateEnd(&zstream);
-            if (zlib_time_us_out) {
-                *zlib_time_us_out = now_us() - zlib_start_us;
-            }
-            if (nanopb_time_us_out) {
-                *nanopb_time_us_out = 0;
-            }
-            return false;
+            break;
         }
-    } while (zlib_result != Z_STREAM_END);
 
-    inflateEnd(&zstream);
+        inflateEnd(&zstream);
+    }
+
     if (zlib_time_us_out) {
         *zlib_time_us_out = now_us() - zlib_start_us;
+    }
+
+    if (zlib_result != Z_STREAM_END || decompressed_size == 0) {
+        if (nanopb_time_us_out) {
+            *nanopb_time_us_out = 0;
+        }
+        return false;
     }
 
     const uint64_t nanopb_start_us = now_us();
     pb_istream_t pb_stream = pb_istream_from_buffer(decompressed_data,
                                                     decompressed_size);
 
-    bool decode_ok = NanoPb::decode<AudiolinkDataConverter>(pb_stream, decoded_audio);
+    decode_ok = NanoPb::decode<AudiolinkDataConverter>(pb_stream, decoded_audio);
     if (nanopb_time_us_out) {
         *nanopb_time_us_out = now_us() - nanopb_start_us;
     }

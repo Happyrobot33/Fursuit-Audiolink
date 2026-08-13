@@ -14,6 +14,8 @@
 #include "led_controller.h"
 #include "receiver.h"
 #include "config.h"
+#include <ctime>
+#include "main.h"
 
 // Global data structures
 LEDController led_controller;
@@ -238,14 +240,39 @@ static void led_update_task(void *arg) {
             //                               0,
             //                               LED_STRIP_LED_NUMBERS,
             //                               Color{1.0f, 0.0f, 0.0f}); // Red for bass
-            render_selected_mapping(local_audio_data);
+            // render_selected_mapping(local_audio_data);
             ESP_ERROR_CHECK(led_strip_refresh(g_led_strip));
+
+            //display a pixel on the LED strip, shifting it using chronotensity increasing value
+            g_led_controller->clear(g_led_strip);
+            ChronotensityLoop(local_audio_data.chronotensity.bass.bounce, Color{1.0f, 0.0f, 0.0f}); // Red for bass
+            ChronotensityLoop(local_audio_data.chronotensity.lowmid.bounce, Color{1.0f, 0.5f, 0.0f}); // Orange for lowmid
+            ChronotensityLoop(local_audio_data.chronotensity.highmid.bounce, Color{0.0f, 1.0f, 0.0f}); // Green for highmid
+            ChronotensityLoop(local_audio_data.chronotensity.treble.bounce, Color{0.0f, 0.5f, 1.0f}); // Blue for treble
+            ESP_ERROR_CHECK(led_strip_refresh(g_led_strip));
+
+            // //print the strings received
+            // ESP_LOGI(TAG, "Test: %f", local_audio_data.general_vu.msSinceInstanceStart);
+
+            // //convert the time to a human readable format
+            // time_t raw_time = static_cast<time_t>(local_audio_data.general_vu.msSinceUTCDayStart / 1000.0);
+            // //add the UTCDaysSinceEpoch to the raw_time
+            // raw_time += static_cast<time_t>(local_audio_data.general_vu.UTCDaysSinceEpoch * 24 * 60 * 60);
+            // struct tm *timeinfo = localtime(&raw_time);
+            // char buffer[80];
+            // strftime(buffer, sizeof(buffer), "%Y-%m-%d %I:%M:%S %p", timeinfo);
+            // ESP_LOGI(TAG, "Local wall clock: %s", buffer);
         }
 
         vTaskDelay(pdMS_TO_TICKS(should_update ? 5 : 15));
     }
 }
 
+void ChronotensityLoop(uint32_t increasing_value, Color color = Color{1.0f, 1.0f, 1.0f})
+{
+    int pixel_index = static_cast<int>(increasing_value / 10000) % LED_STRIP_LED_NUMBERS;
+    g_led_controller->set_pixel(g_led_strip, pixel_index, color);
+}
 extern "C" void app_main(void) {
     /* Initialize GPIO and LED strip */
     boot_button_init();

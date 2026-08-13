@@ -5,19 +5,10 @@ using Unity.Collections;
 
 namespace VRCAudioLink
 {
-#if UDONSHARP
-    using UdonSharp;
-    using VRC.SDKBase;
-    using static VRC.SDKBase.VRCShader;
-
-    [UdonBehaviourSyncMode(BehaviourSyncMode.Manual)]
-    public class AudioLink : UdonSharpBehaviour
-#else
     using static UnityEngine.Shader;
     using UnityEngine.Rendering;
 
     public class AudioLink : MonoBehaviour
-#endif
     {
         const float AUDIOLINK_VERSION_NUMBER = 3.02f;
 
@@ -97,14 +88,7 @@ namespace VRCAudioLink
         public Color customThemeColor3 = new Vector4(0.0f, 1.0f, 0.0f, 1.0f);
 
         [Header("Custom Global Strings")]
-#if UDONSHARP
-        [UdonSynced]
-#endif
         public string customString1;
-
-#if UDONSHARP
-        [UdonSynced]
-#endif
         public string customString2;
 
         [Header("Internal (Do not modify)")]
@@ -129,9 +113,6 @@ namespace VRCAudioLink
 
         private string masterName;
         // Mechanism to provide sync'd instance time to all avatars.
-#if UDONSHARP
-        [UdonSynced]
-#endif
         private double _masterInstanceJoinTime;
         private double _elapsedTime = 0;
         private double _elapsedTimeMSW = 0;
@@ -143,18 +124,10 @@ namespace VRCAudioLink
         private double _FPSTime = 0;
         private int _FPSCount = 0;
 
-#if UDONSHARP
-        private double GetElapsedSecondsSince2019()
-        {
-            return (Networking.GetNetworkDateTime() - new DateTime(2020, 1, 1)).TotalSeconds;
-        }
-        //private double GetElapsedSecondsSinceMidnightUTC() { return (Networking.GetNetworkDateTime() - DateTime.UtcNow.Date ).TotalSeconds; }
-#else
         private double GetElapsedSecondsSince2019()
         {
             return (DateTime.UtcNow - new DateTime(2020, 1, 1)).TotalSeconds;
         }
-#endif
 
         // Fix for AVPro mono game output bug (if running the game with a mono output source like a headset)
         private int _rightChannelTestDelay = 300;
@@ -298,49 +271,6 @@ namespace VRCAudioLink
         void Start()
         {
             audioData2D = new Texture2D(audioRenderTexture.width, audioRenderTexture.height, TextureFormat.RGBAFloat, false);
-#if UDONSHARP
-            {
-                // Handle sync'd time stuff.
-                // OLD NOTES
-                //Originally used GetServerTimeInMilliseconds
-                //Networking.GetServerTimeInMilliseconds will alias to every 49.7 days (2^32ms). GetServerTimeInSeconds also aliases.
-                //We still alias, but TCL suggested using Networking.GetNetworkDateTime.
-                //DateTime currentDate = Networking.GetNetworkDateTime();
-                //UInt64 currentTimeTicks = (UInt64)(currentDate.Ticks/TimeSpan.TicksPerMillisecond);
-                // NEW NOTES
-                //We now just compute delta times per frame.
-
-                double startTime = GetElapsedSecondsSince2019();
-                _networkTimeMS = Networking.GetServerTimeInMilliseconds();
-                if (Networking.IsMaster)
-                {
-                    _masterInstanceJoinTime = startTime;
-                    RequestSerialization();
-                }
-
-                //_networkTimeOfDayUTC = GetElapsedSecondsSinceMidnightUTC();
-                //Debug.Log($"AudioLink _networkTimeOfDayUTC = {_networkTimeOfDayUTC}" );
-                Debug.Log($"AudioLink _networkTimeMS = {_networkTimeMS}");
-                Debug.Log(
-                    $"AudioLink Time Sync Debug: IsMaster: {Networking.IsMaster} startTime: {startTime}"
-                );
-
-                _rightChannelTestCounter = _rightChannelTestDelay;
-
-                // Set localplayer name on start
-                if (Networking.LocalPlayer != null)
-                {
-                    if (VRC.SDKBase.Utilities.IsValid(Networking.LocalPlayer))
-                    {
-                        UpdateGlobalString(_StringLocalPlayer, Networking.LocalPlayer.displayName);
-                    }
-                }
-
-                // Set master name once on start
-                FindAndUpdateMasterName();
-            }
-#endif
-
             UpdateSettings();
             UpdateThemeColors();
             UpdateCustomStrings();
@@ -364,57 +294,12 @@ namespace VRCAudioLink
         // Only happens once per second.
         private void FPSUpdate()
         {
-#if UDONSHARP
-            if (!_hasInitializedTime)
-            {
-                if (_masterInstanceJoinTime > 0.00001)
-                {
-                    //We can now do our time setup.
-                    double Now = GetElapsedSecondsSince2019();
-                    _elapsedTime = Now - _masterInstanceJoinTime;
-                    Debug.Log(
-                        $"AudioLink Time Sync Debug: Received instance time of {_masterInstanceJoinTime} and current time of {Now} delta of {_elapsedTime}"
-                    );
-                    _hasInitializedTime = true;
-                    _FPSTime = _elapsedTime;
-                }
-                else if (_elapsedTime > 10 && Networking.IsMaster)
-                {
-                    //Have we gone more than 10 seconds and we're master?
-                    Debug.Log(
-                        "AudioLink Time Sync Debug: You were master.  But no _masterInstanceJoinTime was provided for 10 seconds.  Resetting instance time."
-                    );
-                    _masterInstanceJoinTime = GetElapsedSecondsSince2019();
-                    RequestSerialization();
-                    _hasInitializedTime = true;
-                    _elapsedTime = 0;
-                    _FPSTime = _elapsedTime;
-                }
-            }
-#endif
-
             audioMaterial.SetVector(
                 _VersionNumberAndFPSProperty,
                 new Vector4(AUDIOLINK_VERSION_NUMBER, 0, _FPSCount, 1)
             );
-#if UDONSHARP
-            audioMaterial.SetVector(
-                _PlayerCountAndData,
-                new Vector4(
-                    VRCPlayerApi.GetPlayerCount(),
-                    Networking.IsMaster ? 1.0f : 0.0f,
-#if UNITY_EDITOR
-                    0.0f,
-#else
-                    Networking.LocalPlayer.isInstanceOwner ? 1.0f : 0.0f,
-#endif
-                    0
-                )
-            );
 
-#else
             audioMaterial.SetVector(_PlayerCountAndData, new Vector4(0, 0, 0, 0));
-#endif
             _FPSCount = 0;
             _FPSTime++;
 
@@ -434,11 +319,7 @@ namespace VRCAudioLink
             }
 
             // Finely adjust our network time estimate if needed.
-#if UDONSHARP
-            int networkTimeMSNow = Networking.GetServerTimeInMilliseconds();
-#else
             int networkTimeMSNow = (int)(Time.time * 1000.0f);
-#endif
             int networkTimeDelta = networkTimeMSNow - _networkTimeMS;
             if (networkTimeDelta > 3000)
             {
@@ -529,19 +410,6 @@ namespace VRCAudioLink
                 audioMaterial.SetFloat(_SourceVolume, audioSource.volume);
                 audioMaterial.SetFloat(_SourceSpatialBlend, audioSource.spatialBlend);
                 audioMaterial.SetVector(_SourcePosition, audioSource.transform.position);
-
-#if UDONSHARP
-                if (Networking.LocalPlayer != null)
-                {
-                    float distanceToSource = Vector3.Distance(
-                        Networking.LocalPlayer
-                            .GetTrackingData(VRCPlayerApi.TrackingDataType.Head)
-                            .position,
-                        audioSource.transform.position
-                    );
-                    audioMaterial.SetFloat(_SourceDistance, distanceToSource);
-                }
-#endif
             }
 
             // As an optimization: when in-game, require others to call these after
@@ -619,77 +487,11 @@ namespace VRCAudioLink
             return (frac / 8388608F) * 1.1754944e-38F;
         }
 
-#if UDONSHARP
-        public override void OnPlayerJoined(VRCPlayerApi player)
-        {
-            if (player != null)
-            {
-                if (VRC.SDKBase.Utilities.IsValid(player) && player.isMaster)
-                {
-                    masterName = player.displayName;
-                    UpdateGlobalString(_StringMasterPlayer, player.displayName);
-                }
-            }
-        }
-
-        public override void OnPlayerLeft(VRCPlayerApi player)
-        {
-            if (player != null)
-            {
-                if (
-                    VRC.SDKBase.Utilities.IsValid(player)
-                    && (player.isMaster || player.displayName == masterName)
-                )
-                {
-                    FindAndUpdateMasterName();
-                }
-            }
-        }
-
-        private void FindAndUpdateMasterName()
-        {
-            VRCPlayerApi[] players = new VRCPlayerApi[VRCPlayerApi.GetPlayerCount()];
-            VRCPlayerApi.GetPlayers(players);
-            foreach (var player in players)
-            {
-                if (player != null)
-                {
-                    if (VRC.SDKBase.Utilities.IsValid(player) && player.isMaster)
-                    {
-                        masterName = player.displayName;
-                        UpdateGlobalString(_StringMasterPlayer, player.displayName);
-                        break;
-                    }
-                }
-            }
-        }
-#endif
-
         public void UpdateCustomStrings()
         {
-#if UDONSHARP
-            if (!Networking.IsOwner(gameObject))
-                Networking.SetOwner(Networking.LocalPlayer, gameObject);
-#endif
-
             UpdateGlobalString(_StringCustom1, customString1);
             UpdateGlobalString(_StringCustom2, customString2);
-
-#if UDONSHARP
-            RequestSerialization();
-#endif
         }
-
-#if UDONSHARP
-        public override void OnDeserialization()
-        {
-            if (!Networking.IsOwner(gameObject))
-            {
-                UpdateGlobalString(_StringCustom1, customString1);
-                UpdateGlobalString(_StringCustom2, customString2);
-            }
-        }
-#endif
 
         private void UpdateGlobalString(int nameID, string input)
         {
@@ -739,25 +541,17 @@ namespace VRCAudioLink
         public void EnableAudioLink()
         {
             audioRenderTexture.updateMode = CustomRenderTextureUpdateMode.Realtime;
-#if UDONSHARP
-            VRCShader.SetGlobalTexture(_AudioTexture, audioRenderTexture);
-#else
             Shader.SetGlobalTexture(
                 _AudioTexture,
                 audioRenderTexture,
                 RenderTextureSubElement.Default
             );
-#endif
         }
 
         public void DisableAudioLink()
         {
             audioRenderTexture.updateMode = CustomRenderTextureUpdateMode.OnDemand;
-#if UDONSHARP
-            VRCShader.SetGlobalTexture(_AudioTexture, null);
-#else
             Shader.SetGlobalTexture(_AudioTexture, null, RenderTextureSubElement.Default);
-#endif
         }
 
         public void EnableReadback()

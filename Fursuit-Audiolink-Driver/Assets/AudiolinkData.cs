@@ -3361,6 +3361,9 @@ namespace PROTO {
 
   }
 
+  /// <summary>
+  ///TODO: Optimize some of these down to uint32's / uint64's?
+  /// </summary>
   [global::System.Diagnostics.DebuggerDisplayAttribute("{ToString(),nq}")]
   public sealed partial class GeneralVU : pb::IMessage<GeneralVU>
   #if !GOOGLE_PROTOBUF_REFSTRUCT_COMPATIBILITY_MODE
@@ -3485,7 +3488,12 @@ namespace PROTO {
     public const int MsSinceInstanceStartFieldNumber = 5;
     private double msSinceInstanceStart_;
     /// <summary>
-    /// ✓
+    ///TODO: Delineate all of these from eachother
+    ///IDEA: Instance start means event start
+    ///  TODO: Implement a way to enter when the event starts for this one. Right now it mirrors midnight local
+    ///Network time indicates since transmitter/encoder boot?
+    ///  sidenote, audiolink already makes it work this way which is cool
+    ///then midnight local stays correct
     /// </summary>
     [global::System.Diagnostics.DebuggerNonUserCodeAttribute]
     [global::System.CodeDom.Compiler.GeneratedCode("protoc", null)]
@@ -3530,7 +3538,7 @@ namespace PROTO {
     public const int MediaStateFieldNumber = 8;
     private global::PROTO.MediaState mediaState_;
     /// <summary>
-    /// ✓
+    ///TODO: Figure out CDJ protocols or such for all of these, would be cool to send track info
     /// </summary>
     [global::System.Diagnostics.DebuggerNonUserCodeAttribute]
     [global::System.CodeDom.Compiler.GeneratedCode("protoc", null)]
@@ -3545,7 +3553,8 @@ namespace PROTO {
     public const int PlayerDataFieldNumber = 9;
     private global::PROTO.PlayerData playerData_;
     /// <summary>
-    /// ✓
+    ///TODO: Send event attendee information for this one
+    ///not sure what to do for is owner and is master. Maybe just drop them to be honest idk
     /// </summary>
     [global::System.Diagnostics.DebuggerNonUserCodeAttribute]
     [global::System.CodeDom.Compiler.GeneratedCode("protoc", null)]
@@ -3635,7 +3644,8 @@ namespace PROTO {
     public const int MsSinceUTCDayStartFieldNumber = 15;
     private double msSinceUTCDayStart_;
     /// <summary>
-    /// ✓
+    ///this may not be correct, need to verify
+    ///appears to be 10 hours behind UTC time. PST based?
     /// </summary>
     [global::System.Diagnostics.DebuggerNonUserCodeAttribute]
     [global::System.CodeDom.Compiler.GeneratedCode("protoc", null)]

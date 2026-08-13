@@ -127,21 +127,32 @@ message Position {
     double lon = 2; // ✓
 }
 
-message GeneralVU {
+message GeneralVU { //TODO: Optimize some of these down to uint32's / uint64's?
     float versionMajor = 1; // ✓
     float versionMinor = 2; // ✓
     float systemFPS = 3; // ✓
     float frameCount = 4; // ✓
+    //TODO: Delineate all of these from eachother
+    //IDEA: Instance start means event start
+    //  TODO: Implement a way to enter when the event starts for this one. Right now it mirrors midnight local
+    //Network time indicates since transmitter/encoder boot?
+    //  sidenote, audiolink already makes it work this way which is cool
+    //then midnight local stays correct
     double msSinceInstanceStart = 5; // ✓
     double msSinceMidnightLocal = 6; // ✓
     double msInNetworkTime = 7; // ✓
+    //TODO: Figure out CDJ protocols or such for all of these, would be cool to send track info
     MediaState media_state = 8; // ✓
+    //TODO: Send event attendee information for this one
+    //not sure what to do for is owner and is master. Maybe just drop them to be honest idk
     PlayerData player_data = 9; // ✓
     Intensity current_intensity = 10; // ✓
     Intensity marker_value = 11; // ✓
     Intensity marker_times = 12; // ✓
     Autogain autogain = 13; // ✓
     double UTCDaysSinceEpoch = 14; // ✓
+    //this may not be correct, need to verify
+    //appears to be 10 hours behind UTC time. PST based?
     double msSinceUTCDayStart = 15; // ✓
     Position position = 16; //Position of the Audiolink AudioSource in worldspace. Using lat lon for some fun opportunities
 }

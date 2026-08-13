@@ -10,7 +10,7 @@
 #define LED_STRIP_RMT_RES_HZ  (10 * 1000 * 1000)
 
 // Buffer for receiving Sub_Packets and reconstructing Audiolink_Data
-#define MAX_SUB_PACKETS 16
-#define MAX_AUDIO_DATA_SIZE 131072
+#define MAX_SUB_PACKETS 20
+#define MAX_AUDIO_DATA_SIZE 46000
 
 static const char *TAG = "audiolink";
