@@ -168,7 +168,7 @@ public class SerialExport : MonoBehaviour
         try
         {
             // Validate audioLink once before the loop
-            if (audioLink == null || audioLink.audioData == null)
+            if (audioLink == null || !audioLink.rawAudioData.IsCreated || audioLink.rawAudioData.Length == 0)
                 return;
 
             audiolink_Data.ThemeColors = getThemeColors();
@@ -239,7 +239,7 @@ public class SerialExport : MonoBehaviour
 
     private uint ReadGlobalStringCodePoint(int stringNum, int charIndex)
     {
-        if (audioLink == null || audioLink.audioData == null)
+        if (audioLink == null || !audioLink.rawAudioData.IsCreated || audioLink.rawAudioData.Length == 0)
             return 0;
 
         Vector2Int globalStringsPos = new Vector2Int(40, 28);
@@ -248,13 +248,13 @@ public class SerialExport : MonoBehaviour
         if (dataIndex < 0)
             return 0;
 
-        UnityEngine.Color col = audioLink.audioData[dataIndex];
+        Vector4 col = audioLink.rawAudioData[dataIndex];
         float channelValue = charIndex % 4 switch
         {
-            0 => col.r,
-            1 => col.g,
-            2 => col.b,
-            _ => col.a
+            0 => col.x,
+            1 => col.y,
+            2 => col.z,
+            _ => col.w
         };
 
         uint bits = BitConverter.ToUInt32(BitConverter.GetBytes(channelValue), 0);
@@ -277,10 +277,8 @@ public class SerialExport : MonoBehaviour
             int pixelIndex = i;
             int dataIndex = getIndexFromXY(globalStringsPos.x + pixelIndex, globalStringsPos.y + num);
             
-            //sample color
-            UnityEngine.Color col = audioLink.audioData[dataIndex];
             //convert to Vector4
-            vecs[i] = new Vector4(col.r, col.g, col.b, col.a);
+            vecs[i] = audioLink.rawAudioData[dataIndex];
         }
         System.Text.StringBuilder sb = new System.Text.StringBuilder();
 
@@ -318,12 +316,14 @@ public class SerialExport : MonoBehaviour
             CustomString2 = getGlobalString(3)
         };
         string test = "";
-        test += getGlobalString(0) + "\n";
-        test += getGlobalString(1) + "\n";
-        test += getGlobalString(2) + "\n";
-        test += getGlobalString(3) + "\n";
-        Debug.Log(test);
-        // Debug.Log(getGlobalString(2)[0]);
+        // test += getGlobalString(0) + "\n";
+        // test += getGlobalString(1) + "\n";
+        // test += getGlobalString(2) + "\n";
+        // test += getGlobalString(3) + "\n";
+        // Debug.Log(test);
+        //interpret global string 2 in hex
+        Debug.Log("Global String 3: " + getGlobalString(3));
+        Debug.Log("Global String 3 Hex: " + BitConverter.ToString(Encoding.UTF8.GetBytes(getGlobalString(3))).Replace("-", " "));
         return globalStrings;
     }
 
@@ -338,7 +338,7 @@ public class SerialExport : MonoBehaviour
     {
         Vector2Int mediaStatePos = new Vector2Int(5, 22);
         //single pixel control
-        var col = audioLink.audioData[getIndexFromXY(mediaStatePos.x, mediaStatePos.y)];
+        var col = RawToColor(audioLink.rawAudioData[getIndexFromXY(mediaStatePos.x, mediaStatePos.y)]);
         float volume = col.r;
         float time = col.g;
         PROTO.PlaybackState playbackState;
@@ -445,10 +445,10 @@ public class SerialExport : MonoBehaviour
             return 0f;
         }
 
-        // Validate audioData exists
-        if (audioLink.audioData == null)
+        // Validate rawAudioData exists
+        if (!audioLink.rawAudioData.IsCreated || audioLink.rawAudioData.Length == 0)
         {
-            Debug.LogWarning("AudioLink.audioData is not initialized!");
+            Debug.LogWarning("AudioLink.rawAudioData is not initialized!");
             return 0f;
         }
 
@@ -456,14 +456,14 @@ public class SerialExport : MonoBehaviour
         int dataIndex = (band * 128) + index;
 
         // Validate index is within bounds
-        if (dataIndex < 0 || dataIndex >= audioLink.audioData.Length)
+        if (dataIndex < 0 || dataIndex >= audioLink.rawAudioData.Length)
         {
-            Debug.LogWarning($"AudioLink data index {dataIndex} out of bounds (length: {audioLink.audioData.Length})");
+            Debug.LogWarning($"AudioLink data index {dataIndex} out of bounds (length: {audioLink.rawAudioData.Length})");
             return 0f;
         }
 
-        float bandValue = audioLink.audioData[dataIndex].grayscale;
-        return bandValue;
+        UnityEngine.Color sampleColor = RawToColor(audioLink.rawAudioData[dataIndex]);
+        return sampleColor.grayscale;
     }
 
     //smoothed bands start at index 3584
@@ -478,10 +478,10 @@ public class SerialExport : MonoBehaviour
             return 0f;
         }
 
-        // Validate audioData exists
-        if (audioLink.audioData == null)
+        // Validate rawAudioData exists
+        if (!audioLink.rawAudioData.IsCreated || audioLink.rawAudioData.Length == 0)
         {
-            Debug.LogWarning("AudioLink.audioData is not initialized!");
+            Debug.LogWarning("AudioLink.rawAudioData is not initialized!");
             return 0f;
         }
 
@@ -495,14 +495,14 @@ public class SerialExport : MonoBehaviour
         int dataIndex = 3584 + (band * 128) + smoothing;
         
         // Validate index is within bounds
-        if (dataIndex < 0 || dataIndex >= audioLink.audioData.Length)
+        if (dataIndex < 0 || dataIndex >= audioLink.rawAudioData.Length)
         {
-            Debug.LogWarning($"AudioLink data index {dataIndex} out of bounds (length: {audioLink.audioData.Length})");
+            Debug.LogWarning($"AudioLink data index {dataIndex} out of bounds (length: {audioLink.rawAudioData.Length})");
             return 0f;
         }
 
-        float bandValue = audioLink.audioData[dataIndex].grayscale;
-        return bandValue;
+        UnityEngine.Color sampleColor = RawToColor(audioLink.rawAudioData[dataIndex]);
+        return sampleColor.grayscale;
     }
 
     PROTO.FilteredAudiolink getFilteredAudiolink()
@@ -514,10 +514,10 @@ public class SerialExport : MonoBehaviour
             return new PROTO.FilteredAudiolink();
         }
 
-        // Validate audioData exists
-        if (audioLink.audioData == null)
+        // Validate rawAudioData exists
+        if (!audioLink.rawAudioData.IsCreated || audioLink.rawAudioData.Length == 0)
         {
-            Debug.LogWarning("AudioLink.audioData is not initialized!");
+            Debug.LogWarning("AudioLink.rawAudioData is not initialized!");
             return new PROTO.FilteredAudiolink();
         }
 
@@ -533,13 +533,13 @@ public class SerialExport : MonoBehaviour
                 int dataIndex = getIndexFromXY(startPos.x + i, startPos.y + band);
 
                 // Validate index is within bounds
-                if (dataIndex < 0 || dataIndex >= audioLink.audioData.Length)
+                if (dataIndex < 0 || dataIndex >= audioLink.rawAudioData.Length)
                 {
-                    Debug.LogWarning($"AudioLink data index {dataIndex} out of bounds (length: {audioLink.audioData.Length})");
+                    Debug.LogWarning($"AudioLink data index {dataIndex} out of bounds (length: {audioLink.rawAudioData.Length})");
                     continue;
                 }
 
-                float bandValue = audioLink.audioData[dataIndex].grayscale;
+                float bandValue = RawToColor(audioLink.rawAudioData[dataIndex]).grayscale;
 
                 switch (band)
                 {
@@ -571,10 +571,10 @@ public class SerialExport : MonoBehaviour
             return new PROTO.WaveForm();
         }
 
-        // Validate audioData exists
-        if (audioLink.audioData == null)
+        // Validate rawAudioData exists
+        if (!audioLink.rawAudioData.IsCreated || audioLink.rawAudioData.Length == 0)
         {
-            Debug.LogWarning("AudioLink.audioData is not initialized!");
+            Debug.LogWarning("AudioLink.rawAudioData is not initialized!");
             return new PROTO.WaveForm();
         }
 
@@ -588,11 +588,11 @@ public class SerialExport : MonoBehaviour
 
         for (int index = 0; index < totalWaveform; index++)
         {
-            var col = audioLink.audioData[interpretMultiline(startPos, index)];
-            wav1[index] = col.r;
-            wav2[index] = col.g;
-            wav3[index] = col.b;
-            wav1diff[index] = col.a;
+            var col = audioLink.rawAudioData[interpretMultiline(startPos, index)];
+            wav1[index] = col.x;
+            wav2[index] = col.y;
+            wav3[index] = col.z;
+            wav1diff[index] = col.w;
         }
 
         PROTO.WaveForm waveform = new PROTO.WaveForm()
@@ -616,10 +616,10 @@ public class SerialExport : MonoBehaviour
             return new PROTO.DFT();
         }
 
-        // Validate audioData exists
-        if (audioLink.audioData == null)
+        // Validate rawAudioData exists
+        if (!audioLink.rawAudioData.IsCreated || audioLink.rawAudioData.Length == 0)
         {
-            Debug.LogWarning("AudioLink.audioData is not initialized!");
+            Debug.LogWarning("AudioLink.rawAudioData is not initialized!");
             return new PROTO.DFT();
         }
 
@@ -633,11 +633,11 @@ public class SerialExport : MonoBehaviour
         float[] magPhase = new float[totalDFT];
         for (int i = 0; i < totalDFT; i++)
         {
-            var col = audioLink.audioData[interpretMultiline(startPos, i)];
-            mag[i] = col.r;
-            magEQ[i] = col.g;
-            magFilt[i] = col.b;
-            magPhase[i] = col.a;
+            var col = audioLink.rawAudioData[interpretMultiline(startPos, i)];
+            mag[i] = col.x;
+            magEQ[i] = col.y;
+            magFilt[i] = col.z;
+            magPhase[i] = col.w;
         }
         PROTO.DFT dft = new PROTO.DFT
         {
@@ -675,13 +675,13 @@ public class SerialExport : MonoBehaviour
         PROTO.Color[] colors = new PROTO.Color[colorsCount];
         for (int i = 0; i < colorsCount; i++)
         {
-            colors[i] = convertUnityColorToProtoColor(audioLink.audioData[interpretMultiline(colorsStartPos, i)]);
+            colors[i] = convertRawVectorToProtoColor(audioLink.rawAudioData[interpretMultiline(colorsStartPos, i)]);
         }
 
         PROTO.Color[] strip = new PROTO.Color[stripCount];
         for (int i = 0; i < stripCount; i++)
         {
-            strip[i] = convertUnityColorToProtoColor(audioLink.audioData[interpretMultiline(stripStartPos, i)]);
+            strip[i] = convertRawVectorToProtoColor(audioLink.rawAudioData[interpretMultiline(stripStartPos, i)]);
         }
 
         //lights are represented in two discrete chunks in the actual proto
@@ -690,8 +690,8 @@ public class SerialExport : MonoBehaviour
         PROTO.Color[] lightsInternal = new PROTO.Color[lightsCount];
         for (int i = 0; i < lightsCount; i++)
         {
-            lights[i] = convertUnityColorToProtoColor(audioLink.audioData[interpretMultiline(lightsStartPos, i)]);
-            lightsInternal[i] = convertUnityColorToProtoColor(audioLink.audioData[interpretMultiline(new Vector2Int(lightsStartPos.x, lightsStartPos.y + 1), i)]);
+            lights[i] = convertRawVectorToProtoColor(audioLink.rawAudioData[interpretMultiline(lightsStartPos, i)]);
+            lightsInternal[i] = convertRawVectorToProtoColor(audioLink.rawAudioData[interpretMultiline(new Vector2Int(lightsStartPos.x, lightsStartPos.y + 1), i)]);
         }
 
         PROTO.ColorChord chord = new PROTO.ColorChord
@@ -721,10 +721,10 @@ public class SerialExport : MonoBehaviour
         }
 
         int dataIndex = getIndexFromXY(index, 23); // Assuming the theme colors are in the first row (y=0)
-        return convertUnityColorToProtoColor(audioLink.audioData[dataIndex]);
+        return convertRawVectorToProtoColor(audioLink.rawAudioData[dataIndex]);
     }
 
-    //helper function to convert from XY coords in the texture to the index in the audioData array
+    //helper function to convert from XY coords in the texture to the index in the rawAudioData array
     int getIndexFromXY(int x, int y)
     {
         // Validate audioLink is assigned
@@ -734,10 +734,10 @@ public class SerialExport : MonoBehaviour
             return -1;
         }
 
-        // Validate audioData exists
-        if (audioLink.audioData == null)
+        // Validate rawAudioData exists
+        if (!audioLink.rawAudioData.IsCreated || audioLink.rawAudioData.Length == 0)
         {
-            Debug.LogWarning("AudioLink.audioData is not initialized!");
+            Debug.LogWarning("AudioLink.rawAudioData is not initialized!");
             return -1;
         }
 
@@ -754,9 +754,9 @@ public class SerialExport : MonoBehaviour
         int index = (y * width) + x;
 
         // Validate index is within bounds
-        if (index < 0 || index >= audioLink.audioData.Length)
+        if (index < 0 || index >= audioLink.rawAudioData.Length)
         {
-            Debug.LogWarning($"Calculated index {index} out of bounds (length: {audioLink.audioData.Length})");
+            Debug.LogWarning($"Calculated index {index} out of bounds (length: {audioLink.rawAudioData.Length})");
             return -1;
         }
 
@@ -835,13 +835,19 @@ public class SerialExport : MonoBehaviour
         ShutdownSerialPort(true);
     }
 
-    private PROTO.Color convertUnityColorToProtoColor(UnityEngine.Color unityColor)
+    private static UnityEngine.Color RawToColor(Vector4 rawColor)
     {
+        return new UnityEngine.Color(rawColor.x, rawColor.y, rawColor.z, rawColor.w);
+    }
+
+    private PROTO.Color convertRawVectorToProtoColor(Vector4 rawColor)
+    {
+        UnityEngine.Color color = RawToColor(rawColor);
         return new PROTO.Color
         {
-            R = unityColor.r,
-            G = unityColor.g,
-            B = unityColor.b
+            R = color.r,
+            G = color.g,
+            B = color.b
         };
     }
 

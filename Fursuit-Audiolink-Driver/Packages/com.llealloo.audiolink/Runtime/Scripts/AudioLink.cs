@@ -1,6 +1,7 @@
 ﻿using UnityEngine;
 using System;
 using VRCAudioLink.Editor;
+using Unity.Collections;
 
 namespace VRCAudioLink
 {
@@ -117,6 +118,7 @@ namespace VRCAudioLink
         public bool audioDataToggle = false;
 
         public Color[] audioData;
+        public NativeArray<Vector4> rawAudioData;
         public Texture2D audioData2D; // Texture2D reference for hacked Blit, may eventually be depreciated
 
         private float[] _spectrumValues = new float[1024];
@@ -295,6 +297,7 @@ namespace VRCAudioLink
 
         void Start()
         {
+            audioData2D = new Texture2D(audioRenderTexture.width, audioRenderTexture.height, TextureFormat.RGBAFloat, false);
 #if UDONSHARP
             {
                 // Handle sync'd time stuff.
@@ -563,6 +566,7 @@ namespace VRCAudioLink
                     false
                 );
                 audioData = audioData2D.GetPixels();
+                rawAudioData = audioData2D.GetPixelData<Vector4>(0);
             }
         }
 

@@ -5204,6 +5204,10 @@ namespace PROTO {
     /// <summary>Field number for the "customString1" field.</summary>
     public const int CustomString1FieldNumber = 3;
     private string customString1_ = "";
+    /// <summary>
+    ///Possibly bsky bot or hashtag data
+    ///Marquee if more than 32 characters
+    /// </summary>
     [global::System.Diagnostics.DebuggerNonUserCodeAttribute]
     [global::System.CodeDom.Compiler.GeneratedCode("protoc", null)]
     public string CustomString1 {

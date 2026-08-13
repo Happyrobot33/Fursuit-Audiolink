@@ -183,10 +183,12 @@ message Chronotensity {
 
 //each string is 0 to 31 long
 message GlobalStrings {
-    string playerName = 1;
-    string masterName = 2;
-    string customString1 = 3;
-    string customString2 = 4;
+    string playerName = 1; // ✓
+    string masterName = 2; // ✓
+    //Possibly bsky bot or hashtag data
+    //Marquee if more than 32 characters
+    string customString1 = 3; // ✓
+    string customString2 = 4; // ✓
 }
 
 message Audiolink_Data {
@@ -201,7 +203,7 @@ message Audiolink_Data {
     ColorChord colorchord = 7; // ✓
     AutoCorrelator autocorrelator = 8;
     Chronotensity chronotensity = 9;
-    GlobalStrings global_strings = 10;
+    GlobalStrings global_strings = 10; // ✓
 }
 
 message Sub_Packet {
