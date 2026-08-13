@@ -41,57 +41,58 @@ namespace PROTO {
             "CW1lZGlhVGltZRgCIAEoAhIrCg1tZWRpYVBsYXliYWNrGAMgASgOMhQuUFJP",
             "VE8uUGxheWJhY2tTdGF0ZRImCgltZWRpYUxvb3AYBCABKA4yEy5QUk9UTy5M",
             "b29wT3JSYW5kb20iSAoKUGxheWVyRGF0YRIXCg9udW1iZXJPZlBsYXllcnMY",
-            "ASABKAUSEAoIaXNNYXN0ZXIYAiABKAgSDwoHaXNPd25lchgDIAEoCCJTCglJ",
+            "ASABKA0SEAoIaXNNYXN0ZXIYAiABKAgSDwoHaXNPd25lchgDIAEoCCJTCglJ",
             "bnRlbnNpdHkSDwoHUk1TTGVmdBgBIAEoAhIQCghQZWFrTGVmdBgCIAEoAhIQ",
             "CghSTVNSaWdodBgDIAEoAhIRCglQZWFrUmlnaHQYBCABKAIiOQoIQXV0b2dh",
             "aW4SFgoOYXN5bW1ldHJpY0dhaW4YASABKAISFQoNc3ltbWV0cmljR2FpbhgC",
-            "IAEoAiLcAwoJR2VuZXJhbFZVEhQKDHZlcnNpb25NYWpvchgBIAEoAhIUCgx2",
-            "ZXJzaW9uTWlub3IYAiABKAISEQoJc3lzdGVtRlBTGAMgASgCEhQKDGF1ZGlv",
-            "TGlua0ZQUxgEIAEoAhIcChRtc1NpbmNlSW5zdGFuY2VTdGFydBgFIAEoARIc",
-            "ChRtc1NpbmNlTWlkbmlnaHRMb2NhbBgGIAEoARIXCg9tc0luTmV0d29ya1Rp",
-            "bWUYByABKAESJgoLbWVkaWFfc3RhdGUYCCABKAsyES5QUk9UTy5NZWRpYVN0",
-            "YXRlEiYKC3BsYXllcl9kYXRhGAkgASgLMhEuUFJPVE8uUGxheWVyRGF0YRIr",
-            "ChFjdXJyZW50X2ludGVuc2l0eRgKIAEoCzIQLlBST1RPLkludGVuc2l0eRIm",
-            "CgxtYXJrZXJfdmFsdWUYCyABKAsyEC5QUk9UTy5JbnRlbnNpdHkSJgoMbWFy",
-            "a2VyX3RpbWVzGAwgASgLMhAuUFJPVE8uSW50ZW5zaXR5EiEKCGF1dG9nYWlu",
-            "GA0gASgLMg8uUFJPVE8uQXV0b2dhaW4SGQoRVVRDRGF5c1NpbmNlRXBvY2gY",
-            "DiABKAESGgoSbXNTaW5jZVVUQ0RheVN0YXJ0GA8gASgBIowBCgpDb2xvckNo",
-            "b3JkEhwKBmNvbG9ycxgBIAMoCzIMLlBST1RPLkNvbG9yEhsKBXN0cmlwGAIg",
-            "AygLMgwuUFJPVE8uQ29sb3ISJQoPbGlnaHRzX2ludGVybmFsGAMgAygLMgwu",
-            "UFJPVE8uQ29sb3ISHAoGbGlnaHRzGAQgAygLMgwuUFJPVE8uQ29sb3IiRwoO",
-            "QXV0b0NvcnJlbGF0b3ISGwoPYXV0b2NvcnJlbGF0aW9uGAEgAygCQgIQARIY",
-            "Cgx1bmNvcnJlbGF0ZWQYAiADKAJCAhABIt0BChFDaHJvbm90ZW5zaXR5QmFu",
-            "ZBISCgppbmNyZWFzaW5nGAEgASgCEhsKE2ZpbHRlcmVkX2luY3JlYXNpbmcY",
-            "AiABKAISDgoGYm91bmNlGAMgASgCEhcKD2ZpbHRlcmVkX2JvdW5jZRgEIAEo",
-            "AhIXCg9pbnRlbnNpdHlfcGF1c2UYBSABKAISIAoYZmlsdGVyZWRfaW50ZW5z",
-            "aXR5X3BhdXNlGAYgASgCEhQKDGJvdW5jZV9wYXVzZRgHIAEoAhIdChVmaWx0",
-            "ZXJlZF9ib3VuY2VfcGF1c2UYCCABKAIitgEKDUNocm9ub3RlbnNpdHkSJgoE",
-            "YmFzcxgBIAEoCzIYLlBST1RPLkNocm9ub3RlbnNpdHlCYW5kEigKBmxvd21p",
-            "ZBgCIAEoCzIYLlBST1RPLkNocm9ub3RlbnNpdHlCYW5kEikKB2hpZ2htaWQY",
-            "AyABKAsyGC5QUk9UTy5DaHJvbm90ZW5zaXR5QmFuZBIoCgZ0cmVibGUYBCAB",
-            "KAsyGC5QUk9UTy5DaHJvbm90ZW5zaXR5QmFuZCJlCg1HbG9iYWxTdHJpbmdz",
-            "EhIKCnBsYXllck5hbWUYASABKAkSEgoKbWFzdGVyTmFtZRgCIAEoCRIVCg1j",
-            "dXN0b21TdHJpbmcxGAMgASgJEhUKDWN1c3RvbVN0cmluZzIYBCABKAkipAMK",
-            "DkF1ZGlvbGlua19EYXRhEh8KB2hpc3RvcnkYASABKAsyDi5QUk9UTy5IaXN0",
-            "b3J5EigKDHRoZW1lX2NvbG9ycxgCIAEoCzISLlBST1RPLlRoZW1lQ29sb3Jz",
-            "EhcKA2RmdBgDIAEoCzIKLlBST1RPLkRGVBI0ChJmaWx0ZXJlZF9hdWRpb2xp",
-            "bmsYBCABKAsyGC5QUk9UTy5GaWx0ZXJlZEF1ZGlvbGluaxIhCgh3YXZlZm9y",
-            "bRgFIAEoCzIPLlBST1RPLldhdmVGb3JtEiQKCmdlbmVyYWxfdnUYBiABKAsy",
-            "EC5QUk9UTy5HZW5lcmFsVlUSJQoKY29sb3JjaG9yZBgHIAEoCzIRLlBST1RP",
-            "LkNvbG9yQ2hvcmQSLQoOYXV0b2NvcnJlbGF0b3IYCCABKAsyFS5QUk9UTy5B",
-            "dXRvQ29ycmVsYXRvchIrCg1jaHJvbm90ZW5zaXR5GAkgASgLMhQuUFJPVE8u",
-            "Q2hyb25vdGVuc2l0eRIsCg5nbG9iYWxfc3RyaW5ncxgKIAEoCzIULlBST1RP",
-            "Lkdsb2JhbFN0cmluZ3MiRgoKU3ViX1BhY2tldBIUCgxwYWNrZXRfaW5kZXgY",
-            "ASABKAUSFAoMcGFja2V0X2NvdW50GAMgASgFEgwKBGRhdGEYAiADKAwqzwEK",
-            "DVBsYXliYWNrU3RhdGUSFwoTUExBWUJBQ0tfU1RBVEVfTk9ORRAAEhoKFlBM",
-            "QVlCQUNLX1NUQVRFX1BMQVlJTkcQARIZChVQTEFZQkFDS19TVEFURV9QQVVT",
-            "RUQQAhIaChZQTEFZQkFDS19TVEFURV9TVE9QUEVEEAMSGgoWUExBWUJBQ0tf",
-            "U1RBVEVfTE9BRElORxAEEhwKGFBMQVlCQUNLX1NUQVRFX1NUUkVBTUlORxAF",
-            "EhgKFFBMQVlCQUNLX1NUQVRFX0VSUk9SEAYqnAEKDExvb3BPclJhbmRvbRIX",
-            "ChNMT09QX09SX1JBTkRPTV9OT05FEAASFwoTTE9PUF9PUl9SQU5ET01fTE9P",
-            "UBABEhsKF0xPT1BfT1JfUkFORE9NX0xPT1BfT05FEAISGQoVTE9PUF9PUl9S",
-            "QU5ET01fUkFORE9NEAMSIgoeTE9PUF9PUl9SQU5ET01fUkFORE9NX0FORF9M",
-            "T09QEARiBnByb3RvMw=="));
+            "IAEoAiIkCghQb3NpdGlvbhILCgNsYXQYASABKAESCwoDbG9uGAIgASgBIv0D",
+            "CglHZW5lcmFsVlUSFAoMdmVyc2lvbk1ham9yGAEgASgCEhQKDHZlcnNpb25N",
+            "aW5vchgCIAEoAhIRCglzeXN0ZW1GUFMYAyABKAISEgoKZnJhbWVDb3VudBgE",
+            "IAEoAhIcChRtc1NpbmNlSW5zdGFuY2VTdGFydBgFIAEoARIcChRtc1NpbmNl",
+            "TWlkbmlnaHRMb2NhbBgGIAEoARIXCg9tc0luTmV0d29ya1RpbWUYByABKAES",
+            "JgoLbWVkaWFfc3RhdGUYCCABKAsyES5QUk9UTy5NZWRpYVN0YXRlEiYKC3Bs",
+            "YXllcl9kYXRhGAkgASgLMhEuUFJPVE8uUGxheWVyRGF0YRIrChFjdXJyZW50",
+            "X2ludGVuc2l0eRgKIAEoCzIQLlBST1RPLkludGVuc2l0eRImCgxtYXJrZXJf",
+            "dmFsdWUYCyABKAsyEC5QUk9UTy5JbnRlbnNpdHkSJgoMbWFya2VyX3RpbWVz",
+            "GAwgASgLMhAuUFJPVE8uSW50ZW5zaXR5EiEKCGF1dG9nYWluGA0gASgLMg8u",
+            "UFJPVE8uQXV0b2dhaW4SGQoRVVRDRGF5c1NpbmNlRXBvY2gYDiABKAESGgoS",
+            "bXNTaW5jZVVUQ0RheVN0YXJ0GA8gASgBEiEKCHBvc2l0aW9uGBAgASgLMg8u",
+            "UFJPVE8uUG9zaXRpb24ijAEKCkNvbG9yQ2hvcmQSHAoGY29sb3JzGAEgAygL",
+            "MgwuUFJPVE8uQ29sb3ISGwoFc3RyaXAYAiADKAsyDC5QUk9UTy5Db2xvchIl",
+            "Cg9saWdodHNfaW50ZXJuYWwYAyADKAsyDC5QUk9UTy5Db2xvchIcCgZsaWdo",
+            "dHMYBCADKAsyDC5QUk9UTy5Db2xvciJHCg5BdXRvQ29ycmVsYXRvchIbCg9h",
+            "dXRvY29ycmVsYXRpb24YASADKAJCAhABEhgKDHVuY29ycmVsYXRlZBgCIAMo",
+            "AkICEAEi3QEKEUNocm9ub3RlbnNpdHlCYW5kEhIKCmluY3JlYXNpbmcYASAB",
+            "KA0SGwoTZmlsdGVyZWRfaW5jcmVhc2luZxgCIAEoDRIOCgZib3VuY2UYAyAB",
+            "KA0SFwoPZmlsdGVyZWRfYm91bmNlGAQgASgNEhcKD2ludGVuc2l0eV9wYXVz",
+            "ZRgFIAEoDRIgChhmaWx0ZXJlZF9pbnRlbnNpdHlfcGF1c2UYBiABKA0SFAoM",
+            "Ym91bmNlX3BhdXNlGAcgASgNEh0KFWZpbHRlcmVkX2JvdW5jZV9wYXVzZRgI",
+            "IAEoDSK2AQoNQ2hyb25vdGVuc2l0eRImCgRiYXNzGAEgASgLMhguUFJPVE8u",
+            "Q2hyb25vdGVuc2l0eUJhbmQSKAoGbG93bWlkGAIgASgLMhguUFJPVE8uQ2hy",
+            "b25vdGVuc2l0eUJhbmQSKQoHaGlnaG1pZBgDIAEoCzIYLlBST1RPLkNocm9u",
+            "b3RlbnNpdHlCYW5kEigKBnRyZWJsZRgEIAEoCzIYLlBST1RPLkNocm9ub3Rl",
+            "bnNpdHlCYW5kImUKDUdsb2JhbFN0cmluZ3MSEgoKcGxheWVyTmFtZRgBIAEo",
+            "CRISCgptYXN0ZXJOYW1lGAIgASgJEhUKDWN1c3RvbVN0cmluZzEYAyABKAkS",
+            "FQoNY3VzdG9tU3RyaW5nMhgEIAEoCSKkAwoOQXVkaW9saW5rX0RhdGESHwoH",
+            "aGlzdG9yeRgBIAEoCzIOLlBST1RPLkhpc3RvcnkSKAoMdGhlbWVfY29sb3Jz",
+            "GAIgASgLMhIuUFJPVE8uVGhlbWVDb2xvcnMSFwoDZGZ0GAMgASgLMgouUFJP",
+            "VE8uREZUEjQKEmZpbHRlcmVkX2F1ZGlvbGluaxgEIAEoCzIYLlBST1RPLkZp",
+            "bHRlcmVkQXVkaW9saW5rEiEKCHdhdmVmb3JtGAUgASgLMg8uUFJPVE8uV2F2",
+            "ZUZvcm0SJAoKZ2VuZXJhbF92dRgGIAEoCzIQLlBST1RPLkdlbmVyYWxWVRIl",
+            "Cgpjb2xvcmNob3JkGAcgASgLMhEuUFJPVE8uQ29sb3JDaG9yZBItCg5hdXRv",
+            "Y29ycmVsYXRvchgIIAEoCzIVLlBST1RPLkF1dG9Db3JyZWxhdG9yEisKDWNo",
+            "cm9ub3RlbnNpdHkYCSABKAsyFC5QUk9UTy5DaHJvbm90ZW5zaXR5EiwKDmds",
+            "b2JhbF9zdHJpbmdzGAogASgLMhQuUFJPVE8uR2xvYmFsU3RyaW5ncyJGCgpT",
+            "dWJfUGFja2V0EhQKDHBhY2tldF9pbmRleBgBIAEoBRIUCgxwYWNrZXRfY291",
+            "bnQYAyABKAUSDAoEZGF0YRgCIAMoDCrPAQoNUGxheWJhY2tTdGF0ZRIXChNQ",
+            "TEFZQkFDS19TVEFURV9OT05FEAASGgoWUExBWUJBQ0tfU1RBVEVfUExBWUlO",
+            "RxABEhkKFVBMQVlCQUNLX1NUQVRFX1BBVVNFRBACEhoKFlBMQVlCQUNLX1NU",
+            "QVRFX1NUT1BQRUQQAxIaChZQTEFZQkFDS19TVEFURV9MT0FESU5HEAQSHAoY",
+            "UExBWUJBQ0tfU1RBVEVfU1RSRUFNSU5HEAUSGAoUUExBWUJBQ0tfU1RBVEVf",
+            "RVJST1IQBiqcAQoMTG9vcE9yUmFuZG9tEhcKE0xPT1BfT1JfUkFORE9NX05P",
+            "TkUQABIXChNMT09QX09SX1JBTkRPTV9MT09QEAESGwoXTE9PUF9PUl9SQU5E",
+            "T01fTE9PUF9PTkUQAhIZChVMT09QX09SX1JBTkRPTV9SQU5ET00QAxIiCh5M",
+            "T09QX09SX1JBTkRPTV9SQU5ET01fQU5EX0xPT1AQBGIGcHJvdG8z"));
       descriptor = pbr::FileDescriptor.FromGeneratedCode(descriptorData,
           new pbr::FileDescriptor[] { },
           new pbr::GeneratedClrTypeInfo(new[] {typeof(global::PROTO.PlaybackState), typeof(global::PROTO.LoopOrRandom), }, null, new pbr::GeneratedClrTypeInfo[] {
@@ -105,7 +106,8 @@ namespace PROTO {
             new pbr::GeneratedClrTypeInfo(typeof(global::PROTO.PlayerData), global::PROTO.PlayerData.Parser, new[]{ "NumberOfPlayers", "IsMaster", "IsOwner" }, null, null, null, null),
             new pbr::GeneratedClrTypeInfo(typeof(global::PROTO.Intensity), global::PROTO.Intensity.Parser, new[]{ "RMSLeft", "PeakLeft", "RMSRight", "PeakRight" }, null, null, null, null),
             new pbr::GeneratedClrTypeInfo(typeof(global::PROTO.Autogain), global::PROTO.Autogain.Parser, new[]{ "AsymmetricGain", "SymmetricGain" }, null, null, null, null),
-            new pbr::GeneratedClrTypeInfo(typeof(global::PROTO.GeneralVU), global::PROTO.GeneralVU.Parser, new[]{ "VersionMajor", "VersionMinor", "SystemFPS", "AudioLinkFPS", "MsSinceInstanceStart", "MsSinceMidnightLocal", "MsInNetworkTime", "MediaState", "PlayerData", "CurrentIntensity", "MarkerValue", "MarkerTimes", "Autogain", "UTCDaysSinceEpoch", "MsSinceUTCDayStart" }, null, null, null, null),
+            new pbr::GeneratedClrTypeInfo(typeof(global::PROTO.Position), global::PROTO.Position.Parser, new[]{ "Lat", "Lon" }, null, null, null, null),
+            new pbr::GeneratedClrTypeInfo(typeof(global::PROTO.GeneralVU), global::PROTO.GeneralVU.Parser, new[]{ "VersionMajor", "VersionMinor", "SystemFPS", "FrameCount", "MsSinceInstanceStart", "MsSinceMidnightLocal", "MsInNetworkTime", "MediaState", "PlayerData", "CurrentIntensity", "MarkerValue", "MarkerTimes", "Autogain", "UTCDaysSinceEpoch", "MsSinceUTCDayStart", "Position" }, null, null, null, null),
             new pbr::GeneratedClrTypeInfo(typeof(global::PROTO.ColorChord), global::PROTO.ColorChord.Parser, new[]{ "Colors", "Strip", "LightsInternal", "Lights" }, null, null, null, null),
             new pbr::GeneratedClrTypeInfo(typeof(global::PROTO.AutoCorrelator), global::PROTO.AutoCorrelator.Parser, new[]{ "Autocorrelation", "Uncorrelated" }, null, null, null, null),
             new pbr::GeneratedClrTypeInfo(typeof(global::PROTO.ChronotensityBand), global::PROTO.ChronotensityBand.Parser, new[]{ "Increasing", "FilteredIncreasing", "Bounce", "FilteredBounce", "IntensityPause", "FilteredIntensityPause", "BouncePause", "FilteredBouncePause" }, null, null, null, null),
@@ -123,20 +125,56 @@ namespace PROTO {
   ///enum for playback state
   /// </summary>
   public enum PlaybackState {
+    /// <summary>
+    /// ✓
+    /// </summary>
     [pbr::OriginalName("PLAYBACK_STATE_NONE")] None = 0,
+    /// <summary>
+    /// ✓
+    /// </summary>
     [pbr::OriginalName("PLAYBACK_STATE_PLAYING")] Playing = 1,
+    /// <summary>
+    /// ✓
+    /// </summary>
     [pbr::OriginalName("PLAYBACK_STATE_PAUSED")] Paused = 2,
+    /// <summary>
+    /// ✓
+    /// </summary>
     [pbr::OriginalName("PLAYBACK_STATE_STOPPED")] Stopped = 3,
+    /// <summary>
+    /// ✓
+    /// </summary>
     [pbr::OriginalName("PLAYBACK_STATE_LOADING")] Loading = 4,
+    /// <summary>
+    /// ✓
+    /// </summary>
     [pbr::OriginalName("PLAYBACK_STATE_STREAMING")] Streaming = 5,
+    /// <summary>
+    /// ✓
+    /// </summary>
     [pbr::OriginalName("PLAYBACK_STATE_ERROR")] Error = 6,
   }
 
   public enum LoopOrRandom {
+    /// <summary>
+    /// ✓
+    /// </summary>
     [pbr::OriginalName("LOOP_OR_RANDOM_NONE")] None = 0,
+    /// <summary>
+    /// ✓
+    /// </summary>
     [pbr::OriginalName("LOOP_OR_RANDOM_LOOP")] Loop = 1,
+    /// <summary>
+    /// ✓
+    /// </summary>
     [pbr::OriginalName("LOOP_OR_RANDOM_LOOP_ONE")] LoopOne = 2,
+    /// <summary>
+    /// ✓
+    /// </summary>
     [pbr::OriginalName("LOOP_OR_RANDOM_RANDOM")] Random = 3,
+    /// <summary>
+    /// ✓
+    /// </summary>
     [pbr::OriginalName("LOOP_OR_RANDOM_RANDOM_AND_LOOP")] RandomAndLoop = 4,
   }
 
@@ -1999,6 +2037,9 @@ namespace PROTO {
     /// <summary>Field number for the "mediaPlayback" field.</summary>
     public const int MediaPlaybackFieldNumber = 3;
     private global::PROTO.PlaybackState mediaPlayback_ = global::PROTO.PlaybackState.None;
+    /// <summary>
+    /// ✓
+    /// </summary>
     [global::System.Diagnostics.DebuggerNonUserCodeAttribute]
     [global::System.CodeDom.Compiler.GeneratedCode("protoc", null)]
     public global::PROTO.PlaybackState MediaPlayback {
@@ -2011,6 +2052,9 @@ namespace PROTO {
     /// <summary>Field number for the "mediaLoop" field.</summary>
     public const int MediaLoopFieldNumber = 4;
     private global::PROTO.LoopOrRandom mediaLoop_ = global::PROTO.LoopOrRandom.None;
+    /// <summary>
+    /// ✓
+    /// </summary>
     [global::System.Diagnostics.DebuggerNonUserCodeAttribute]
     [global::System.CodeDom.Compiler.GeneratedCode("protoc", null)]
     public global::PROTO.LoopOrRandom MediaLoop {
@@ -2282,10 +2326,13 @@ namespace PROTO {
 
     /// <summary>Field number for the "numberOfPlayers" field.</summary>
     public const int NumberOfPlayersFieldNumber = 1;
-    private int numberOfPlayers_;
+    private uint numberOfPlayers_;
+    /// <summary>
+    /// ✓
+    /// </summary>
     [global::System.Diagnostics.DebuggerNonUserCodeAttribute]
     [global::System.CodeDom.Compiler.GeneratedCode("protoc", null)]
-    public int NumberOfPlayers {
+    public uint NumberOfPlayers {
       get { return numberOfPlayers_; }
       set {
         numberOfPlayers_ = value;
@@ -2295,6 +2342,9 @@ namespace PROTO {
     /// <summary>Field number for the "isMaster" field.</summary>
     public const int IsMasterFieldNumber = 2;
     private bool isMaster_;
+    /// <summary>
+    /// ✓
+    /// </summary>
     [global::System.Diagnostics.DebuggerNonUserCodeAttribute]
     [global::System.CodeDom.Compiler.GeneratedCode("protoc", null)]
     public bool IsMaster {
@@ -2307,6 +2357,9 @@ namespace PROTO {
     /// <summary>Field number for the "isOwner" field.</summary>
     public const int IsOwnerFieldNumber = 3;
     private bool isOwner_;
+    /// <summary>
+    /// ✓
+    /// </summary>
     [global::System.Diagnostics.DebuggerNonUserCodeAttribute]
     [global::System.CodeDom.Compiler.GeneratedCode("protoc", null)]
     public bool IsOwner {
@@ -2364,7 +2417,7 @@ namespace PROTO {
     #else
       if (NumberOfPlayers != 0) {
         output.WriteRawTag(8);
-        output.WriteInt32(NumberOfPlayers);
+        output.WriteUInt32(NumberOfPlayers);
       }
       if (IsMaster != false) {
         output.WriteRawTag(16);
@@ -2386,7 +2439,7 @@ namespace PROTO {
     void pb::IBufferMessage.InternalWriteTo(ref pb::WriteContext output) {
       if (NumberOfPlayers != 0) {
         output.WriteRawTag(8);
-        output.WriteInt32(NumberOfPlayers);
+        output.WriteUInt32(NumberOfPlayers);
       }
       if (IsMaster != false) {
         output.WriteRawTag(16);
@@ -2407,7 +2460,7 @@ namespace PROTO {
     public int CalculateSize() {
       int size = 0;
       if (NumberOfPlayers != 0) {
-        size += 1 + pb::CodedOutputStream.ComputeInt32Size(NumberOfPlayers);
+        size += 1 + pb::CodedOutputStream.ComputeUInt32Size(NumberOfPlayers);
       }
       if (IsMaster != false) {
         size += 1 + 1;
@@ -2456,7 +2509,7 @@ namespace PROTO {
             _unknownFields = pb::UnknownFieldSet.MergeFieldFrom(_unknownFields, input);
             break;
           case 8: {
-            NumberOfPlayers = input.ReadInt32();
+            NumberOfPlayers = input.ReadUInt32();
             break;
           }
           case 16: {
@@ -2487,7 +2540,7 @@ namespace PROTO {
             _unknownFields = pb::UnknownFieldSet.MergeFieldFrom(_unknownFields, ref input);
             break;
           case 8: {
-            NumberOfPlayers = input.ReadInt32();
+            NumberOfPlayers = input.ReadUInt32();
             break;
           }
           case 16: {
@@ -2556,6 +2609,9 @@ namespace PROTO {
     /// <summary>Field number for the "RMSLeft" field.</summary>
     public const int RMSLeftFieldNumber = 1;
     private float rMSLeft_;
+    /// <summary>
+    /// ✓
+    /// </summary>
     [global::System.Diagnostics.DebuggerNonUserCodeAttribute]
     [global::System.CodeDom.Compiler.GeneratedCode("protoc", null)]
     public float RMSLeft {
@@ -2568,6 +2624,9 @@ namespace PROTO {
     /// <summary>Field number for the "PeakLeft" field.</summary>
     public const int PeakLeftFieldNumber = 2;
     private float peakLeft_;
+    /// <summary>
+    /// ✓
+    /// </summary>
     [global::System.Diagnostics.DebuggerNonUserCodeAttribute]
     [global::System.CodeDom.Compiler.GeneratedCode("protoc", null)]
     public float PeakLeft {
@@ -2580,6 +2639,9 @@ namespace PROTO {
     /// <summary>Field number for the "RMSRight" field.</summary>
     public const int RMSRightFieldNumber = 3;
     private float rMSRight_;
+    /// <summary>
+    /// ✓
+    /// </summary>
     [global::System.Diagnostics.DebuggerNonUserCodeAttribute]
     [global::System.CodeDom.Compiler.GeneratedCode("protoc", null)]
     public float RMSRight {
@@ -2592,6 +2654,9 @@ namespace PROTO {
     /// <summary>Field number for the "PeakRight" field.</summary>
     public const int PeakRightFieldNumber = 4;
     private float peakRight_;
+    /// <summary>
+    /// ✓
+    /// </summary>
     [global::System.Diagnostics.DebuggerNonUserCodeAttribute]
     [global::System.CodeDom.Compiler.GeneratedCode("protoc", null)]
     public float PeakRight {
@@ -2863,6 +2928,9 @@ namespace PROTO {
     /// <summary>Field number for the "asymmetricGain" field.</summary>
     public const int AsymmetricGainFieldNumber = 1;
     private float asymmetricGain_;
+    /// <summary>
+    /// ✓
+    /// </summary>
     [global::System.Diagnostics.DebuggerNonUserCodeAttribute]
     [global::System.CodeDom.Compiler.GeneratedCode("protoc", null)]
     public float AsymmetricGain {
@@ -2875,6 +2943,9 @@ namespace PROTO {
     /// <summary>Field number for the "symmetricGain" field.</summary>
     public const int SymmetricGainFieldNumber = 2;
     private float symmetricGain_;
+    /// <summary>
+    /// ✓
+    /// </summary>
     [global::System.Diagnostics.DebuggerNonUserCodeAttribute]
     [global::System.CodeDom.Compiler.GeneratedCode("protoc", null)]
     public float SymmetricGain {
@@ -3050,6 +3121,247 @@ namespace PROTO {
   }
 
   [global::System.Diagnostics.DebuggerDisplayAttribute("{ToString(),nq}")]
+  public sealed partial class Position : pb::IMessage<Position>
+  #if !GOOGLE_PROTOBUF_REFSTRUCT_COMPATIBILITY_MODE
+      , pb::IBufferMessage
+  #endif
+  {
+    private static readonly pb::MessageParser<Position> _parser = new pb::MessageParser<Position>(() => new Position());
+    private pb::UnknownFieldSet _unknownFields;
+    [global::System.Diagnostics.DebuggerNonUserCodeAttribute]
+    [global::System.CodeDom.Compiler.GeneratedCode("protoc", null)]
+    public static pb::MessageParser<Position> Parser { get { return _parser; } }
+
+    [global::System.Diagnostics.DebuggerNonUserCodeAttribute]
+    [global::System.CodeDom.Compiler.GeneratedCode("protoc", null)]
+    public static pbr::MessageDescriptor Descriptor {
+      get { return global::PROTO.AudiolinkDataReflection.Descriptor.MessageTypes[10]; }
+    }
+
+    [global::System.Diagnostics.DebuggerNonUserCodeAttribute]
+    [global::System.CodeDom.Compiler.GeneratedCode("protoc", null)]
+    pbr::MessageDescriptor pb::IMessage.Descriptor {
+      get { return Descriptor; }
+    }
+
+    [global::System.Diagnostics.DebuggerNonUserCodeAttribute]
+    [global::System.CodeDom.Compiler.GeneratedCode("protoc", null)]
+    public Position() {
+      OnConstruction();
+    }
+
+    partial void OnConstruction();
+
+    [global::System.Diagnostics.DebuggerNonUserCodeAttribute]
+    [global::System.CodeDom.Compiler.GeneratedCode("protoc", null)]
+    public Position(Position other) : this() {
+      lat_ = other.lat_;
+      lon_ = other.lon_;
+      _unknownFields = pb::UnknownFieldSet.Clone(other._unknownFields);
+    }
+
+    [global::System.Diagnostics.DebuggerNonUserCodeAttribute]
+    [global::System.CodeDom.Compiler.GeneratedCode("protoc", null)]
+    public Position Clone() {
+      return new Position(this);
+    }
+
+    /// <summary>Field number for the "lat" field.</summary>
+    public const int LatFieldNumber = 1;
+    private double lat_;
+    /// <summary>
+    /// ✓
+    /// </summary>
+    [global::System.Diagnostics.DebuggerNonUserCodeAttribute]
+    [global::System.CodeDom.Compiler.GeneratedCode("protoc", null)]
+    public double Lat {
+      get { return lat_; }
+      set {
+        lat_ = value;
+      }
+    }
+
+    /// <summary>Field number for the "lon" field.</summary>
+    public const int LonFieldNumber = 2;
+    private double lon_;
+    /// <summary>
+    /// ✓
+    /// </summary>
+    [global::System.Diagnostics.DebuggerNonUserCodeAttribute]
+    [global::System.CodeDom.Compiler.GeneratedCode("protoc", null)]
+    public double Lon {
+      get { return lon_; }
+      set {
+        lon_ = value;
+      }
+    }
+
+    [global::System.Diagnostics.DebuggerNonUserCodeAttribute]
+    [global::System.CodeDom.Compiler.GeneratedCode("protoc", null)]
+    public override bool Equals(object other) {
+      return Equals(other as Position);
+    }
+
+    [global::System.Diagnostics.DebuggerNonUserCodeAttribute]
+    [global::System.CodeDom.Compiler.GeneratedCode("protoc", null)]
+    public bool Equals(Position other) {
+      if (ReferenceEquals(other, null)) {
+        return false;
+      }
+      if (ReferenceEquals(other, this)) {
+        return true;
+      }
+      if (!pbc::ProtobufEqualityComparers.BitwiseDoubleEqualityComparer.Equals(Lat, other.Lat)) return false;
+      if (!pbc::ProtobufEqualityComparers.BitwiseDoubleEqualityComparer.Equals(Lon, other.Lon)) return false;
+      return Equals(_unknownFields, other._unknownFields);
+    }
+
+    [global::System.Diagnostics.DebuggerNonUserCodeAttribute]
+    [global::System.CodeDom.Compiler.GeneratedCode("protoc", null)]
+    public override int GetHashCode() {
+      int hash = 1;
+      if (Lat != 0D) hash ^= pbc::ProtobufEqualityComparers.BitwiseDoubleEqualityComparer.GetHashCode(Lat);
+      if (Lon != 0D) hash ^= pbc::ProtobufEqualityComparers.BitwiseDoubleEqualityComparer.GetHashCode(Lon);
+      if (_unknownFields != null) {
+        hash ^= _unknownFields.GetHashCode();
+      }
+      return hash;
+    }
+
+    [global::System.Diagnostics.DebuggerNonUserCodeAttribute]
+    [global::System.CodeDom.Compiler.GeneratedCode("protoc", null)]
+    public override string ToString() {
+      return pb::JsonFormatter.ToDiagnosticString(this);
+    }
+
+    [global::System.Diagnostics.DebuggerNonUserCodeAttribute]
+    [global::System.CodeDom.Compiler.GeneratedCode("protoc", null)]
+    public void WriteTo(pb::CodedOutputStream output) {
+    #if !GOOGLE_PROTOBUF_REFSTRUCT_COMPATIBILITY_MODE
+      output.WriteRawMessage(this);
+    #else
+      if (Lat != 0D) {
+        output.WriteRawTag(9);
+        output.WriteDouble(Lat);
+      }
+      if (Lon != 0D) {
+        output.WriteRawTag(17);
+        output.WriteDouble(Lon);
+      }
+      if (_unknownFields != null) {
+        _unknownFields.WriteTo(output);
+      }
+    #endif
+    }
+
+    #if !GOOGLE_PROTOBUF_REFSTRUCT_COMPATIBILITY_MODE
+    [global::System.Diagnostics.DebuggerNonUserCodeAttribute]
+    [global::System.CodeDom.Compiler.GeneratedCode("protoc", null)]
+    void pb::IBufferMessage.InternalWriteTo(ref pb::WriteContext output) {
+      if (Lat != 0D) {
+        output.WriteRawTag(9);
+        output.WriteDouble(Lat);
+      }
+      if (Lon != 0D) {
+        output.WriteRawTag(17);
+        output.WriteDouble(Lon);
+      }
+      if (_unknownFields != null) {
+        _unknownFields.WriteTo(ref output);
+      }
+    }
+    #endif
+
+    [global::System.Diagnostics.DebuggerNonUserCodeAttribute]
+    [global::System.CodeDom.Compiler.GeneratedCode("protoc", null)]
+    public int CalculateSize() {
+      int size = 0;
+      if (Lat != 0D) {
+        size += 1 + 8;
+      }
+      if (Lon != 0D) {
+        size += 1 + 8;
+      }
+      if (_unknownFields != null) {
+        size += _unknownFields.CalculateSize();
+      }
+      return size;
+    }
+
+    [global::System.Diagnostics.DebuggerNonUserCodeAttribute]
+    [global::System.CodeDom.Compiler.GeneratedCode("protoc", null)]
+    public void MergeFrom(Position other) {
+      if (other == null) {
+        return;
+      }
+      if (other.Lat != 0D) {
+        Lat = other.Lat;
+      }
+      if (other.Lon != 0D) {
+        Lon = other.Lon;
+      }
+      _unknownFields = pb::UnknownFieldSet.MergeFrom(_unknownFields, other._unknownFields);
+    }
+
+    [global::System.Diagnostics.DebuggerNonUserCodeAttribute]
+    [global::System.CodeDom.Compiler.GeneratedCode("protoc", null)]
+    public void MergeFrom(pb::CodedInputStream input) {
+    #if !GOOGLE_PROTOBUF_REFSTRUCT_COMPATIBILITY_MODE
+      input.ReadRawMessage(this);
+    #else
+      uint tag;
+      while ((tag = input.ReadTag()) != 0) {
+      if ((tag & 7) == 4) {
+        // Abort on any end group tag.
+        return;
+      }
+      switch(tag) {
+          default:
+            _unknownFields = pb::UnknownFieldSet.MergeFieldFrom(_unknownFields, input);
+            break;
+          case 9: {
+            Lat = input.ReadDouble();
+            break;
+          }
+          case 17: {
+            Lon = input.ReadDouble();
+            break;
+          }
+        }
+      }
+    #endif
+    }
+
+    #if !GOOGLE_PROTOBUF_REFSTRUCT_COMPATIBILITY_MODE
+    [global::System.Diagnostics.DebuggerNonUserCodeAttribute]
+    [global::System.CodeDom.Compiler.GeneratedCode("protoc", null)]
+    void pb::IBufferMessage.InternalMergeFrom(ref pb::ParseContext input) {
+      uint tag;
+      while ((tag = input.ReadTag()) != 0) {
+      if ((tag & 7) == 4) {
+        // Abort on any end group tag.
+        return;
+      }
+      switch(tag) {
+          default:
+            _unknownFields = pb::UnknownFieldSet.MergeFieldFrom(_unknownFields, ref input);
+            break;
+          case 9: {
+            Lat = input.ReadDouble();
+            break;
+          }
+          case 17: {
+            Lon = input.ReadDouble();
+            break;
+          }
+        }
+      }
+    }
+    #endif
+
+  }
+
+  [global::System.Diagnostics.DebuggerDisplayAttribute("{ToString(),nq}")]
   public sealed partial class GeneralVU : pb::IMessage<GeneralVU>
   #if !GOOGLE_PROTOBUF_REFSTRUCT_COMPATIBILITY_MODE
       , pb::IBufferMessage
@@ -3064,7 +3376,7 @@ namespace PROTO {
     [global::System.Diagnostics.DebuggerNonUserCodeAttribute]
     [global::System.CodeDom.Compiler.GeneratedCode("protoc", null)]
     public static pbr::MessageDescriptor Descriptor {
-      get { return global::PROTO.AudiolinkDataReflection.Descriptor.MessageTypes[10]; }
+      get { return global::PROTO.AudiolinkDataReflection.Descriptor.MessageTypes[11]; }
     }
 
     [global::System.Diagnostics.DebuggerNonUserCodeAttribute]
@@ -3087,7 +3399,7 @@ namespace PROTO {
       versionMajor_ = other.versionMajor_;
       versionMinor_ = other.versionMinor_;
       systemFPS_ = other.systemFPS_;
-      audioLinkFPS_ = other.audioLinkFPS_;
+      frameCount_ = other.frameCount_;
       msSinceInstanceStart_ = other.msSinceInstanceStart_;
       msSinceMidnightLocal_ = other.msSinceMidnightLocal_;
       msInNetworkTime_ = other.msInNetworkTime_;
@@ -3099,6 +3411,7 @@ namespace PROTO {
       autogain_ = other.autogain_ != null ? other.autogain_.Clone() : null;
       uTCDaysSinceEpoch_ = other.uTCDaysSinceEpoch_;
       msSinceUTCDayStart_ = other.msSinceUTCDayStart_;
+      position_ = other.position_ != null ? other.position_.Clone() : null;
       _unknownFields = pb::UnknownFieldSet.Clone(other._unknownFields);
     }
 
@@ -3111,6 +3424,9 @@ namespace PROTO {
     /// <summary>Field number for the "versionMajor" field.</summary>
     public const int VersionMajorFieldNumber = 1;
     private float versionMajor_;
+    /// <summary>
+    /// ✓
+    /// </summary>
     [global::System.Diagnostics.DebuggerNonUserCodeAttribute]
     [global::System.CodeDom.Compiler.GeneratedCode("protoc", null)]
     public float VersionMajor {
@@ -3123,6 +3439,9 @@ namespace PROTO {
     /// <summary>Field number for the "versionMinor" field.</summary>
     public const int VersionMinorFieldNumber = 2;
     private float versionMinor_;
+    /// <summary>
+    /// ✓
+    /// </summary>
     [global::System.Diagnostics.DebuggerNonUserCodeAttribute]
     [global::System.CodeDom.Compiler.GeneratedCode("protoc", null)]
     public float VersionMinor {
@@ -3135,6 +3454,9 @@ namespace PROTO {
     /// <summary>Field number for the "systemFPS" field.</summary>
     public const int SystemFPSFieldNumber = 3;
     private float systemFPS_;
+    /// <summary>
+    /// ✓
+    /// </summary>
     [global::System.Diagnostics.DebuggerNonUserCodeAttribute]
     [global::System.CodeDom.Compiler.GeneratedCode("protoc", null)]
     public float SystemFPS {
@@ -3144,21 +3466,27 @@ namespace PROTO {
       }
     }
 
-    /// <summary>Field number for the "audioLinkFPS" field.</summary>
-    public const int AudioLinkFPSFieldNumber = 4;
-    private float audioLinkFPS_;
+    /// <summary>Field number for the "frameCount" field.</summary>
+    public const int FrameCountFieldNumber = 4;
+    private float frameCount_;
+    /// <summary>
+    /// ✓
+    /// </summary>
     [global::System.Diagnostics.DebuggerNonUserCodeAttribute]
     [global::System.CodeDom.Compiler.GeneratedCode("protoc", null)]
-    public float AudioLinkFPS {
-      get { return audioLinkFPS_; }
+    public float FrameCount {
+      get { return frameCount_; }
       set {
-        audioLinkFPS_ = value;
+        frameCount_ = value;
       }
     }
 
     /// <summary>Field number for the "msSinceInstanceStart" field.</summary>
     public const int MsSinceInstanceStartFieldNumber = 5;
     private double msSinceInstanceStart_;
+    /// <summary>
+    /// ✓
+    /// </summary>
     [global::System.Diagnostics.DebuggerNonUserCodeAttribute]
     [global::System.CodeDom.Compiler.GeneratedCode("protoc", null)]
     public double MsSinceInstanceStart {
@@ -3171,6 +3499,9 @@ namespace PROTO {
     /// <summary>Field number for the "msSinceMidnightLocal" field.</summary>
     public const int MsSinceMidnightLocalFieldNumber = 6;
     private double msSinceMidnightLocal_;
+    /// <summary>
+    /// ✓
+    /// </summary>
     [global::System.Diagnostics.DebuggerNonUserCodeAttribute]
     [global::System.CodeDom.Compiler.GeneratedCode("protoc", null)]
     public double MsSinceMidnightLocal {
@@ -3183,6 +3514,9 @@ namespace PROTO {
     /// <summary>Field number for the "msInNetworkTime" field.</summary>
     public const int MsInNetworkTimeFieldNumber = 7;
     private double msInNetworkTime_;
+    /// <summary>
+    /// ✓
+    /// </summary>
     [global::System.Diagnostics.DebuggerNonUserCodeAttribute]
     [global::System.CodeDom.Compiler.GeneratedCode("protoc", null)]
     public double MsInNetworkTime {
@@ -3195,6 +3529,9 @@ namespace PROTO {
     /// <summary>Field number for the "media_state" field.</summary>
     public const int MediaStateFieldNumber = 8;
     private global::PROTO.MediaState mediaState_;
+    /// <summary>
+    /// ✓
+    /// </summary>
     [global::System.Diagnostics.DebuggerNonUserCodeAttribute]
     [global::System.CodeDom.Compiler.GeneratedCode("protoc", null)]
     public global::PROTO.MediaState MediaState {
@@ -3207,6 +3544,9 @@ namespace PROTO {
     /// <summary>Field number for the "player_data" field.</summary>
     public const int PlayerDataFieldNumber = 9;
     private global::PROTO.PlayerData playerData_;
+    /// <summary>
+    /// ✓
+    /// </summary>
     [global::System.Diagnostics.DebuggerNonUserCodeAttribute]
     [global::System.CodeDom.Compiler.GeneratedCode("protoc", null)]
     public global::PROTO.PlayerData PlayerData {
@@ -3219,6 +3559,9 @@ namespace PROTO {
     /// <summary>Field number for the "current_intensity" field.</summary>
     public const int CurrentIntensityFieldNumber = 10;
     private global::PROTO.Intensity currentIntensity_;
+    /// <summary>
+    /// ✓
+    /// </summary>
     [global::System.Diagnostics.DebuggerNonUserCodeAttribute]
     [global::System.CodeDom.Compiler.GeneratedCode("protoc", null)]
     public global::PROTO.Intensity CurrentIntensity {
@@ -3231,6 +3574,9 @@ namespace PROTO {
     /// <summary>Field number for the "marker_value" field.</summary>
     public const int MarkerValueFieldNumber = 11;
     private global::PROTO.Intensity markerValue_;
+    /// <summary>
+    /// ✓
+    /// </summary>
     [global::System.Diagnostics.DebuggerNonUserCodeAttribute]
     [global::System.CodeDom.Compiler.GeneratedCode("protoc", null)]
     public global::PROTO.Intensity MarkerValue {
@@ -3243,6 +3589,9 @@ namespace PROTO {
     /// <summary>Field number for the "marker_times" field.</summary>
     public const int MarkerTimesFieldNumber = 12;
     private global::PROTO.Intensity markerTimes_;
+    /// <summary>
+    /// ✓
+    /// </summary>
     [global::System.Diagnostics.DebuggerNonUserCodeAttribute]
     [global::System.CodeDom.Compiler.GeneratedCode("protoc", null)]
     public global::PROTO.Intensity MarkerTimes {
@@ -3255,6 +3604,9 @@ namespace PROTO {
     /// <summary>Field number for the "autogain" field.</summary>
     public const int AutogainFieldNumber = 13;
     private global::PROTO.Autogain autogain_;
+    /// <summary>
+    /// ✓
+    /// </summary>
     [global::System.Diagnostics.DebuggerNonUserCodeAttribute]
     [global::System.CodeDom.Compiler.GeneratedCode("protoc", null)]
     public global::PROTO.Autogain Autogain {
@@ -3267,6 +3619,9 @@ namespace PROTO {
     /// <summary>Field number for the "UTCDaysSinceEpoch" field.</summary>
     public const int UTCDaysSinceEpochFieldNumber = 14;
     private double uTCDaysSinceEpoch_;
+    /// <summary>
+    /// ✓
+    /// </summary>
     [global::System.Diagnostics.DebuggerNonUserCodeAttribute]
     [global::System.CodeDom.Compiler.GeneratedCode("protoc", null)]
     public double UTCDaysSinceEpoch {
@@ -3279,12 +3634,30 @@ namespace PROTO {
     /// <summary>Field number for the "msSinceUTCDayStart" field.</summary>
     public const int MsSinceUTCDayStartFieldNumber = 15;
     private double msSinceUTCDayStart_;
+    /// <summary>
+    /// ✓
+    /// </summary>
     [global::System.Diagnostics.DebuggerNonUserCodeAttribute]
     [global::System.CodeDom.Compiler.GeneratedCode("protoc", null)]
     public double MsSinceUTCDayStart {
       get { return msSinceUTCDayStart_; }
       set {
         msSinceUTCDayStart_ = value;
+      }
+    }
+
+    /// <summary>Field number for the "position" field.</summary>
+    public const int PositionFieldNumber = 16;
+    private global::PROTO.Position position_;
+    /// <summary>
+    ///Position of the Audiolink AudioSource in worldspace. Using lat lon for some fun opportunities
+    /// </summary>
+    [global::System.Diagnostics.DebuggerNonUserCodeAttribute]
+    [global::System.CodeDom.Compiler.GeneratedCode("protoc", null)]
+    public global::PROTO.Position Position {
+      get { return position_; }
+      set {
+        position_ = value;
       }
     }
 
@@ -3306,7 +3679,7 @@ namespace PROTO {
       if (!pbc::ProtobufEqualityComparers.BitwiseSingleEqualityComparer.Equals(VersionMajor, other.VersionMajor)) return false;
       if (!pbc::ProtobufEqualityComparers.BitwiseSingleEqualityComparer.Equals(VersionMinor, other.VersionMinor)) return false;
       if (!pbc::ProtobufEqualityComparers.BitwiseSingleEqualityComparer.Equals(SystemFPS, other.SystemFPS)) return false;
-      if (!pbc::ProtobufEqualityComparers.BitwiseSingleEqualityComparer.Equals(AudioLinkFPS, other.AudioLinkFPS)) return false;
+      if (!pbc::ProtobufEqualityComparers.BitwiseSingleEqualityComparer.Equals(FrameCount, other.FrameCount)) return false;
       if (!pbc::ProtobufEqualityComparers.BitwiseDoubleEqualityComparer.Equals(MsSinceInstanceStart, other.MsSinceInstanceStart)) return false;
       if (!pbc::ProtobufEqualityComparers.BitwiseDoubleEqualityComparer.Equals(MsSinceMidnightLocal, other.MsSinceMidnightLocal)) return false;
       if (!pbc::ProtobufEqualityComparers.BitwiseDoubleEqualityComparer.Equals(MsInNetworkTime, other.MsInNetworkTime)) return false;
@@ -3318,6 +3691,7 @@ namespace PROTO {
       if (!object.Equals(Autogain, other.Autogain)) return false;
       if (!pbc::ProtobufEqualityComparers.BitwiseDoubleEqualityComparer.Equals(UTCDaysSinceEpoch, other.UTCDaysSinceEpoch)) return false;
       if (!pbc::ProtobufEqualityComparers.BitwiseDoubleEqualityComparer.Equals(MsSinceUTCDayStart, other.MsSinceUTCDayStart)) return false;
+      if (!object.Equals(Position, other.Position)) return false;
       return Equals(_unknownFields, other._unknownFields);
     }
 
@@ -3328,7 +3702,7 @@ namespace PROTO {
       if (VersionMajor != 0F) hash ^= pbc::ProtobufEqualityComparers.BitwiseSingleEqualityComparer.GetHashCode(VersionMajor);
       if (VersionMinor != 0F) hash ^= pbc::ProtobufEqualityComparers.BitwiseSingleEqualityComparer.GetHashCode(VersionMinor);
       if (SystemFPS != 0F) hash ^= pbc::ProtobufEqualityComparers.BitwiseSingleEqualityComparer.GetHashCode(SystemFPS);
-      if (AudioLinkFPS != 0F) hash ^= pbc::ProtobufEqualityComparers.BitwiseSingleEqualityComparer.GetHashCode(AudioLinkFPS);
+      if (FrameCount != 0F) hash ^= pbc::ProtobufEqualityComparers.BitwiseSingleEqualityComparer.GetHashCode(FrameCount);
       if (MsSinceInstanceStart != 0D) hash ^= pbc::ProtobufEqualityComparers.BitwiseDoubleEqualityComparer.GetHashCode(MsSinceInstanceStart);
       if (MsSinceMidnightLocal != 0D) hash ^= pbc::ProtobufEqualityComparers.BitwiseDoubleEqualityComparer.GetHashCode(MsSinceMidnightLocal);
       if (MsInNetworkTime != 0D) hash ^= pbc::ProtobufEqualityComparers.BitwiseDoubleEqualityComparer.GetHashCode(MsInNetworkTime);
@@ -3340,6 +3714,7 @@ namespace PROTO {
       if (autogain_ != null) hash ^= Autogain.GetHashCode();
       if (UTCDaysSinceEpoch != 0D) hash ^= pbc::ProtobufEqualityComparers.BitwiseDoubleEqualityComparer.GetHashCode(UTCDaysSinceEpoch);
       if (MsSinceUTCDayStart != 0D) hash ^= pbc::ProtobufEqualityComparers.BitwiseDoubleEqualityComparer.GetHashCode(MsSinceUTCDayStart);
+      if (position_ != null) hash ^= Position.GetHashCode();
       if (_unknownFields != null) {
         hash ^= _unknownFields.GetHashCode();
       }
@@ -3370,9 +3745,9 @@ namespace PROTO {
         output.WriteRawTag(29);
         output.WriteFloat(SystemFPS);
       }
-      if (AudioLinkFPS != 0F) {
+      if (FrameCount != 0F) {
         output.WriteRawTag(37);
-        output.WriteFloat(AudioLinkFPS);
+        output.WriteFloat(FrameCount);
       }
       if (MsSinceInstanceStart != 0D) {
         output.WriteRawTag(41);
@@ -3417,6 +3792,10 @@ namespace PROTO {
       if (MsSinceUTCDayStart != 0D) {
         output.WriteRawTag(121);
         output.WriteDouble(MsSinceUTCDayStart);
+      }
+      if (position_ != null) {
+        output.WriteRawTag(130, 1);
+        output.WriteMessage(Position);
       }
       if (_unknownFields != null) {
         _unknownFields.WriteTo(output);
@@ -3440,9 +3819,9 @@ namespace PROTO {
         output.WriteRawTag(29);
         output.WriteFloat(SystemFPS);
       }
-      if (AudioLinkFPS != 0F) {
+      if (FrameCount != 0F) {
         output.WriteRawTag(37);
-        output.WriteFloat(AudioLinkFPS);
+        output.WriteFloat(FrameCount);
       }
       if (MsSinceInstanceStart != 0D) {
         output.WriteRawTag(41);
@@ -3488,6 +3867,10 @@ namespace PROTO {
         output.WriteRawTag(121);
         output.WriteDouble(MsSinceUTCDayStart);
       }
+      if (position_ != null) {
+        output.WriteRawTag(130, 1);
+        output.WriteMessage(Position);
+      }
       if (_unknownFields != null) {
         _unknownFields.WriteTo(ref output);
       }
@@ -3507,7 +3890,7 @@ namespace PROTO {
       if (SystemFPS != 0F) {
         size += 1 + 4;
       }
-      if (AudioLinkFPS != 0F) {
+      if (FrameCount != 0F) {
         size += 1 + 4;
       }
       if (MsSinceInstanceStart != 0D) {
@@ -3543,6 +3926,9 @@ namespace PROTO {
       if (MsSinceUTCDayStart != 0D) {
         size += 1 + 8;
       }
+      if (position_ != null) {
+        size += 2 + pb::CodedOutputStream.ComputeMessageSize(Position);
+      }
       if (_unknownFields != null) {
         size += _unknownFields.CalculateSize();
       }
@@ -3564,8 +3950,8 @@ namespace PROTO {
       if (other.SystemFPS != 0F) {
         SystemFPS = other.SystemFPS;
       }
-      if (other.AudioLinkFPS != 0F) {
-        AudioLinkFPS = other.AudioLinkFPS;
+      if (other.FrameCount != 0F) {
+        FrameCount = other.FrameCount;
       }
       if (other.MsSinceInstanceStart != 0D) {
         MsSinceInstanceStart = other.MsSinceInstanceStart;
@@ -3618,6 +4004,12 @@ namespace PROTO {
       if (other.MsSinceUTCDayStart != 0D) {
         MsSinceUTCDayStart = other.MsSinceUTCDayStart;
       }
+      if (other.position_ != null) {
+        if (position_ == null) {
+          Position = new global::PROTO.Position();
+        }
+        Position.MergeFrom(other.Position);
+      }
       _unknownFields = pb::UnknownFieldSet.MergeFrom(_unknownFields, other._unknownFields);
     }
 
@@ -3650,7 +4042,7 @@ namespace PROTO {
             break;
           }
           case 37: {
-            AudioLinkFPS = input.ReadFloat();
+            FrameCount = input.ReadFloat();
             break;
           }
           case 41: {
@@ -3713,6 +4105,13 @@ namespace PROTO {
           }
           case 121: {
             MsSinceUTCDayStart = input.ReadDouble();
+            break;
+          }
+          case 130: {
+            if (position_ == null) {
+              Position = new global::PROTO.Position();
+            }
+            input.ReadMessage(Position);
             break;
           }
         }
@@ -3747,7 +4146,7 @@ namespace PROTO {
             break;
           }
           case 37: {
-            AudioLinkFPS = input.ReadFloat();
+            FrameCount = input.ReadFloat();
             break;
           }
           case 41: {
@@ -3812,6 +4211,13 @@ namespace PROTO {
             MsSinceUTCDayStart = input.ReadDouble();
             break;
           }
+          case 130: {
+            if (position_ == null) {
+              Position = new global::PROTO.Position();
+            }
+            input.ReadMessage(Position);
+            break;
+          }
         }
       }
     }
@@ -3834,7 +4240,7 @@ namespace PROTO {
     [global::System.Diagnostics.DebuggerNonUserCodeAttribute]
     [global::System.CodeDom.Compiler.GeneratedCode("protoc", null)]
     public static pbr::MessageDescriptor Descriptor {
-      get { return global::PROTO.AudiolinkDataReflection.Descriptor.MessageTypes[11]; }
+      get { return global::PROTO.AudiolinkDataReflection.Descriptor.MessageTypes[12]; }
     }
 
     [global::System.Diagnostics.DebuggerNonUserCodeAttribute]
@@ -4111,7 +4517,7 @@ namespace PROTO {
     [global::System.Diagnostics.DebuggerNonUserCodeAttribute]
     [global::System.CodeDom.Compiler.GeneratedCode("protoc", null)]
     public static pbr::MessageDescriptor Descriptor {
-      get { return global::PROTO.AudiolinkDataReflection.Descriptor.MessageTypes[12]; }
+      get { return global::PROTO.AudiolinkDataReflection.Descriptor.MessageTypes[13]; }
     }
 
     [global::System.Diagnostics.DebuggerNonUserCodeAttribute]
@@ -4147,6 +4553,9 @@ namespace PROTO {
     private static readonly pb::FieldCodec<float> _repeated_autocorrelation_codec
         = pb::FieldCodec.ForFloat(10);
     private readonly pbc::RepeatedField<float> autocorrelation_ = new pbc::RepeatedField<float>();
+    /// <summary>
+    /// ✓
+    /// </summary>
     [global::System.Diagnostics.DebuggerNonUserCodeAttribute]
     [global::System.CodeDom.Compiler.GeneratedCode("protoc", null)]
     public pbc::RepeatedField<float> Autocorrelation {
@@ -4158,6 +4567,9 @@ namespace PROTO {
     private static readonly pb::FieldCodec<float> _repeated_uncorrelated_codec
         = pb::FieldCodec.ForFloat(18);
     private readonly pbc::RepeatedField<float> uncorrelated_ = new pbc::RepeatedField<float>();
+    /// <summary>
+    /// ✓
+    /// </summary>
     [global::System.Diagnostics.DebuggerNonUserCodeAttribute]
     [global::System.CodeDom.Compiler.GeneratedCode("protoc", null)]
     public pbc::RepeatedField<float> Uncorrelated {
@@ -4339,7 +4751,7 @@ namespace PROTO {
     [global::System.Diagnostics.DebuggerNonUserCodeAttribute]
     [global::System.CodeDom.Compiler.GeneratedCode("protoc", null)]
     public static pbr::MessageDescriptor Descriptor {
-      get { return global::PROTO.AudiolinkDataReflection.Descriptor.MessageTypes[13]; }
+      get { return global::PROTO.AudiolinkDataReflection.Descriptor.MessageTypes[14]; }
     }
 
     [global::System.Diagnostics.DebuggerNonUserCodeAttribute]
@@ -4378,10 +4790,13 @@ namespace PROTO {
 
     /// <summary>Field number for the "increasing" field.</summary>
     public const int IncreasingFieldNumber = 1;
-    private float increasing_;
+    private uint increasing_;
+    /// <summary>
+    /// ✓
+    /// </summary>
     [global::System.Diagnostics.DebuggerNonUserCodeAttribute]
     [global::System.CodeDom.Compiler.GeneratedCode("protoc", null)]
-    public float Increasing {
+    public uint Increasing {
       get { return increasing_; }
       set {
         increasing_ = value;
@@ -4390,10 +4805,13 @@ namespace PROTO {
 
     /// <summary>Field number for the "filtered_increasing" field.</summary>
     public const int FilteredIncreasingFieldNumber = 2;
-    private float filteredIncreasing_;
+    private uint filteredIncreasing_;
+    /// <summary>
+    /// ✓
+    /// </summary>
     [global::System.Diagnostics.DebuggerNonUserCodeAttribute]
     [global::System.CodeDom.Compiler.GeneratedCode("protoc", null)]
-    public float FilteredIncreasing {
+    public uint FilteredIncreasing {
       get { return filteredIncreasing_; }
       set {
         filteredIncreasing_ = value;
@@ -4402,10 +4820,13 @@ namespace PROTO {
 
     /// <summary>Field number for the "bounce" field.</summary>
     public const int BounceFieldNumber = 3;
-    private float bounce_;
+    private uint bounce_;
+    /// <summary>
+    /// ✓
+    /// </summary>
     [global::System.Diagnostics.DebuggerNonUserCodeAttribute]
     [global::System.CodeDom.Compiler.GeneratedCode("protoc", null)]
-    public float Bounce {
+    public uint Bounce {
       get { return bounce_; }
       set {
         bounce_ = value;
@@ -4414,10 +4835,13 @@ namespace PROTO {
 
     /// <summary>Field number for the "filtered_bounce" field.</summary>
     public const int FilteredBounceFieldNumber = 4;
-    private float filteredBounce_;
+    private uint filteredBounce_;
+    /// <summary>
+    /// ✓
+    /// </summary>
     [global::System.Diagnostics.DebuggerNonUserCodeAttribute]
     [global::System.CodeDom.Compiler.GeneratedCode("protoc", null)]
-    public float FilteredBounce {
+    public uint FilteredBounce {
       get { return filteredBounce_; }
       set {
         filteredBounce_ = value;
@@ -4426,10 +4850,13 @@ namespace PROTO {
 
     /// <summary>Field number for the "intensity_pause" field.</summary>
     public const int IntensityPauseFieldNumber = 5;
-    private float intensityPause_;
+    private uint intensityPause_;
+    /// <summary>
+    /// ✓
+    /// </summary>
     [global::System.Diagnostics.DebuggerNonUserCodeAttribute]
     [global::System.CodeDom.Compiler.GeneratedCode("protoc", null)]
-    public float IntensityPause {
+    public uint IntensityPause {
       get { return intensityPause_; }
       set {
         intensityPause_ = value;
@@ -4438,10 +4865,13 @@ namespace PROTO {
 
     /// <summary>Field number for the "filtered_intensity_pause" field.</summary>
     public const int FilteredIntensityPauseFieldNumber = 6;
-    private float filteredIntensityPause_;
+    private uint filteredIntensityPause_;
+    /// <summary>
+    /// ✓
+    /// </summary>
     [global::System.Diagnostics.DebuggerNonUserCodeAttribute]
     [global::System.CodeDom.Compiler.GeneratedCode("protoc", null)]
-    public float FilteredIntensityPause {
+    public uint FilteredIntensityPause {
       get { return filteredIntensityPause_; }
       set {
         filteredIntensityPause_ = value;
@@ -4450,10 +4880,13 @@ namespace PROTO {
 
     /// <summary>Field number for the "bounce_pause" field.</summary>
     public const int BouncePauseFieldNumber = 7;
-    private float bouncePause_;
+    private uint bouncePause_;
+    /// <summary>
+    /// ✓
+    /// </summary>
     [global::System.Diagnostics.DebuggerNonUserCodeAttribute]
     [global::System.CodeDom.Compiler.GeneratedCode("protoc", null)]
-    public float BouncePause {
+    public uint BouncePause {
       get { return bouncePause_; }
       set {
         bouncePause_ = value;
@@ -4462,10 +4895,13 @@ namespace PROTO {
 
     /// <summary>Field number for the "filtered_bounce_pause" field.</summary>
     public const int FilteredBouncePauseFieldNumber = 8;
-    private float filteredBouncePause_;
+    private uint filteredBouncePause_;
+    /// <summary>
+    /// ✓
+    /// </summary>
     [global::System.Diagnostics.DebuggerNonUserCodeAttribute]
     [global::System.CodeDom.Compiler.GeneratedCode("protoc", null)]
-    public float FilteredBouncePause {
+    public uint FilteredBouncePause {
       get { return filteredBouncePause_; }
       set {
         filteredBouncePause_ = value;
@@ -4487,14 +4923,14 @@ namespace PROTO {
       if (ReferenceEquals(other, this)) {
         return true;
       }
-      if (!pbc::ProtobufEqualityComparers.BitwiseSingleEqualityComparer.Equals(Increasing, other.Increasing)) return false;
-      if (!pbc::ProtobufEqualityComparers.BitwiseSingleEqualityComparer.Equals(FilteredIncreasing, other.FilteredIncreasing)) return false;
-      if (!pbc::ProtobufEqualityComparers.BitwiseSingleEqualityComparer.Equals(Bounce, other.Bounce)) return false;
-      if (!pbc::ProtobufEqualityComparers.BitwiseSingleEqualityComparer.Equals(FilteredBounce, other.FilteredBounce)) return false;
-      if (!pbc::ProtobufEqualityComparers.BitwiseSingleEqualityComparer.Equals(IntensityPause, other.IntensityPause)) return false;
-      if (!pbc::ProtobufEqualityComparers.BitwiseSingleEqualityComparer.Equals(FilteredIntensityPause, other.FilteredIntensityPause)) return false;
-      if (!pbc::ProtobufEqualityComparers.BitwiseSingleEqualityComparer.Equals(BouncePause, other.BouncePause)) return false;
-      if (!pbc::ProtobufEqualityComparers.BitwiseSingleEqualityComparer.Equals(FilteredBouncePause, other.FilteredBouncePause)) return false;
+      if (Increasing != other.Increasing) return false;
+      if (FilteredIncreasing != other.FilteredIncreasing) return false;
+      if (Bounce != other.Bounce) return false;
+      if (FilteredBounce != other.FilteredBounce) return false;
+      if (IntensityPause != other.IntensityPause) return false;
+      if (FilteredIntensityPause != other.FilteredIntensityPause) return false;
+      if (BouncePause != other.BouncePause) return false;
+      if (FilteredBouncePause != other.FilteredBouncePause) return false;
       return Equals(_unknownFields, other._unknownFields);
     }
 
@@ -4502,14 +4938,14 @@ namespace PROTO {
     [global::System.CodeDom.Compiler.GeneratedCode("protoc", null)]
     public override int GetHashCode() {
       int hash = 1;
-      if (Increasing != 0F) hash ^= pbc::ProtobufEqualityComparers.BitwiseSingleEqualityComparer.GetHashCode(Increasing);
-      if (FilteredIncreasing != 0F) hash ^= pbc::ProtobufEqualityComparers.BitwiseSingleEqualityComparer.GetHashCode(FilteredIncreasing);
-      if (Bounce != 0F) hash ^= pbc::ProtobufEqualityComparers.BitwiseSingleEqualityComparer.GetHashCode(Bounce);
-      if (FilteredBounce != 0F) hash ^= pbc::ProtobufEqualityComparers.BitwiseSingleEqualityComparer.GetHashCode(FilteredBounce);
-      if (IntensityPause != 0F) hash ^= pbc::ProtobufEqualityComparers.BitwiseSingleEqualityComparer.GetHashCode(IntensityPause);
-      if (FilteredIntensityPause != 0F) hash ^= pbc::ProtobufEqualityComparers.BitwiseSingleEqualityComparer.GetHashCode(FilteredIntensityPause);
-      if (BouncePause != 0F) hash ^= pbc::ProtobufEqualityComparers.BitwiseSingleEqualityComparer.GetHashCode(BouncePause);
-      if (FilteredBouncePause != 0F) hash ^= pbc::ProtobufEqualityComparers.BitwiseSingleEqualityComparer.GetHashCode(FilteredBouncePause);
+      if (Increasing != 0) hash ^= Increasing.GetHashCode();
+      if (FilteredIncreasing != 0) hash ^= FilteredIncreasing.GetHashCode();
+      if (Bounce != 0) hash ^= Bounce.GetHashCode();
+      if (FilteredBounce != 0) hash ^= FilteredBounce.GetHashCode();
+      if (IntensityPause != 0) hash ^= IntensityPause.GetHashCode();
+      if (FilteredIntensityPause != 0) hash ^= FilteredIntensityPause.GetHashCode();
+      if (BouncePause != 0) hash ^= BouncePause.GetHashCode();
+      if (FilteredBouncePause != 0) hash ^= FilteredBouncePause.GetHashCode();
       if (_unknownFields != null) {
         hash ^= _unknownFields.GetHashCode();
       }
@@ -4528,37 +4964,37 @@ namespace PROTO {
     #if !GOOGLE_PROTOBUF_REFSTRUCT_COMPATIBILITY_MODE
       output.WriteRawMessage(this);
     #else
-      if (Increasing != 0F) {
-        output.WriteRawTag(13);
-        output.WriteFloat(Increasing);
+      if (Increasing != 0) {
+        output.WriteRawTag(8);
+        output.WriteUInt32(Increasing);
       }
-      if (FilteredIncreasing != 0F) {
-        output.WriteRawTag(21);
-        output.WriteFloat(FilteredIncreasing);
+      if (FilteredIncreasing != 0) {
+        output.WriteRawTag(16);
+        output.WriteUInt32(FilteredIncreasing);
       }
-      if (Bounce != 0F) {
-        output.WriteRawTag(29);
-        output.WriteFloat(Bounce);
+      if (Bounce != 0) {
+        output.WriteRawTag(24);
+        output.WriteUInt32(Bounce);
       }
-      if (FilteredBounce != 0F) {
-        output.WriteRawTag(37);
-        output.WriteFloat(FilteredBounce);
+      if (FilteredBounce != 0) {
+        output.WriteRawTag(32);
+        output.WriteUInt32(FilteredBounce);
       }
-      if (IntensityPause != 0F) {
-        output.WriteRawTag(45);
-        output.WriteFloat(IntensityPause);
+      if (IntensityPause != 0) {
+        output.WriteRawTag(40);
+        output.WriteUInt32(IntensityPause);
       }
-      if (FilteredIntensityPause != 0F) {
-        output.WriteRawTag(53);
-        output.WriteFloat(FilteredIntensityPause);
+      if (FilteredIntensityPause != 0) {
+        output.WriteRawTag(48);
+        output.WriteUInt32(FilteredIntensityPause);
       }
-      if (BouncePause != 0F) {
-        output.WriteRawTag(61);
-        output.WriteFloat(BouncePause);
+      if (BouncePause != 0) {
+        output.WriteRawTag(56);
+        output.WriteUInt32(BouncePause);
       }
-      if (FilteredBouncePause != 0F) {
-        output.WriteRawTag(69);
-        output.WriteFloat(FilteredBouncePause);
+      if (FilteredBouncePause != 0) {
+        output.WriteRawTag(64);
+        output.WriteUInt32(FilteredBouncePause);
       }
       if (_unknownFields != null) {
         _unknownFields.WriteTo(output);
@@ -4570,37 +5006,37 @@ namespace PROTO {
     [global::System.Diagnostics.DebuggerNonUserCodeAttribute]
     [global::System.CodeDom.Compiler.GeneratedCode("protoc", null)]
     void pb::IBufferMessage.InternalWriteTo(ref pb::WriteContext output) {
-      if (Increasing != 0F) {
-        output.WriteRawTag(13);
-        output.WriteFloat(Increasing);
+      if (Increasing != 0) {
+        output.WriteRawTag(8);
+        output.WriteUInt32(Increasing);
       }
-      if (FilteredIncreasing != 0F) {
-        output.WriteRawTag(21);
-        output.WriteFloat(FilteredIncreasing);
+      if (FilteredIncreasing != 0) {
+        output.WriteRawTag(16);
+        output.WriteUInt32(FilteredIncreasing);
       }
-      if (Bounce != 0F) {
-        output.WriteRawTag(29);
-        output.WriteFloat(Bounce);
+      if (Bounce != 0) {
+        output.WriteRawTag(24);
+        output.WriteUInt32(Bounce);
       }
-      if (FilteredBounce != 0F) {
-        output.WriteRawTag(37);
-        output.WriteFloat(FilteredBounce);
+      if (FilteredBounce != 0) {
+        output.WriteRawTag(32);
+        output.WriteUInt32(FilteredBounce);
       }
-      if (IntensityPause != 0F) {
-        output.WriteRawTag(45);
-        output.WriteFloat(IntensityPause);
+      if (IntensityPause != 0) {
+        output.WriteRawTag(40);
+        output.WriteUInt32(IntensityPause);
       }
-      if (FilteredIntensityPause != 0F) {
-        output.WriteRawTag(53);
-        output.WriteFloat(FilteredIntensityPause);
+      if (FilteredIntensityPause != 0) {
+        output.WriteRawTag(48);
+        output.WriteUInt32(FilteredIntensityPause);
       }
-      if (BouncePause != 0F) {
-        output.WriteRawTag(61);
-        output.WriteFloat(BouncePause);
+      if (BouncePause != 0) {
+        output.WriteRawTag(56);
+        output.WriteUInt32(BouncePause);
       }
-      if (FilteredBouncePause != 0F) {
-        output.WriteRawTag(69);
-        output.WriteFloat(FilteredBouncePause);
+      if (FilteredBouncePause != 0) {
+        output.WriteRawTag(64);
+        output.WriteUInt32(FilteredBouncePause);
       }
       if (_unknownFields != null) {
         _unknownFields.WriteTo(ref output);
@@ -4612,29 +5048,29 @@ namespace PROTO {
     [global::System.CodeDom.Compiler.GeneratedCode("protoc", null)]
     public int CalculateSize() {
       int size = 0;
-      if (Increasing != 0F) {
-        size += 1 + 4;
+      if (Increasing != 0) {
+        size += 1 + pb::CodedOutputStream.ComputeUInt32Size(Increasing);
       }
-      if (FilteredIncreasing != 0F) {
-        size += 1 + 4;
+      if (FilteredIncreasing != 0) {
+        size += 1 + pb::CodedOutputStream.ComputeUInt32Size(FilteredIncreasing);
       }
-      if (Bounce != 0F) {
-        size += 1 + 4;
+      if (Bounce != 0) {
+        size += 1 + pb::CodedOutputStream.ComputeUInt32Size(Bounce);
       }
-      if (FilteredBounce != 0F) {
-        size += 1 + 4;
+      if (FilteredBounce != 0) {
+        size += 1 + pb::CodedOutputStream.ComputeUInt32Size(FilteredBounce);
       }
-      if (IntensityPause != 0F) {
-        size += 1 + 4;
+      if (IntensityPause != 0) {
+        size += 1 + pb::CodedOutputStream.ComputeUInt32Size(IntensityPause);
       }
-      if (FilteredIntensityPause != 0F) {
-        size += 1 + 4;
+      if (FilteredIntensityPause != 0) {
+        size += 1 + pb::CodedOutputStream.ComputeUInt32Size(FilteredIntensityPause);
       }
-      if (BouncePause != 0F) {
-        size += 1 + 4;
+      if (BouncePause != 0) {
+        size += 1 + pb::CodedOutputStream.ComputeUInt32Size(BouncePause);
       }
-      if (FilteredBouncePause != 0F) {
-        size += 1 + 4;
+      if (FilteredBouncePause != 0) {
+        size += 1 + pb::CodedOutputStream.ComputeUInt32Size(FilteredBouncePause);
       }
       if (_unknownFields != null) {
         size += _unknownFields.CalculateSize();
@@ -4648,28 +5084,28 @@ namespace PROTO {
       if (other == null) {
         return;
       }
-      if (other.Increasing != 0F) {
+      if (other.Increasing != 0) {
         Increasing = other.Increasing;
       }
-      if (other.FilteredIncreasing != 0F) {
+      if (other.FilteredIncreasing != 0) {
         FilteredIncreasing = other.FilteredIncreasing;
       }
-      if (other.Bounce != 0F) {
+      if (other.Bounce != 0) {
         Bounce = other.Bounce;
       }
-      if (other.FilteredBounce != 0F) {
+      if (other.FilteredBounce != 0) {
         FilteredBounce = other.FilteredBounce;
       }
-      if (other.IntensityPause != 0F) {
+      if (other.IntensityPause != 0) {
         IntensityPause = other.IntensityPause;
       }
-      if (other.FilteredIntensityPause != 0F) {
+      if (other.FilteredIntensityPause != 0) {
         FilteredIntensityPause = other.FilteredIntensityPause;
       }
-      if (other.BouncePause != 0F) {
+      if (other.BouncePause != 0) {
         BouncePause = other.BouncePause;
       }
-      if (other.FilteredBouncePause != 0F) {
+      if (other.FilteredBouncePause != 0) {
         FilteredBouncePause = other.FilteredBouncePause;
       }
       _unknownFields = pb::UnknownFieldSet.MergeFrom(_unknownFields, other._unknownFields);
@@ -4691,36 +5127,36 @@ namespace PROTO {
           default:
             _unknownFields = pb::UnknownFieldSet.MergeFieldFrom(_unknownFields, input);
             break;
-          case 13: {
-            Increasing = input.ReadFloat();
+          case 8: {
+            Increasing = input.ReadUInt32();
             break;
           }
-          case 21: {
-            FilteredIncreasing = input.ReadFloat();
+          case 16: {
+            FilteredIncreasing = input.ReadUInt32();
             break;
           }
-          case 29: {
-            Bounce = input.ReadFloat();
+          case 24: {
+            Bounce = input.ReadUInt32();
             break;
           }
-          case 37: {
-            FilteredBounce = input.ReadFloat();
+          case 32: {
+            FilteredBounce = input.ReadUInt32();
             break;
           }
-          case 45: {
-            IntensityPause = input.ReadFloat();
+          case 40: {
+            IntensityPause = input.ReadUInt32();
             break;
           }
-          case 53: {
-            FilteredIntensityPause = input.ReadFloat();
+          case 48: {
+            FilteredIntensityPause = input.ReadUInt32();
             break;
           }
-          case 61: {
-            BouncePause = input.ReadFloat();
+          case 56: {
+            BouncePause = input.ReadUInt32();
             break;
           }
-          case 69: {
-            FilteredBouncePause = input.ReadFloat();
+          case 64: {
+            FilteredBouncePause = input.ReadUInt32();
             break;
           }
         }
@@ -4742,36 +5178,36 @@ namespace PROTO {
           default:
             _unknownFields = pb::UnknownFieldSet.MergeFieldFrom(_unknownFields, ref input);
             break;
-          case 13: {
-            Increasing = input.ReadFloat();
+          case 8: {
+            Increasing = input.ReadUInt32();
             break;
           }
-          case 21: {
-            FilteredIncreasing = input.ReadFloat();
+          case 16: {
+            FilteredIncreasing = input.ReadUInt32();
             break;
           }
-          case 29: {
-            Bounce = input.ReadFloat();
+          case 24: {
+            Bounce = input.ReadUInt32();
             break;
           }
-          case 37: {
-            FilteredBounce = input.ReadFloat();
+          case 32: {
+            FilteredBounce = input.ReadUInt32();
             break;
           }
-          case 45: {
-            IntensityPause = input.ReadFloat();
+          case 40: {
+            IntensityPause = input.ReadUInt32();
             break;
           }
-          case 53: {
-            FilteredIntensityPause = input.ReadFloat();
+          case 48: {
+            FilteredIntensityPause = input.ReadUInt32();
             break;
           }
-          case 61: {
-            BouncePause = input.ReadFloat();
+          case 56: {
+            BouncePause = input.ReadUInt32();
             break;
           }
-          case 69: {
-            FilteredBouncePause = input.ReadFloat();
+          case 64: {
+            FilteredBouncePause = input.ReadUInt32();
             break;
           }
         }
@@ -4796,7 +5232,7 @@ namespace PROTO {
     [global::System.Diagnostics.DebuggerNonUserCodeAttribute]
     [global::System.CodeDom.Compiler.GeneratedCode("protoc", null)]
     public static pbr::MessageDescriptor Descriptor {
-      get { return global::PROTO.AudiolinkDataReflection.Descriptor.MessageTypes[14]; }
+      get { return global::PROTO.AudiolinkDataReflection.Descriptor.MessageTypes[15]; }
     }
 
     [global::System.Diagnostics.DebuggerNonUserCodeAttribute]
@@ -4832,6 +5268,9 @@ namespace PROTO {
     /// <summary>Field number for the "bass" field.</summary>
     public const int BassFieldNumber = 1;
     private global::PROTO.ChronotensityBand bass_;
+    /// <summary>
+    /// ✓
+    /// </summary>
     [global::System.Diagnostics.DebuggerNonUserCodeAttribute]
     [global::System.CodeDom.Compiler.GeneratedCode("protoc", null)]
     public global::PROTO.ChronotensityBand Bass {
@@ -4844,6 +5283,9 @@ namespace PROTO {
     /// <summary>Field number for the "lowmid" field.</summary>
     public const int LowmidFieldNumber = 2;
     private global::PROTO.ChronotensityBand lowmid_;
+    /// <summary>
+    /// ✓
+    /// </summary>
     [global::System.Diagnostics.DebuggerNonUserCodeAttribute]
     [global::System.CodeDom.Compiler.GeneratedCode("protoc", null)]
     public global::PROTO.ChronotensityBand Lowmid {
@@ -4856,6 +5298,9 @@ namespace PROTO {
     /// <summary>Field number for the "highmid" field.</summary>
     public const int HighmidFieldNumber = 3;
     private global::PROTO.ChronotensityBand highmid_;
+    /// <summary>
+    /// ✓
+    /// </summary>
     [global::System.Diagnostics.DebuggerNonUserCodeAttribute]
     [global::System.CodeDom.Compiler.GeneratedCode("protoc", null)]
     public global::PROTO.ChronotensityBand Highmid {
@@ -4868,6 +5313,9 @@ namespace PROTO {
     /// <summary>Field number for the "treble" field.</summary>
     public const int TrebleFieldNumber = 4;
     private global::PROTO.ChronotensityBand treble_;
+    /// <summary>
+    /// ✓
+    /// </summary>
     [global::System.Diagnostics.DebuggerNonUserCodeAttribute]
     [global::System.CodeDom.Compiler.GeneratedCode("protoc", null)]
     public global::PROTO.ChronotensityBand Treble {
@@ -5144,7 +5592,7 @@ namespace PROTO {
     [global::System.Diagnostics.DebuggerNonUserCodeAttribute]
     [global::System.CodeDom.Compiler.GeneratedCode("protoc", null)]
     public static pbr::MessageDescriptor Descriptor {
-      get { return global::PROTO.AudiolinkDataReflection.Descriptor.MessageTypes[15]; }
+      get { return global::PROTO.AudiolinkDataReflection.Descriptor.MessageTypes[16]; }
     }
 
     [global::System.Diagnostics.DebuggerNonUserCodeAttribute]
@@ -5180,6 +5628,9 @@ namespace PROTO {
     /// <summary>Field number for the "playerName" field.</summary>
     public const int PlayerNameFieldNumber = 1;
     private string playerName_ = "";
+    /// <summary>
+    /// ✓
+    /// </summary>
     [global::System.Diagnostics.DebuggerNonUserCodeAttribute]
     [global::System.CodeDom.Compiler.GeneratedCode("protoc", null)]
     public string PlayerName {
@@ -5192,6 +5643,9 @@ namespace PROTO {
     /// <summary>Field number for the "masterName" field.</summary>
     public const int MasterNameFieldNumber = 2;
     private string masterName_ = "";
+    /// <summary>
+    /// ✓
+    /// </summary>
     [global::System.Diagnostics.DebuggerNonUserCodeAttribute]
     [global::System.CodeDom.Compiler.GeneratedCode("protoc", null)]
     public string MasterName {
@@ -5220,6 +5674,9 @@ namespace PROTO {
     /// <summary>Field number for the "customString2" field.</summary>
     public const int CustomString2FieldNumber = 4;
     private string customString2_ = "";
+    /// <summary>
+    /// ✓
+    /// </summary>
     [global::System.Diagnostics.DebuggerNonUserCodeAttribute]
     [global::System.CodeDom.Compiler.GeneratedCode("protoc", null)]
     public string CustomString2 {
@@ -5457,7 +5914,7 @@ namespace PROTO {
     [global::System.Diagnostics.DebuggerNonUserCodeAttribute]
     [global::System.CodeDom.Compiler.GeneratedCode("protoc", null)]
     public static pbr::MessageDescriptor Descriptor {
-      get { return global::PROTO.AudiolinkDataReflection.Descriptor.MessageTypes[16]; }
+      get { return global::PROTO.AudiolinkDataReflection.Descriptor.MessageTypes[17]; }
     }
 
     [global::System.Diagnostics.DebuggerNonUserCodeAttribute]
@@ -5575,6 +6032,9 @@ namespace PROTO {
     /// <summary>Field number for the "general_vu" field.</summary>
     public const int GeneralVuFieldNumber = 6;
     private global::PROTO.GeneralVU generalVu_;
+    /// <summary>
+    /// ✓
+    /// </summary>
     [global::System.Diagnostics.DebuggerNonUserCodeAttribute]
     [global::System.CodeDom.Compiler.GeneratedCode("protoc", null)]
     public global::PROTO.GeneralVU GeneralVu {
@@ -5602,6 +6062,9 @@ namespace PROTO {
     /// <summary>Field number for the "autocorrelator" field.</summary>
     public const int AutocorrelatorFieldNumber = 8;
     private global::PROTO.AutoCorrelator autocorrelator_;
+    /// <summary>
+    /// ✓
+    /// </summary>
     [global::System.Diagnostics.DebuggerNonUserCodeAttribute]
     [global::System.CodeDom.Compiler.GeneratedCode("protoc", null)]
     public global::PROTO.AutoCorrelator Autocorrelator {
@@ -5614,6 +6077,9 @@ namespace PROTO {
     /// <summary>Field number for the "chronotensity" field.</summary>
     public const int ChronotensityFieldNumber = 9;
     private global::PROTO.Chronotensity chronotensity_;
+    /// <summary>
+    /// ✓
+    /// </summary>
     [global::System.Diagnostics.DebuggerNonUserCodeAttribute]
     [global::System.CodeDom.Compiler.GeneratedCode("protoc", null)]
     public global::PROTO.Chronotensity Chronotensity {
@@ -5626,6 +6092,9 @@ namespace PROTO {
     /// <summary>Field number for the "global_strings" field.</summary>
     public const int GlobalStringsFieldNumber = 10;
     private global::PROTO.GlobalStrings globalStrings_;
+    /// <summary>
+    /// ✓
+    /// </summary>
     [global::System.Diagnostics.DebuggerNonUserCodeAttribute]
     [global::System.CodeDom.Compiler.GeneratedCode("protoc", null)]
     public global::PROTO.GlobalStrings GlobalStrings {
@@ -6097,7 +6566,7 @@ namespace PROTO {
     [global::System.Diagnostics.DebuggerNonUserCodeAttribute]
     [global::System.CodeDom.Compiler.GeneratedCode("protoc", null)]
     public static pbr::MessageDescriptor Descriptor {
-      get { return global::PROTO.AudiolinkDataReflection.Descriptor.MessageTypes[17]; }
+      get { return global::PROTO.AudiolinkDataReflection.Descriptor.MessageTypes[18]; }
     }
 
     [global::System.Diagnostics.DebuggerNonUserCodeAttribute]

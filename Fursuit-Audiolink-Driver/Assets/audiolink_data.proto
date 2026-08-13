@@ -78,66 +78,72 @@ message WaveForm {
 
 //enum for playback state
 enum PlaybackState {
-    PLAYBACK_STATE_NONE = 0;
-    PLAYBACK_STATE_PLAYING = 1;
-    PLAYBACK_STATE_PAUSED = 2;
-    PLAYBACK_STATE_STOPPED = 3;
-    PLAYBACK_STATE_LOADING = 4;
-    PLAYBACK_STATE_STREAMING = 5;
-    PLAYBACK_STATE_ERROR = 6;
+    PLAYBACK_STATE_NONE = 0; // ✓
+    PLAYBACK_STATE_PLAYING = 1; // ✓
+    PLAYBACK_STATE_PAUSED = 2; // ✓
+    PLAYBACK_STATE_STOPPED = 3; // ✓
+    PLAYBACK_STATE_LOADING = 4; // ✓
+    PLAYBACK_STATE_STREAMING = 5; // ✓
+    PLAYBACK_STATE_ERROR = 6; // ✓
 }
 
 enum LoopOrRandom {
-    LOOP_OR_RANDOM_NONE = 0;
-    LOOP_OR_RANDOM_LOOP = 1;
-    LOOP_OR_RANDOM_LOOP_ONE = 2;
-    LOOP_OR_RANDOM_RANDOM = 3;
-    LOOP_OR_RANDOM_RANDOM_AND_LOOP = 4;
+    LOOP_OR_RANDOM_NONE = 0; // ✓
+    LOOP_OR_RANDOM_LOOP = 1; // ✓
+    LOOP_OR_RANDOM_LOOP_ONE = 2; // ✓
+    LOOP_OR_RANDOM_RANDOM = 3; // ✓
+    LOOP_OR_RANDOM_RANDOM_AND_LOOP = 4; // ✓
 }
 
 message MediaState {
     //0 to 1
-    float mediaVolume = 1;
+    float mediaVolume = 1; // ✓
     //0 to 1
-    float mediaTime = 2;
-    PlaybackState mediaPlayback = 3;
-    LoopOrRandom mediaLoop = 4;
+    float mediaTime = 2; // ✓
+    PlaybackState mediaPlayback = 3; // ✓
+    LoopOrRandom mediaLoop = 4; // ✓
 }
 
 message PlayerData {
-    int32 numberOfPlayers = 1;
-    bool isMaster = 2;
-    bool isOwner = 3;
+    uint32 numberOfPlayers = 1; // ✓
+    bool isMaster = 2; // ✓
+    bool isOwner = 3; // ✓
 }
 
 message Intensity {
-    float RMSLeft = 1;
-    float PeakLeft = 2;
-    float RMSRight = 3;
-    float PeakRight = 4;
+    float RMSLeft = 1; // ✓
+    float PeakLeft = 2; // ✓
+    float RMSRight = 3; // ✓
+    float PeakRight = 4; // ✓
 }
 
 message Autogain {
-    float asymmetricGain = 1;
-    float symmetricGain = 2;
+    float asymmetricGain = 1; // ✓
+    float symmetricGain = 2; // ✓
+}
+
+message Position {
+    double lat = 1; // ✓
+    double lon = 2; // ✓
 }
 
 message GeneralVU {
-    float versionMajor = 1;
-    float versionMinor = 2;
-    float systemFPS = 3;
-    float audioLinkFPS = 4;
-    double msSinceInstanceStart = 5;
-    double msSinceMidnightLocal = 6;
-    double msInNetworkTime = 7;
-    MediaState media_state = 8;
-    PlayerData player_data = 9;
-    Intensity current_intensity = 10;
-    Intensity marker_value = 11;
-    Intensity marker_times = 12;
-    Autogain autogain = 13;
-    double UTCDaysSinceEpoch = 14;
-    double msSinceUTCDayStart = 15;
+    float versionMajor = 1; // ✓
+    float versionMinor = 2; // ✓
+    float systemFPS = 3; // ✓
+    float frameCount = 4; // ✓
+    double msSinceInstanceStart = 5; // ✓
+    double msSinceMidnightLocal = 6; // ✓
+    double msInNetworkTime = 7; // ✓
+    MediaState media_state = 8; // ✓
+    PlayerData player_data = 9; // ✓
+    Intensity current_intensity = 10; // ✓
+    Intensity marker_value = 11; // ✓
+    Intensity marker_times = 12; // ✓
+    Autogain autogain = 13; // ✓
+    double UTCDaysSinceEpoch = 14; // ✓
+    double msSinceUTCDayStart = 15; // ✓
+    Position position = 16; //Position of the Audiolink AudioSource in worldspace. Using lat lon for some fun opportunities
 }
 
 message ColorChord {
@@ -148,8 +154,8 @@ message ColorChord {
 }
 
 message AutoCorrelator {
-    repeated float autocorrelation = 1 [packed=true];
-    repeated float uncorrelated = 2 [packed=true];
+    repeated float autocorrelation = 1 [packed=true]; // ✓
+    repeated float uncorrelated = 2 [packed=true]; // ✓
 }
 
 //from audiolink docs
@@ -164,21 +170,21 @@ message AutoCorrelator {
 7	Same as above but uses ALPASS_FILTERAUDIOLINK instead of ALPASS_AUDIOLINK.
 */
 message ChronotensityBand {
-    float increasing = 1;
-    float filtered_increasing = 2;
-    float bounce = 3;
-    float filtered_bounce = 4;
-    float intensity_pause = 5;
-    float filtered_intensity_pause = 6;
-    float bounce_pause = 7;
-    float filtered_bounce_pause = 8;
+    uint32 increasing = 1; // ✓
+    uint32 filtered_increasing = 2; // ✓
+    uint32 bounce = 3; // ✓
+    uint32 filtered_bounce = 4; // ✓
+    uint32 intensity_pause = 5; // ✓
+    uint32 filtered_intensity_pause = 6; // ✓
+    uint32 bounce_pause = 7; // ✓
+    uint32 filtered_bounce_pause = 8; // ✓
 }
 
 message Chronotensity {
-    ChronotensityBand bass = 1;
-    ChronotensityBand lowmid = 2;
-    ChronotensityBand highmid = 3;
-    ChronotensityBand treble = 4;
+    ChronotensityBand bass = 1; // ✓
+    ChronotensityBand lowmid = 2; // ✓
+    ChronotensityBand highmid = 3; // ✓
+    ChronotensityBand treble = 4; // ✓
 }
 
 //each string is 0 to 31 long
@@ -199,10 +205,10 @@ message Audiolink_Data {
     //Not sent currently as it utterly packs the data and causes a bunch of packets to be sent
     //Unclear if anyone will ever use it. Potentially look into higher data rate systems to resolve this
     WaveForm waveform = 5; // ✓
-    GeneralVU general_vu = 6;
+    GeneralVU general_vu = 6; // ✓
     ColorChord colorchord = 7; // ✓
-    AutoCorrelator autocorrelator = 8;
-    Chronotensity chronotensity = 9;
+    AutoCorrelator autocorrelator = 8; // ✓
+    Chronotensity chronotensity = 9; // ✓
     GlobalStrings global_strings = 10; // ✓
 }
 

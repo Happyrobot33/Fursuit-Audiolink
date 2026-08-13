@@ -198,7 +198,35 @@ static void led_update_task(void *arg) {
             uint32_t elapsed_time_ms = current_time_ms - last_log_time_ms;
             if (elapsed_time_ms >= 1000) {
                 float framerate = (frame_count * 1000.0f) / elapsed_time_ms;
-                ESP_LOGI(TAG, "Framerate: %.1f FPS", framerate);
+                ReceiverPerfSnapshot perf = {};
+                receiver_take_perf_snapshot(perf);
+
+                const float window_ms = static_cast<float>(elapsed_time_ms);
+                const float rx_ms = static_cast<float>(perf.rx_callback_time_us) / 1000.0f;
+                const float decode_ms = static_cast<float>(perf.decode_time_us) / 1000.0f;
+                const float decode_zlib_ms = static_cast<float>(perf.decode_zlib_time_us) / 1000.0f;
+                const float decode_nanopb_ms = static_cast<float>(perf.decode_nanopb_time_us) / 1000.0f;
+                const float rx_share_pct = window_ms > 0.0f ? (rx_ms * 100.0f / window_ms) : 0.0f;
+                const float decode_share_pct = window_ms > 0.0f ? (decode_ms * 100.0f / window_ms) : 0.0f;
+                const float decode_zlib_share_pct = window_ms > 0.0f ? (decode_zlib_ms * 100.0f / window_ms) : 0.0f;
+                const float decode_nanopb_share_pct = window_ms > 0.0f ? (decode_nanopb_ms * 100.0f / window_ms) : 0.0f;
+
+                ESP_LOGI(TAG,
+                         "Framerate: %.1f FPS | recv: %.2fms (%.1f%%, packets=%u bytes=%u frames=%u) | decode: %.2fms (%.1f%%, zlib %.2fms/%.1f%%, nanopb %.2fms/%.1f%%, ok=%u fail=%u)",
+                         framerate,
+                         rx_ms,
+                         rx_share_pct,
+                         perf.rx_packets,
+                         perf.rx_total_bytes,
+                         perf.rx_completed_frames,
+                         decode_ms,
+                         decode_share_pct,
+                         decode_zlib_ms,
+                         decode_zlib_share_pct,
+                         decode_nanopb_ms,
+                         decode_nanopb_share_pct,
+                         perf.decode_successes,
+                         perf.decode_failures);
                 frame_count = 0;
                 last_log_time_ms = current_time_ms;
             }

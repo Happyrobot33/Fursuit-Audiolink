@@ -1007,7 +1007,7 @@ RectTransform:
   m_AnchorMin: {x: 0, y: 0}
   m_AnchorMax: {x: 0, y: 0}
   m_AnchoredPosition: {x: 0, y: 0}
-  m_SizeDelta: {x: 0, y: 0}
+  m_SizeDelta: {x: 0, y: 130.75876}
   m_Pivot: {x: 0, y: 0}
 --- !u!114 &514124468
 MonoBehaviour:
@@ -1617,7 +1617,7 @@ Transform:
   m_PrefabAsset: {fileID: 0}
   m_GameObject: {fileID: 737409370}
   m_LocalRotation: {x: 0, y: 0, z: 0, w: 1}
-  m_LocalPosition: {x: 0, y: 0, z: 0}
+  m_LocalPosition: {x: 43.012566, y: -83.68772, z: 0}
   m_LocalScale: {x: 1, y: 1, z: 1}
   m_ConstrainProportionsScale: 0
   m_Children: []
@@ -1821,7 +1821,7 @@ RectTransform:
   m_AnchorMin: {x: 0, y: 0}
   m_AnchorMax: {x: 0, y: 0}
   m_AnchoredPosition: {x: 0, y: 0}
-  m_SizeDelta: {x: 0, y: 0}
+  m_SizeDelta: {x: 0, y: 232.46}
   m_Pivot: {x: 0, y: 0}
 --- !u!114 &1050810398
 MonoBehaviour:
@@ -2236,7 +2236,7 @@ RectTransform:
   m_AnchorMin: {x: 0, y: 0}
   m_AnchorMax: {x: 0, y: 0}
   m_AnchoredPosition: {x: 0, y: 0}
-  m_SizeDelta: {x: 0, y: 0}
+  m_SizeDelta: {x: 0, y: 130.75876}
   m_Pivot: {x: 0, y: 0}
 --- !u!114 &1419741900
 MonoBehaviour:
@@ -5804,7 +5804,7 @@ MonoBehaviour:
   customThemeColor2: {r: 1, g: 0, b: 0, a: 1}
   customThemeColor3: {r: 0, g: 1, b: 0, a: 1}
   customString1: This is a test
-  customString2: 
+  customString2: Longer testing text wawawa
   audioMaterial: {fileID: 2100000, guid: 5189d837989b9144e8e43d3ce618e450, type: 2}
   audioRenderTexture: {fileID: 8600000, guid: f51fa799ef0abde489235f40fc0328ef, type: 2}
   audioDataToggle: 1

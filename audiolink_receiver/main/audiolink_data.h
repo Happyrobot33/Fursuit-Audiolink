@@ -92,7 +92,7 @@ struct MediaState {
 };
 
 struct PlayerData {
-    int32_t numberOfPlayers = 0;
+    uint32_t numberOfPlayers = 0;
     bool isMaster = false;
     bool isOwner = false;
 };
@@ -109,11 +109,16 @@ struct Autogain {
     float symmetricGain = 0.0f;
 };
 
+struct Position {
+    double lat = 0.0;
+    double lon = 0.0;
+};
+
 struct GeneralVU {
     float versionMajor = 0.0f;
     float versionMinor = 0.0f;
     float systemFPS = 0.0f;
-    float audioLinkFPS = 0.0f;
+    float frameCount = 0.0f;
     double msSinceInstanceStart = 0.0;
     double msSinceMidnightLocal = 0.0;
     double msInNetworkTime = 0.0;
@@ -125,6 +130,7 @@ struct GeneralVU {
     Autogain autogain;
     double UTCDaysSinceEpoch = 0.0;
     double msSinceUTCDayStart = 0.0;
+    Position position;
 };
 
 struct ColorChord {
@@ -140,14 +146,14 @@ struct AutoCorrelator {
 };
 
 struct ChronotensityBand {
-    float increasing = 0.0f;
-    float filtered_increasing = 0.0f;
-    float bounce = 0.0f;
-    float filtered_bounce = 0.0f;
-    float intensity_pause = 0.0f;
-    float filtered_intensity_pause = 0.0f;
-    float bounce_pause = 0.0f;
-    float filtered_bounce_pause = 0.0f;
+    uint32_t increasing = 0;
+    uint32_t filtered_increasing = 0;
+    uint32_t bounce = 0;
+    uint32_t filtered_bounce = 0;
+    uint32_t intensity_pause = 0;
+    uint32_t filtered_intensity_pause = 0;
+    uint32_t bounce_pause = 0;
+    uint32_t filtered_bounce_pause = 0;
 };
 
 struct Chronotensity {

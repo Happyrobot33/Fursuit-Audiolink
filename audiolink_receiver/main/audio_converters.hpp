@@ -421,6 +421,34 @@ public:
     }
 };
 
+class PositionConverter : public MessageConverter<
+        PositionConverter,
+        Position,
+        PROTO_Position,
+        &PROTO_Position_msg>
+{
+public:
+    static ProtoType encoderInit(const LocalType& local) {
+        return ProtoType{
+                .lat = local.lat,
+                .lon = local.lon
+        };
+    }
+
+    static ProtoType decoderInit(LocalType& local) {
+        return ProtoType{
+                .lat = local.lat,
+                .lon = local.lon
+        };
+    }
+
+    static bool decoderApply(const ProtoType& proto, LocalType& local) {
+        local.lat = proto.lat;
+        local.lon = proto.lon;
+        return true;
+    }
+};
+
 class GeneralVUConverter : public MessageConverter<
         GeneralVUConverter,
         GeneralVU,
@@ -433,7 +461,7 @@ public:
                 .versionMajor = local.versionMajor,
                 .versionMinor = local.versionMinor,
                 .systemFPS = local.systemFPS,
-                .audioLinkFPS = local.audioLinkFPS,
+                .frameCount = local.frameCount,
                 .msSinceInstanceStart = local.msSinceInstanceStart,
                 .msSinceMidnightLocal = local.msSinceMidnightLocal,
                 .msInNetworkTime = local.msInNetworkTime,
@@ -450,7 +478,9 @@ public:
                 .has_autogain = true,
                 .autogain = AutogainConverter::encoderInit(local.autogain),
                 .UTCDaysSinceEpoch = local.UTCDaysSinceEpoch,
-                .msSinceUTCDayStart = local.msSinceUTCDayStart
+                .msSinceUTCDayStart = local.msSinceUTCDayStart,
+                .has_position = true,
+                .position = PositionConverter::encoderInit(local.position)
         };
     }
 
@@ -459,7 +489,7 @@ public:
                 .versionMajor = local.versionMajor,
                 .versionMinor = local.versionMinor,
                 .systemFPS = local.systemFPS,
-                .audioLinkFPS = local.audioLinkFPS,
+                .frameCount = local.frameCount,
                 .msSinceInstanceStart = local.msSinceInstanceStart,
                 .msSinceMidnightLocal = local.msSinceMidnightLocal,
                 .msInNetworkTime = local.msInNetworkTime,
@@ -476,7 +506,9 @@ public:
                 .has_autogain = true,
                 .autogain = AutogainConverter::decoderInit(local.autogain),
                 .UTCDaysSinceEpoch = local.UTCDaysSinceEpoch,
-                .msSinceUTCDayStart = local.msSinceUTCDayStart
+                .msSinceUTCDayStart = local.msSinceUTCDayStart,
+                .has_position = true,
+                .position = PositionConverter::decoderInit(local.position)
         };
     }
 
@@ -484,7 +516,7 @@ public:
         local.versionMajor = proto.versionMajor;
         local.versionMinor = proto.versionMinor;
         local.systemFPS = proto.systemFPS;
-        local.audioLinkFPS = proto.audioLinkFPS;
+        local.frameCount = proto.frameCount;
         local.msSinceInstanceStart = proto.msSinceInstanceStart;
         local.msSinceMidnightLocal = proto.msSinceMidnightLocal;
         local.msInNetworkTime = proto.msInNetworkTime;
@@ -496,7 +528,8 @@ public:
                IntensityConverter::decoderApply(proto.current_intensity, local.current_intensity) &&
                IntensityConverter::decoderApply(proto.marker_value, local.marker_value) &&
                IntensityConverter::decoderApply(proto.marker_times, local.marker_times) &&
-               AutogainConverter::decoderApply(proto.autogain, local.autogain);
+             AutogainConverter::decoderApply(proto.autogain, local.autogain) &&
+             PositionConverter::decoderApply(proto.position, local.position);
     }
 };
 

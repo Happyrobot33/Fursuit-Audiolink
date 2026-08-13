@@ -38,6 +38,24 @@ public class SerialExport : MonoBehaviour
     private bool serialConfigDirty = false;
     public bool generateNewData = true;
 
+    //flags enum for different features
+    [Flags]
+    public enum FeaturesEnum
+    {
+        Waveform = 1 << 0,
+        ThemeColors = 1 << 1,
+        History = 1 << 2,
+        DFT = 1 << 3,
+        FilteredAudiolink = 1 << 4,
+        Colorchord = 1 << 5,
+        GeneralVU = 1 << 6,
+        GlobalStrings = 1 << 7,
+        AutoCorrelator = 1 << 8,
+        Chronotensity = 1 << 9
+    }
+
+    public FeaturesEnum Features;
+
     void OnValidate()
     {
         serialConfigDirty = true;
@@ -101,7 +119,7 @@ public class SerialExport : MonoBehaviour
                 serialPort = new SerialPort(trimmedPortName, baudRate);
                 serialPort.Open();
                 //automatically derive the write timeout based on the baud rate and data size
-                int bytesToWrite = 4096 * 2; // Example value, adjust as needed
+                int bytesToWrite = 4096 * 4; // Example value, adjust as needed
                 int calculatedTimeoutMs = (int)((bytesToWrite * 10.0 / baudRate) * 1000.0 * 2.0);
                 serialPort.WriteTimeout = calculatedTimeoutMs;
                 Debug.Log("Serial port " + trimmedPortName + " opened successfully");
@@ -171,16 +189,59 @@ public class SerialExport : MonoBehaviour
             if (audioLink == null || !audioLink.rawAudioData.IsCreated || audioLink.rawAudioData.Length == 0)
                 return;
 
-            audiolink_Data.ThemeColors = getThemeColors();
-            audiolink_Data.History = getHistory();
-            audiolink_Data.Dft = getDFT();
-            audiolink_Data.FilteredAudiolink = getFilteredAudiolink();
-            audiolink_Data.Colorchord = getColorChord();
-            audiolink_Data.GeneralVu = getGeneralVU();
-            audiolink_Data.GlobalStrings = getGlobalStrings();
+            //hard clear the audiolink_Data object to avoid sending stale data
+            audiolink_Data = new Audiolink_Data();
+
+            if (Features.HasFlag(FeaturesEnum.Waveform))
+            {
+                audiolink_Data.Waveform = getWaveform();
+            }
+
+            if (Features.HasFlag(FeaturesEnum.History))
+            {
+                audiolink_Data.History = getHistory();
+            }
+
+            if (Features.HasFlag(FeaturesEnum.ThemeColors))
+            {            
+                audiolink_Data.ThemeColors = getThemeColors();
+            }
+
+            if (Features.HasFlag(FeaturesEnum.DFT))
+            {
+                audiolink_Data.Dft = getDFT();
+            }
+
+            if (Features.HasFlag(FeaturesEnum.FilteredAudiolink))
+            {
+                audiolink_Data.FilteredAudiolink = getFilteredAudiolink();
+            }
+
+            if (Features.HasFlag(FeaturesEnum.Colorchord))
+            {
+                audiolink_Data.Colorchord = getColorChord();
+            }
+
+            if (Features.HasFlag(FeaturesEnum.GeneralVU))
+            {
+                audiolink_Data.GeneralVu = getGeneralVU();
+            }
+
+            if (Features.HasFlag(FeaturesEnum.GlobalStrings))
+            {
+                audiolink_Data.GlobalStrings = getGlobalStrings();
+            }
+
+            if (Features.HasFlag(FeaturesEnum.AutoCorrelator))
+            {
+                audiolink_Data.Autocorrelator = getAutoCorrelator();
+            }
+
+            if (Features.HasFlag(FeaturesEnum.Chronotensity))
+            {
+                audiolink_Data.Chronotensity = getChronotensity();
+            }
             
-            //waveform is hard disabled for now, adds WAY too many bytes at the moment
-            //audiolink_Data.Waveform = getWaveform();
             
 
             byte[] protobufPacket = audiolink_Data.ToByteArray();
@@ -201,8 +262,11 @@ public class SerialExport : MonoBehaviour
                 float savingsPercent = originalSize > 0
                     ? (1f - (compressedSize / (float)originalSize)) * 100f
                     : 0f;
+                
+                const int packetSize = 1470;
+                int idealPackets = Mathf.CeilToInt(framedSize / (float)packetSize);
 
-                string packetSizeMessage = $"Packet size bytes - protobuf: {originalSize}, zlib: {compressedSize}, savings: {savingsPercent:F1}%, framed: {framedSize}";
+                string packetSizeMessage = $"Packet size bytes - protobuf: {originalSize}, zlib: {compressedSize}, savings: {savingsPercent:F1}%, framed: {framedSize}, ideal packets: {idealPackets}";
 
                 if (packetSizeText != null)
                 {
@@ -305,7 +369,6 @@ public class SerialExport : MonoBehaviour
         return sb.ToString();
     }
 
-    //FML NONE OF THIS SHIT BE WORKIN
     PROTO.GlobalStrings getGlobalStrings()
     {
         PROTO.GlobalStrings globalStrings = new GlobalStrings()
@@ -315,23 +378,202 @@ public class SerialExport : MonoBehaviour
             CustomString1 = getGlobalString(2),
             CustomString2 = getGlobalString(3)
         };
-        string test = "";
+        // string test = "";
         // test += getGlobalString(0) + "\n";
         // test += getGlobalString(1) + "\n";
         // test += getGlobalString(2) + "\n";
         // test += getGlobalString(3) + "\n";
         // Debug.Log(test);
         //interpret global string 2 in hex
-        Debug.Log("Global String 3: " + getGlobalString(3));
-        Debug.Log("Global String 3 Hex: " + BitConverter.ToString(Encoding.UTF8.GetBytes(getGlobalString(3))).Replace("-", " "));
+        // Debug.Log("Global String 3: " + getGlobalString(3));
+        // Debug.Log("Global String 3 Hex: " + BitConverter.ToString(Encoding.UTF8.GetBytes(getGlobalString(3))).Replace("-", " "));
         return globalStrings;
+    }
+
+    double AudioLinkDecodeDataAsDouble(Vector4 raw)
+    {
+        return raw.x + raw.y*1024 + raw.z * 1048576 + raw.w * 1073741824;
+    }
+
+    uint AudioLinkDecodeDataAsUInt(Vector4 raw)
+    {
+        return (uint)(raw.x + raw.y*1024 + raw.z * 1048576 + raw.w * 1073741824);
+    }
+
+    PROTO.PlayerData getPlayerData()
+    {
+        Vector2Int playerDataPos = new Vector2Int(6, 22);
+        uint numberOfPlayers = (uint)audioLink.rawAudioData[getIndexFromXY(playerDataPos.x, playerDataPos.y)].x;
+        bool isMaster = audioLink.rawAudioData[getIndexFromXY(playerDataPos.x, playerDataPos.y)].y > 0.5;
+        bool isOwner = audioLink.rawAudioData[getIndexFromXY(playerDataPos.x, playerDataPos.y)].z > 0.5;
+
+        PROTO.PlayerData playerData = new PROTO.PlayerData
+        {
+            NumberOfPlayers = numberOfPlayers,
+            IsMaster = isMaster,
+            IsOwner = isOwner
+        };
+        return playerData;
+    }
+
+    PROTO.Intensity getIntensity(Vector2Int pos)
+    {
+        float rmsleft = audioLink.rawAudioData[getIndexFromXY(pos.x, pos.y)].x;
+        float peakLeft = audioLink.rawAudioData[getIndexFromXY(pos.x, pos.y)].y;
+        float rmsRight = audioLink.rawAudioData[getIndexFromXY(pos.x, pos.y)].z;
+        float peakRight = audioLink.rawAudioData[getIndexFromXY(pos.x, pos.y)].w;
+
+        PROTO.Intensity protoIntensity = new PROTO.Intensity
+        {
+            RMSLeft = rmsleft,
+            PeakLeft = peakLeft,
+            RMSRight = rmsRight,
+            PeakRight = peakRight
+        };
+        return protoIntensity;
+    }
+
+    PROTO.Autogain getAutogain()
+    {
+        Vector2Int autogainPos = new Vector2Int(11, 22);
+        float assymetricfiltered = audioLink.rawAudioData[getIndexFromXY(autogainPos.x, autogainPos.y)].x;
+        float symmetricfiltered = audioLink.rawAudioData[getIndexFromXY(autogainPos.x, autogainPos.y)].y;
+
+        PROTO.Autogain protoAutogain = new PROTO.Autogain
+        {
+            AsymmetricGain = assymetricfiltered,
+            SymmetricGain = symmetricfiltered
+        };
+        return protoAutogain;
+    }
+
+    PROTO.ChronotensityBand getChronotensityBand(int bandIndex)
+    {
+        Vector2Int chronotensityPos = new Vector2Int(16, 28);
+        Vector2Int chronotensitySize = new Vector2Int(8, 1);
+
+        Vector2Int bandPos = new Vector2Int(chronotensityPos.x, chronotensityPos.y + bandIndex);
+
+        uint increasing = AudioLinkDecodeDataAsUInt(audioLink.rawAudioData[getIndexFromXY(bandPos.x, bandPos.y)]);
+        uint filtered_increasing = AudioLinkDecodeDataAsUInt(audioLink.rawAudioData[getIndexFromXY(bandPos.x + 1, bandPos.y)]);
+        uint bounce = AudioLinkDecodeDataAsUInt(audioLink.rawAudioData[getIndexFromXY(bandPos.x + 2, bandPos.y)]);
+        uint filtered_bounce = AudioLinkDecodeDataAsUInt(audioLink.rawAudioData[getIndexFromXY(bandPos.x + 3, bandPos.y)]);
+        uint intensity_pause = AudioLinkDecodeDataAsUInt(audioLink.rawAudioData[getIndexFromXY(bandPos.x + 4, bandPos.y)]);
+        uint filtered_intensity_pause = AudioLinkDecodeDataAsUInt(audioLink.rawAudioData[getIndexFromXY(bandPos.x + 5, bandPos.y)]);
+        uint bounce_pause = AudioLinkDecodeDataAsUInt(audioLink.rawAudioData[getIndexFromXY(bandPos.x + 6, bandPos.y)]);
+        uint filtered_bounce_pause = AudioLinkDecodeDataAsUInt(audioLink.rawAudioData[getIndexFromXY(bandPos.x + 7, bandPos.y)]);
+
+        PROTO.ChronotensityBand protoChronotensityBand = new PROTO.ChronotensityBand
+        {
+            Increasing = increasing,
+            FilteredIncreasing = filtered_increasing,
+            Bounce = bounce,
+            FilteredBounce = filtered_bounce,
+            IntensityPause = intensity_pause,
+            FilteredIntensityPause = filtered_intensity_pause,
+            BouncePause = bounce_pause,
+            FilteredBouncePause = filtered_bounce_pause
+        };
+        return protoChronotensityBand;
+    }
+
+    PROTO.Chronotensity getChronotensity()
+    {
+        PROTO.Chronotensity protoChronotensity = new PROTO.Chronotensity
+        {
+            Bass = getChronotensityBand(0),
+            Lowmid = getChronotensityBand(1),
+            Highmid = getChronotensityBand(2),
+            Treble = getChronotensityBand(3)
+        };
+        // printProtoDefinition(protoChronotensity);
+        return protoChronotensity;
+    }
+
+    PROTO.AutoCorrelator getAutoCorrelator()
+    {
+        Vector2Int autoCorrelatorPos = new Vector2Int(0, 27);
+        Vector2Int autoCorrelatorSize = new Vector2Int(128, 1);
+        float[] autocorrelatorData = new float[autoCorrelatorSize.x];
+        float[] uncorrelatedData = new float[autoCorrelatorSize.x];
+
+        for (int i = 0; i < autoCorrelatorSize.x; i++)
+        {
+            int dataIndex = getIndexFromXY(autoCorrelatorPos.x + i, autoCorrelatorPos.y);
+            autocorrelatorData[i] = audioLink.rawAudioData[dataIndex].x;
+            uncorrelatedData[i] = audioLink.rawAudioData[dataIndex].y;
+        }
+        PROTO.AutoCorrelator protoAutoCorrelator = new PROTO.AutoCorrelator
+        {
+            Autocorrelation = { autocorrelatorData },
+            Uncorrelated = { uncorrelatedData }
+        };
+        return protoAutoCorrelator;
     }
 
     PROTO.GeneralVU getGeneralVU()
     {
-        PROTO.GeneralVU generalVU = new PROTO.GeneralVU();
+        //bunch of data we need to collect beforehand. Yipee
+        Vector2Int versionPos = new Vector2Int(0, 22);
+        //x is deprecated single float version number. Not sent because its already deprecated so it shouldnt be used?
+        float versionMinor = audioLink.rawAudioData[getIndexFromXY(versionPos.x, versionPos.y)].y;
+        float systemFPS = audioLink.rawAudioData[getIndexFromXY(versionPos.x, versionPos.y)].z;
+        float versionMajor = audioLink.rawAudioData[getIndexFromXY(versionPos.x, versionPos.y)].w;
+
+        Vector2Int frameratePos = new Vector2Int(1, 22);
+        float frameCount = audioLink.rawAudioData[getIndexFromXY(frameratePos.x, frameratePos.y)].x;
+
+        Vector2Int msSinceInstanceStart = new Vector2Int(2, 22);
+        double msSinceStart = AudioLinkDecodeDataAsDouble(audioLink.rawAudioData[getIndexFromXY(msSinceInstanceStart.x, msSinceInstanceStart.y)]);
+
+        Vector2Int msSinceMidnightLocal = new Vector2Int(3, 22);
+        double msSinceMidnight = AudioLinkDecodeDataAsDouble(audioLink.rawAudioData[getIndexFromXY(msSinceMidnightLocal.x, msSinceMidnightLocal.y)]);
+
+        //the fuck is network time in this context
+        Vector2Int msInNetworkTime = new Vector2Int(4, 22);
+        double msNetworkTime = AudioLinkDecodeDataAsDouble(audioLink.rawAudioData[getIndexFromXY(msInNetworkTime.x, msInNetworkTime.y)]);
+
+        Vector2Int UTCDaysSinceEpochpos = new Vector2Int(5, 23);
+        double UTCDaysSinceEpoch = AudioLinkDecodeDataAsDouble(audioLink.rawAudioData[getIndexFromXY(UTCDaysSinceEpochpos.x, UTCDaysSinceEpochpos.y)]);
+
+        Vector2Int msSinceUTCDayStartpos = new Vector2Int(6, 23);
+        double msSinceUTCDayStart = AudioLinkDecodeDataAsDouble(audioLink.rawAudioData[getIndexFromXY(msSinceUTCDayStartpos.x, msSinceUTCDayStartpos.y)]);
+
+        Vector2Int mediaPosPos = new Vector2Int(7, 23);
+        Vector4 mediaPos = audioLink.rawAudioData[getIndexFromXY(mediaPosPos.x, mediaPosPos.y)];
+
+        PROTO.GeneralVU generalVU = new PROTO.GeneralVU
+        {
+            VersionMajor = versionMajor,
+            VersionMinor = versionMinor,
+            SystemFPS = systemFPS,
+            FrameCount = frameCount,
+            MsSinceInstanceStart = msSinceStart,
+            MsSinceMidnightLocal = msSinceMidnight,
+            MsInNetworkTime = msNetworkTime,
+            UTCDaysSinceEpoch = UTCDaysSinceEpoch,
+            MsSinceUTCDayStart = msSinceUTCDayStart,
+            Position = new PROTO.Position
+            {
+                Lat = mediaPos.x,
+                Lon = mediaPos.y,
+            }
+        };
         generalVU.MediaState = getMediaState();
+        generalVU.PlayerData = getPlayerData();
+        generalVU.CurrentIntensity = getIntensity(new Vector2Int(8, 22));
+        generalVU.MarkerValue = getIntensity(new Vector2Int(9, 22));
+        generalVU.MarkerTimes = getIntensity(new Vector2Int(10, 22));
+        generalVU.Autogain = getAutogain();
+        // printProtoDefinition(generalVU);
         return generalVU;
+    }
+
+    //helper function to print out a proto definition
+    void printProtoDefinition(IMessage protoMessage)
+    {
+        string protoDefinition = protoMessage.ToString();
+        Debug.Log(protoDefinition);
     }
 
     PROTO.MediaState getMediaState()
@@ -849,23 +1091,31 @@ public class SerialExport : MonoBehaviour
             G = color.g,
             B = color.b
         };
+        // //testing, represent as uint32 instead of float, to save space
+        // return new PROTO.Color
+        // {
+        //     R = (uint)(color.r * 255.0f),
+        //     G = (uint)(color.g * 255.0f),
+        //     B = (uint)(color.b * 255.0f)
+        // };
     }
 
-    // private uint[] floatArrayToUInt32Array(float[] floatArray)
+    // private uint[] floatArrayToScaledUInt32Array(float[] floatArray)
     // {
     //     uint[] uintArray = new uint[floatArray.Length];
     //     for (int i = 0; i < floatArray.Length; i++)
     //     {
-    //         uintArray[i] = floatToUInt32(floatArray[i]);
+    //         uintArray[i] = floatToScaledUInt32(floatArray[i]);
     //     }
     //     return uintArray;
     // }
 
-    // private uint floatToUInt32(float value)
+    // private uint floatToScaledUInt32(float value)
     // {
     //     // Clamp the value to [0, 1] range
     //     value = Mathf.Clamp01(value);
-    //     return (uint)(value * 255.0f);
+    //     const uint scaleFactor = uint.MaxValue;
+    //     return (uint)(value * scaleFactor);
     // }
 
     private byte[] CompressZlibPayload(byte[] input)
