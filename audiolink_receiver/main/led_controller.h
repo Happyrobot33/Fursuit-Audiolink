@@ -4,6 +4,7 @@
 #include <vector>
 #include "led_strip.h"
 #include "audiolink_data.h"
+#include "config.h"
 
 /**
  * @class LEDController
@@ -11,8 +12,6 @@
  */
 class LEDController {
 public:
-    static constexpr int LED_COUNT = 60;
-    
     LEDController();
     
     /**
@@ -32,7 +31,7 @@ public:
      */
     esp_err_t map_to_leds(led_strip_handle_t led_strip, 
                           const std::vector<float>& frequency_values,
-                          uint8_t start_pixel, uint8_t end_pixel, const Color& color);
+                          uint16_t start_pixel, uint16_t end_pixel, const Color& color);
     
     /**
      * Clear all LED pixels
@@ -50,13 +49,13 @@ public:
     /**
      * Set a specific LED pixel to a color
      * @param led_strip LED strip handle
-     * @param index LED index (0 to LED_COUNT-1)
+     * @param index LED index (0 to LED_STRIP_LED_NUMBERS-1)
      * @param color Color to set (float values 0.0-1.0)
      */
     void set_pixel(led_strip_handle_t led_strip, int index, const Color& color);
     
 private:
-    std::array<Color, LED_COUNT> pixels;
+    std::array<Color, LED_STRIP_LED_NUMBERS> pixels;
 };
 
 /**

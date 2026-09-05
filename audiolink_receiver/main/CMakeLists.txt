@@ -8,6 +8,7 @@ set(GENERATED_C "${CMAKE_CURRENT_BINARY_DIR}/audiolink_data.pb.c")
 idf_component_register(
     SRCS "main.cpp"
          "led_controller.cpp"
+             "matrix_controller.cpp"
          "receiver.cpp"
          "nanopb_cpp.cpp"
          "${GENERATED_C}"
@@ -15,10 +16,13 @@ idf_component_register(
                  "${CMAKE_CURRENT_BINARY_DIR}"
     REQUIRES    spi_flash
                 esp_driver_gpio
+                driver
+                esp_hal_i2s
                 esp_wifi
                 nvs_flash
                 esp_event
                 esp_netif
+                esp32-hub75-matrixpanel-dma
                 nanopb
                 zlib
 )

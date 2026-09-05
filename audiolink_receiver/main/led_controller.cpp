@@ -65,16 +65,16 @@ void hsv_to_rgb(float hue, float saturation, float value, uint8_t *r, uint8_t *g
 
 esp_err_t LEDController::map_to_leds(led_strip_handle_t led_strip, 
                                       const std::vector<float>& frequency_values,
-                                      uint8_t start_pixel, uint8_t end_pixel, const Color& color) {
+                                      uint16_t start_pixel, uint16_t end_pixel, const Color& color) {
     if (frequency_values.empty() || start_pixel >= end_pixel) {
         return ESP_FAIL;
     }
     
-    int pixel_range = end_pixel - start_pixel;
+    uint16_t pixel_range = end_pixel - start_pixel;
     
-    for (int i = start_pixel; i < end_pixel; i++) {
+    for (uint16_t i = start_pixel; i < end_pixel; i++) {
         /* Map position within range to frequency index */
-        int range_pos = i - start_pixel;
+        uint16_t range_pos = i - start_pixel;
         size_t idx = (range_pos * frequency_values.size()) / pixel_range;
         if (idx >= frequency_values.size()) {
             idx = frequency_values.size() - 1;
@@ -100,7 +100,7 @@ esp_err_t LEDController::map_to_leds(led_strip_handle_t led_strip,
 }
 
 void LEDController::clear(led_strip_handle_t led_strip) {
-    for (int i = 0; i < LED_STRIP_LED_NUMBERS; i++) {
+    for (uint16_t i = 0; i < LED_STRIP_LED_NUMBERS; i++) {
         pixels[i].R = 0;
         pixels[i].G = 0;
         pixels[i].B = 0;
@@ -118,7 +118,7 @@ void LEDController::set_pixel(led_strip_handle_t led_strip, int index, const Col
 }
 
 void LEDController::fill(led_strip_handle_t led_strip, const Color& color) {
-    for (int i = 0; i < LED_STRIP_LED_NUMBERS; i++) {
+    for (uint16_t i = 0; i < LED_STRIP_LED_NUMBERS; i++) {
         pixels[i] = color;
         ESP_ERROR_CHECK(led_strip_set_pixel_color(led_strip, i, color));
     }

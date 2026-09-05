@@ -113,7 +113,7 @@ Material:
     - _SortNotes: 0
     - _SourceDistance: 30.727812
     - _SourceSpatialBlend: 0
-    - _SourceVolume: 1
+    - _SourceVolume: 0.5
     - _SpecularHighlights: 1
     - _SrcBlend: 1
     - _ThemeColorMode: 0
@@ -146,7 +146,7 @@ Material:
     - _DayTimeProp: {r: 376, g: 779, b: 67, a: 0}
     - _EmissionColor: {r: 0, g: 0, b: 0, a: 1}
     - _FrameTimeProp: {r: 590, g: 8, b: 0, a: 0}
-    - _SourcePosition: {r: 43.012566, g: -83.68772, b: 0, a: 0}
+    - _SourcePosition: {r: 73795, g: 99824, b: 92375, a: 0}
     - _ThemeColor0: {r: 1, g: 1, b: 0, a: 1}
     - _ThemeColor1: {r: 0, g: 0, b: 1, a: 1}
     - _ThemeColor2: {r: 1, g: 0, b: 0, a: 1}

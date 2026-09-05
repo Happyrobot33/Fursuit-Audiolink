@@ -4,6 +4,7 @@
  * SPDX-License-Identifier: CC0-1.0
  */
 #include <cstdio>
+#include <cmath>
 #include <vector>
 //TODO: Figure out how to add this to idf_component.yml without cmake complaining due to esp-idf
 #include "include/magic_enum/magic_enum.hpp"
@@ -12,6 +13,7 @@
 #include "esp_log.h"
 #include "driver/gpio.h"
 #include "led_controller.h"
+#include "matrix_controller.h"
 #include "receiver.h"
 #include "config.h"
 #include <ctime>
@@ -19,6 +21,7 @@
 
 // Global data structures
 LEDController led_controller;
+MatrixController matrix_controller;
 
 // Framerate tracking
 static uint32_t frame_count = 0;
@@ -85,9 +88,9 @@ static void render_color_mapping(const std::vector<Color> &colors) {
         return;
     }
 
-    const int led_count = LED_STRIP_LED_NUMBERS;
+    const uint16_t led_count = LED_STRIP_LED_NUMBERS;
     const size_t color_count = colors.size();
-    for (int led_index = 0; led_index < led_count; ++led_index) {
+    for (uint16_t led_index = 0; led_index < led_count; ++led_index) {
         size_t idx = (static_cast<size_t>(led_index) * color_count) /
                      static_cast<size_t>(led_count);
         if (idx >= color_count) {
@@ -186,7 +189,48 @@ static void receiver_process_task(void *arg) {
     }
 }
 
+// Test pattern: slides a full HSV hue sweep across the strip over time.
+[[maybe_unused]] static void render_hsv_slide_test() {
+    static constexpr float DEGREES_PER_LED = 360.0f / LED_STRIP_LED_NUMBERS;
+    static constexpr float DEGREES_PER_MS = 360.0f / 4000.0f; // full hue cycle every 4 seconds
+
+    uint32_t now_ms = xTaskGetTickCount() * portTICK_PERIOD_MS;
+    float base_hue = std::fmod(now_ms * DEGREES_PER_MS, 360.0f);
+
+    for (int i = 0; i < LED_STRIP_LED_NUMBERS; ++i) {
+        float hue = std::fmod(base_hue + i * DEGREES_PER_LED, 360.0f);
+        uint8_t r, g, b;
+        hsv_to_rgb(hue, 1.0f, 1.0f, &r, &g, &b);
+        g_led_controller->set_pixel(g_led_strip, i, Color{r / 255.0f, g / 255.0f, b / 255.0f});
+    }
+}
+
 static void led_update_task(void *arg) {
+    // while (1) {
+    //     render_hsv_slide_test();
+    //     ESP_ERROR_CHECK(led_strip_refresh(g_led_strip));
+    //     vTaskDelay(pdMS_TO_TICKS(16)); // roughly 60 FPS
+    // }
+
+    // while (1) {
+    //     matrix_controller.render_sample_pattern();
+
+    //     //fill the matrix with a color
+    //     //generate a HSV hue
+    //     // float hue = std::fmod(xTaskGetTickCount() * portTICK_PERIOD_MS * (360.0f / 4000.0f), 360.0f);
+    //     // uint8_t r, g, b;
+    //     // hsv_to_rgb(hue, 1.0f, 1.0f, &r, &g, &b);
+    //     // matrix_controller.fill(Color{r / 255.0f, g / 255.0f, b / 255.0f});
+
+    //     vTaskDelay(pdMS_TO_TICKS(16)); // roughly 60 FPS
+    // }
+
+    // while(1) { 
+    //     render_hsv_slide_test();
+    //     ESP_ERROR_CHECK(led_strip_refresh(g_led_strip));
+    //     vTaskDelay(pdMS_TO_TICKS(16)); // roughly 60 FPS
+    // }
+
     while (1) {
         AudiolinkData local_audio_data;
 
@@ -233,6 +277,8 @@ static void led_update_task(void *arg) {
                 last_log_time_ms = current_time_ms;
             }
 
+            // matrix_controller.render_dft(local_audio_data.dft.mag);
+
             g_led_controller->clear(g_led_strip);
             // Previous bass-based rendering path (kept for quick fallback/testing):
             // g_led_controller->map_to_leds(g_led_strip,
@@ -240,15 +286,17 @@ static void led_update_task(void *arg) {
             //                               0,
             //                               LED_STRIP_LED_NUMBERS,
             //                               Color{1.0f, 0.0f, 0.0f}); // Red for bass
-            // render_selected_mapping(local_audio_data);
-            ESP_ERROR_CHECK(led_strip_refresh(g_led_strip));
+            render_selected_mapping(local_audio_data);
+            // ESP_ERROR_CHECK(led_strip_refresh(g_led_strip));
 
             //display a pixel on the LED strip, shifting it using chronotensity increasing value
-            g_led_controller->clear(g_led_strip);
-            ChronotensityLoop(local_audio_data.chronotensity.bass.bounce, Color{1.0f, 0.0f, 0.0f}); // Red for bass
-            ChronotensityLoop(local_audio_data.chronotensity.lowmid.bounce, Color{1.0f, 0.5f, 0.0f}); // Orange for lowmid
-            ChronotensityLoop(local_audio_data.chronotensity.highmid.bounce, Color{0.0f, 1.0f, 0.0f}); // Green for highmid
-            ChronotensityLoop(local_audio_data.chronotensity.treble.bounce, Color{0.0f, 0.5f, 1.0f}); // Blue for treble
+            // g_led_controller->clear(g_led_strip);
+            // ChronotensityLoop(local_audio_data.chronotensity.bass.bounce, Color{1.0f, 0.0f, 0.0f}); // Red for bass
+            // ChronotensityLoop(local_audio_data.chronotensity.lowmid.bounce, Color{1.0f, 0.5f, 0.0f}); // Orange for lowmid
+            // ChronotensityLoop(local_audio_data.chronotensity.highmid.bounce, Color{0.0f, 1.0f, 0.0f}); // Green for highmid
+            // ChronotensityLoop(local_audio_data.chronotensity.treble.bounce, Color{0.0f, 0.5f, 1.0f}); // Blue for treble
+            //for testing, slide an HSV hue sweep across the strip
+            // render_hsv_slide_test();
             ESP_ERROR_CHECK(led_strip_refresh(g_led_strip));
 
             // //print the strings received
@@ -268,11 +316,12 @@ static void led_update_task(void *arg) {
     }
 }
 
-void ChronotensityLoop(uint32_t increasing_value, Color color = Color{1.0f, 1.0f, 1.0f})
+[[maybe_unused]] void ChronotensityLoop(uint32_t increasing_value, Color color = Color{1.0f, 1.0f, 1.0f})
 {
     int pixel_index = static_cast<int>(increasing_value / 10000) % LED_STRIP_LED_NUMBERS;
     g_led_controller->set_pixel(g_led_strip, pixel_index, color);
 }
+
 extern "C" void app_main(void) {
     /* Initialize GPIO and LED strip */
     boot_button_init();
@@ -280,6 +329,7 @@ extern "C" void app_main(void) {
     led_strip_handle_t led_strip = led_controller.init();
     g_led_strip = led_strip;
     g_led_controller = &led_controller;
+    // ESP_ERROR_CHECK(matrix_controller.init());
 
     /* Start LED rendering on CPU 1 */
     BaseType_t task_created = xTaskCreatePinnedToCore(
