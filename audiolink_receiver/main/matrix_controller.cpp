@@ -18,7 +18,7 @@ esp_err_t MatrixController::init() {
         MATRIX_A, MATRIX_B, MATRIX_C, MATRIX_D, -1,
         MATRIX_LAT, MATRIX_OE, MATRIX_CLK,
     };
-    HUB75_I2S_CFG config(64, 32, 1, pins,
+    HUB75_I2S_CFG config(MATRIX_WIDTH, MATRIX_HEIGHT, 1, pins,
                          HUB75_I2S_CFG::SHIFTREG,
                          HUB75_I2S_CFG::TYPE138,
                          true,
@@ -55,8 +55,8 @@ void MatrixController::render_dft(const std::vector<float>& magnitudes) {
         return;
     }
 
-    constexpr uint16_t matrix_width = 64;
-    constexpr uint16_t matrix_height = 32;
+    constexpr uint16_t matrix_width = MATRIX_WIDTH;
+    constexpr uint16_t matrix_height = MATRIX_HEIGHT;
     float peak = 1.0f;
 
     driver_->clearScreen();
@@ -104,8 +104,8 @@ void MatrixController::render_sample_pattern() {
         return;
     }
 
-    constexpr uint16_t matrix_width = 64;
-    constexpr uint16_t matrix_height = 32;
+    constexpr uint16_t matrix_width = MATRIX_WIDTH;
+    constexpr uint16_t matrix_height = MATRIX_HEIGHT;
     constexpr uint16_t bar_width = matrix_width / 8;
     constexpr uint8_t colors[8][3] = {
         {255, 0, 0},
@@ -140,8 +140,8 @@ void MatrixController::fill(const Color& color) {
         return;
     }
 
-    constexpr uint16_t matrix_width = 64;
-    constexpr uint16_t matrix_height = 32;
+    constexpr uint16_t matrix_width = MATRIX_WIDTH;
+    constexpr uint16_t matrix_height = MATRIX_HEIGHT;
 
     driver_->clearScreen();
     for (uint16_t x = 0; x < matrix_width; ++x) {

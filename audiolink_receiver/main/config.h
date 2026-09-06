@@ -21,6 +21,18 @@
 #define MATRIX_OE  GPIO_NUM_15
 #define MATRIX_CLK GPIO_NUM_22
 
+// HUB75 matrix dimensions
+static constexpr uint16_t MATRIX_WIDTH = 64;
+static constexpr uint16_t MATRIX_HEIGHT = 32;
+
+// Selects which output device the receiver renders audio data to
+enum class OutputDevice : uint8_t {
+    LedStrip,
+    Matrix,
+};
+// static constexpr OutputDevice ACTIVE_OUTPUT_DEVICE = OutputDevice::LedStrip;
+static constexpr OutputDevice ACTIVE_OUTPUT_DEVICE = OutputDevice::Matrix;
+
 // Number of LEDs in the strip
 static constexpr uint16_t LED_STRIP_LED_NUMBERS = 60 * 2;
 

@@ -238,7 +238,11 @@ static void led_update_task(void *arg) {
 
         bool should_update = receiver_take_decoded_frame(local_audio_data, pdMS_TO_TICKS(5));
 
-        if (should_update && g_led_controller && g_led_strip) {
+        const bool output_ready = (ACTIVE_OUTPUT_DEVICE == OutputDevice::LedStrip)
+                                      ? (g_led_controller && g_led_strip)
+                                      : true;
+
+        if (should_update && output_ready) {
             uint32_t current_time_ms = xTaskGetTickCount() * portTICK_PERIOD_MS;
             frame_count++;
             uint32_t elapsed_time_ms = current_time_ms - last_log_time_ms;
@@ -277,27 +281,29 @@ static void led_update_task(void *arg) {
                 last_log_time_ms = current_time_ms;
             }
 
-            // matrix_controller.render_dft(local_audio_data.dft.mag);
+            if constexpr (ACTIVE_OUTPUT_DEVICE == OutputDevice::Matrix) {
+                matrix_controller.render_dft(local_audio_data.dft.mag);
+            } else {
+                g_led_controller->clear(g_led_strip);
+                // Previous bass-based rendering path (kept for quick fallback/testing):
+                // g_led_controller->map_to_leds(g_led_strip,
+                //                               local_audio_data.history.bass,
+                //                               0,
+                //                               LED_STRIP_LED_NUMBERS,
+                //                               Color{1.0f, 0.0f, 0.0f}); // Red for bass
+                render_selected_mapping(local_audio_data);
+                // ESP_ERROR_CHECK(led_strip_refresh(g_led_strip));
 
-            g_led_controller->clear(g_led_strip);
-            // Previous bass-based rendering path (kept for quick fallback/testing):
-            // g_led_controller->map_to_leds(g_led_strip,
-            //                               local_audio_data.history.bass,
-            //                               0,
-            //                               LED_STRIP_LED_NUMBERS,
-            //                               Color{1.0f, 0.0f, 0.0f}); // Red for bass
-            render_selected_mapping(local_audio_data);
-            // ESP_ERROR_CHECK(led_strip_refresh(g_led_strip));
-
-            //display a pixel on the LED strip, shifting it using chronotensity increasing value
-            // g_led_controller->clear(g_led_strip);
-            // ChronotensityLoop(local_audio_data.chronotensity.bass.bounce, Color{1.0f, 0.0f, 0.0f}); // Red for bass
-            // ChronotensityLoop(local_audio_data.chronotensity.lowmid.bounce, Color{1.0f, 0.5f, 0.0f}); // Orange for lowmid
-            // ChronotensityLoop(local_audio_data.chronotensity.highmid.bounce, Color{0.0f, 1.0f, 0.0f}); // Green for highmid
-            // ChronotensityLoop(local_audio_data.chronotensity.treble.bounce, Color{0.0f, 0.5f, 1.0f}); // Blue for treble
-            //for testing, slide an HSV hue sweep across the strip
-            // render_hsv_slide_test();
-            ESP_ERROR_CHECK(led_strip_refresh(g_led_strip));
+                //display a pixel on the LED strip, shifting it using chronotensity increasing value
+                // g_led_controller->clear(g_led_strip);
+                // ChronotensityLoop(local_audio_data.chronotensity.bass.bounce, Color{1.0f, 0.0f, 0.0f}); // Red for bass
+                // ChronotensityLoop(local_audio_data.chronotensity.lowmid.bounce, Color{1.0f, 0.5f, 0.0f}); // Orange for lowmid
+                // ChronotensityLoop(local_audio_data.chronotensity.highmid.bounce, Color{0.0f, 1.0f, 0.0f}); // Green for highmid
+                // ChronotensityLoop(local_audio_data.chronotensity.treble.bounce, Color{0.0f, 0.5f, 1.0f}); // Blue for treble
+                //for testing, slide an HSV hue sweep across the strip
+                // render_hsv_slide_test();
+                ESP_ERROR_CHECK(led_strip_refresh(g_led_strip));
+            }
 
             // //print the strings received
             // ESP_LOGI(TAG, "Test: %f", local_audio_data.general_vu.msSinceInstanceStart);
@@ -325,11 +331,14 @@ static void led_update_task(void *arg) {
 extern "C" void app_main(void) {
     /* Initialize GPIO and LED strip */
     boot_button_init();
-    gpio_set_drive_capability(LED_STRIP_BLINK_GPIO, GPIO_DRIVE_CAP_3);
-    led_strip_handle_t led_strip = led_controller.init();
-    g_led_strip = led_strip;
-    g_led_controller = &led_controller;
-    // ESP_ERROR_CHECK(matrix_controller.init());
+    if constexpr (ACTIVE_OUTPUT_DEVICE == OutputDevice::Matrix) {
+        ESP_ERROR_CHECK(matrix_controller.init());
+    } else {
+        gpio_set_drive_capability(LED_STRIP_BLINK_GPIO, GPIO_DRIVE_CAP_3);
+        led_strip_handle_t led_strip = led_controller.init();
+        g_led_strip = led_strip;
+        g_led_controller = &led_controller;
+    }
 
     /* Start LED rendering on CPU 1 */
     BaseType_t task_created = xTaskCreatePinnedToCore(

@@ -150,7 +150,9 @@ static bool decode_streaming_zlib_payload(const std::vector<uint8_t> &compressed
     size_t decompressed_size = 0;
     int zlib_result = Z_OK;
 
-    for (int window_bits : { -MAX_WBITS, MAX_WBITS }) {
+    // Prefer smaller windows to avoid requiring a large contiguous heap block.
+    // Retry with larger windows when the compressed stream needs more history.
+    for (int window_bits : { -12, -13, -14, -MAX_WBITS, 12, 13, 14, MAX_WBITS }) {
         z_stream zstream = {};
         zstream.next_in = const_cast<Bytef *>(compressed_data.data());
         zstream.avail_in = static_cast<uInt>(compressed_data.size());
