@@ -67,14 +67,17 @@ void espnow_sender_task(void *arg)
     ESP_LOGI(TAG, "ESP-NOW sender task started");
     QueuedAudioFrame frame;
 
+    uint32_t fps_frames = 0;
+    uint32_t fps_packets = 0;
+    size_t   fps_bytes = 0;
+    uint64_t last_fps_log_us = esp_timer_get_time();
+
     while (true) {
         /* Wait for a frame from the queue (with timeout) */
         if (xQueueReceive(audio_queue, &frame, pdMS_TO_TICKS(10)) == pdTRUE) {
-            /* We have a decoded audio frame, split into Sub_Packets and send */
-            uint64_t frame_start_us = esp_timer_get_time();
-            uint64_t encode_total_us = 0;
-            uint64_t send_call_total_us = 0;
-            
+            fps_frames++;
+            fps_bytes += frame.data_len;
+
             /* Calculate total number of packets for this frame */
             int total_packets = (frame.data_len > 0) 
                 ? (frame.data_len + SUB_PACKET_DATA_COUNT - 1) / SUB_PACKET_DATA_COUNT
@@ -82,9 +85,6 @@ void espnow_sender_task(void *arg)
             
             int packet_index = 0;
             size_t offset = 0;
-            uint32_t frame_send_start = send_callbacks.load(std::memory_order_relaxed);
-            int packets_queued = 0;
-            uint64_t prep_elapsed_us = esp_timer_get_time() - frame_start_us;
 
             while (offset < frame.data_len || packet_index == 0) {
                 PROTO_Sub_Packet sub_pkt = PROTO_Sub_Packet_init_zero;
@@ -108,9 +108,7 @@ void espnow_sender_task(void *arg)
                 /* Encode Sub_Packet into buffer */
                 uint8_t pkt_buf[ESP_NOW_MAX_DATA_LEN_V2];
                 pb_ostream_t stream = pb_ostream_from_buffer(pkt_buf, sizeof(pkt_buf));
-                uint64_t encode_start_us = esp_timer_get_time();
                 bool encode_status = pb_encode(&stream, PROTO_Sub_Packet_fields, &sub_pkt);
-                encode_total_us += esp_timer_get_time() - encode_start_us;
                 
                 if (encode_status) {
                     size_t pkt_len = stream.bytes_written;
@@ -120,18 +118,13 @@ void espnow_sender_task(void *arg)
                         vTaskDelay(1);
                     }
 
-                    uint64_t send_call_start_us = esp_timer_get_time();
                     esp_err_t err = esp_now_send(BROADCAST_MAC, pkt_buf, pkt_len);
-                    send_call_total_us += esp_timer_get_time() - send_call_start_us;
                     if (err != ESP_OK) {
                         ESP_LOGE(TAG, "esp_now_send failed: %s", esp_err_to_name(err));
                     } else {
                         send_requests.fetch_add(1, std::memory_order_relaxed);
-                        packets_queued++;
+                        fps_packets++;
                     }
-                    
-                    ESP_LOGI(TAG, "Sent Sub_Packet %d/%d, chunk_size=%zu, encoded_size=%zu bytes", 
-                             packet_index + 1, total_packets, chunk_size, pkt_len);
                     
                     if (chunk_size > 0) {
                         offset += chunk_size;
@@ -146,26 +139,23 @@ void espnow_sender_task(void *arg)
                     break;
                 }
             }
+        }
 
-            uint64_t callback_wait_us = 0;
+        /* Log framerate every second */
+        uint64_t now_us = esp_timer_get_time();
+        if (now_us - last_fps_log_us >= 1000000ULL) {
+            float elapsed_sec = (float)(now_us - last_fps_log_us) / 1000000.0f;
+            float fps = (float)fps_frames / elapsed_sec;
+            float pps = (float)fps_packets / elapsed_sec;
+            float kbps = (float)(fps_bytes * 8) / (elapsed_sec * 1000.0f);
 
-            uint64_t frame_elapsed_us = esp_timer_get_time() - frame_start_us;
-            uint64_t accounted_us = prep_elapsed_us + encode_total_us + send_call_total_us + callback_wait_us;
-            uint64_t other_overhead_us = (frame_elapsed_us > accounted_us) ? (frame_elapsed_us - accounted_us) : 0;
-            uint32_t in_flight_now = send_requests.load(std::memory_order_relaxed) - send_callbacks.load(std::memory_order_relaxed);
+            ESP_LOGI(TAG, "Framerate: %.1f FPS | Packets: %.1f PPS | Bitrate: %.1f kbps",
+                     fps, pps, kbps);
 
-            ESP_LOGI(TAG, "Frame queueing took %llu ms (%d packets, %zu bytes, inflight=%lu)",
-                     (unsigned long long)(frame_elapsed_us / 1000ULL),
-                     packets_queued,
-                     frame.data_len,
-                     (unsigned long)in_flight_now);
-            ESP_LOGI(TAG,
-                     "Frame timing breakdown: prep=%llu us, encode=%llu us, send_call=%llu us, callback_wait=%llu us, other=%llu us",
-                     (unsigned long long)prep_elapsed_us,
-                     (unsigned long long)encode_total_us,
-                     (unsigned long long)send_call_total_us,
-                     (unsigned long long)callback_wait_us,
-                     (unsigned long long)other_overhead_us);
+            fps_frames = 0;
+            fps_packets = 0;
+            fps_bytes = 0;
+            last_fps_log_us = now_us;
         }
     }
 }

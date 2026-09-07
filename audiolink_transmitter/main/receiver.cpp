@@ -54,7 +54,7 @@ void serial_rx_task(void *arg)
                         if (byte == 0x00) {
                             /* End-of-frame delimiter: decode COBS and queue raw bytes */
                             if (enc_len > 0) {
-                                ESP_LOGI(TAG, "Frame received, size=%d bytes", enc_len);
+                                // ESP_LOGI(TAG, "Frame received, size=%d bytes", enc_len);
                                 cobs_decode_result decode_result = cobs_decode(dec_buf, sizeof(dec_buf), enc_buf, enc_len);
                                 if (decode_result.status == COBS_DECODE_OK) {
                                     size_t dec_len = decode_result.out_len;
