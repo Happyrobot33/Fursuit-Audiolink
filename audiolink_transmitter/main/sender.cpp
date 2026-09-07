@@ -14,6 +14,10 @@
 static const char *TAG = "espnow_sender";
 static const uint8_t BROADCAST_MAC[ESP_NOW_ETH_ALEN] = {0xFF, 0xFF, 0xFF, 0xFF, 0xFF, 0xFF};
 static constexpr uint32_t MAX_IN_FLIGHT_SENDS = 24;
+static constexpr uint32_t FPS_CAP = 60;
+static constexpr uint64_t FRAME_INTERVAL_US = 1000000ULL / FPS_CAP;
+/* When true, resend the last frame while waiting for new UART data (for throughput testing) */
+static constexpr bool ENABLE_STALE_FRAME_RESEND = false;
 
 static std::atomic<uint32_t> send_callbacks{0};
 static std::atomic<uint32_t> send_requests{0};
@@ -52,20 +56,24 @@ void espnow_init(void)
     peer.ifidx   = WIFI_IF_STA;
     peer.encrypt = false;
     memcpy(peer.peer_addr, BROADCAST_MAC, ESP_NOW_ETH_ALEN);
-    // esp_now_rate_config_t rate_config{};
-    // rate_config.phymode = WIFI_PHY_MODE_11A;
-    // rate_config.rate    = WIFI_PHY_RATE_54M;
-    // rate_config.ersu    = false;
-    // rate_config.dcm     = false;
+    esp_now_rate_config_t rate_config = {
+        .phymode = WIFI_PHY_MODE_11G,
+        .rate = WIFI_PHY_RATE_5M_S,
+        .ersu = false,
+        .dcm = false,
+    };
     ESP_ERROR_CHECK(esp_now_add_peer(&peer));
-    // ESP_ERROR_CHECK(esp_now_set_peer_rate_config(peer.peer_addr, &rate_config));
-    esp_wifi_config_80211_tx_rate(WIFI_IF_STA, WIFI_PHY_RATE_54M);
+    ESP_ERROR_CHECK(esp_now_set_peer_rate_config(peer.peer_addr, &rate_config));
+    // esp_wifi_config_80211_tx_rate(WIFI_IF_STA, WIFI_PHY_RATE_54M);
 }
 
 void espnow_sender_task(void *arg)
 {
     ESP_LOGI(TAG, "ESP-NOW sender task started");
     QueuedAudioFrame frame;
+    bool have_frame = false;
+    uint64_t last_frame_sent_us = 0;
+    bool fps_cap_hit = false;
 
     uint32_t fps_frames = 0;
     uint32_t fps_packets = 0;
@@ -73,8 +81,28 @@ void espnow_sender_task(void *arg)
     uint64_t last_fps_log_us = esp_timer_get_time();
 
     while (true) {
-        /* Wait for a frame from the queue (with timeout) */
-        if (xQueueReceive(audio_queue, &frame, pdMS_TO_TICKS(10)) == pdTRUE) {
+        /* Wait only until the next frame is due (or 10ms if none received yet), so the FPS cap
+         * isn't rounded up by a fixed poll interval; resend the last frame if none is new,
+         * so the radio link stays saturated for throughput testing regardless of UART rate */
+        uint32_t wait_ms = 10;
+        if (have_frame) {
+            uint64_t elapsed_us = esp_timer_get_time() - last_frame_sent_us;
+            wait_ms = (elapsed_us >= FRAME_INTERVAL_US) ? 0 : (uint32_t)((FRAME_INTERVAL_US - elapsed_us) / 1000);
+        }
+        bool got_new_frame = xQueueReceive(audio_queue, &frame, pdMS_TO_TICKS(wait_ms)) == pdTRUE;
+        if (got_new_frame) {
+            have_frame = true;
+        }
+
+        /* Cap how often a frame (new or resent) is actually transmitted */
+        bool should_send = got_new_frame || (ENABLE_STALE_FRAME_RESEND && have_frame);
+        if (should_send && (esp_timer_get_time() - last_frame_sent_us) < FRAME_INTERVAL_US) {
+            fps_cap_hit = true;
+            should_send = false;
+        }
+
+        if (should_send) {
+            last_frame_sent_us = esp_timer_get_time();
             fps_frames++;
             fps_bytes += frame.data_len;
 
@@ -149,12 +177,13 @@ void espnow_sender_task(void *arg)
             float pps = (float)fps_packets / elapsed_sec;
             float kbps = (float)(fps_bytes * 8) / (elapsed_sec * 1000.0f);
 
-            ESP_LOGI(TAG, "Framerate: %.1f FPS | Packets: %.1f PPS | Bitrate: %.1f kbps",
-                     fps, pps, kbps);
+            ESP_LOGI(TAG, "Framerate: %.1f FPS | Packets: %.1f PPS | Bitrate: %.1f kbps%s",
+                     fps, pps, kbps, fps_cap_hit ? " | AT FPS CAP" : "");
 
             fps_frames = 0;
             fps_packets = 0;
             fps_bytes = 0;
+            fps_cap_hit = false;
             last_fps_log_us = now_us;
         }
     }
