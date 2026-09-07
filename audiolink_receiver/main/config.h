@@ -34,7 +34,8 @@ enum class OutputDevice : uint8_t {
 static constexpr OutputDevice ACTIVE_OUTPUT_DEVICE = OutputDevice::Matrix;
 
 // Number of LEDs in the strip
-static constexpr uint16_t LED_STRIP_LED_NUMBERS = 60 * 2;
+// static constexpr uint16_t LED_STRIP_LED_NUMBERS = 60 * 2;
+static constexpr uint16_t LED_STRIP_LED_NUMBERS = 8 * 2; //sticks
 
 // Selects which IShader implementations are used; see Rendering/shader_config.h.
 static constexpr uint32_t FALLBACK_TIMEOUT_MS = 1 * 1000;

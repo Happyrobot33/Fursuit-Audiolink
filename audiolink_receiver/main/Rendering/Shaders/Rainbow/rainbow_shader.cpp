@@ -5,7 +5,7 @@
 #include "color_utils.h"
 
 Color RainbowShader::render(float x, float y) {
-    static constexpr float DEGREES_PER_SEC = 360.0f / 4.0f; // full hue cycle every 4 seconds
+    static constexpr float DEGREES_PER_SEC = 360.0f / 20.0f; // full hue cycle every 4 seconds
     const float hue = std::fmod(x * 360.0f + _Time * DEGREES_PER_SEC, 360.0f);
     const float value = 0.5f + 0.5f * y;
 

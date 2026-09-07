@@ -15,7 +15,6 @@ constexpr int32_t GRID_SIZE = 8;              // feature cells across the UV spa
 constexpr int32_t CELL_SIZE = FP_ONE / GRID_SIZE;
 constexpr int32_t WOBBLE_AMPLITUDE = CELL_SIZE / 4;
 constexpr uint32_t ANIM_PERIOD_MS = 6000;     // full point-wobble cycle
-constexpr int32_t EDGE_THRESHOLD = FP_ONE / 40;
 
 // Classic multiplicative integer hash; no floating point involved.
 uint32_t hash2(int32_t x, int32_t y, uint32_t salt) {
@@ -91,7 +90,6 @@ Color VoronoiShader::render(float x, float y) {
     const int32_t cell_y = fy / CELL_SIZE;
 
     uint64_t nearest_sq = UINT64_MAX;
-    uint64_t second_sq = UINT64_MAX;
     int32_t owner_cx = 0;
     int32_t owner_cy = 0;
 
@@ -108,30 +106,24 @@ Color VoronoiShader::render(float x, float y) {
             const uint64_t dist_sq = static_cast<uint64_t>(ddx * ddx + ddy * ddy);
 
             if (dist_sq < nearest_sq) {
-                second_sq = nearest_sq;
                 nearest_sq = dist_sq;
                 owner_cx = ncx;
                 owner_cy = ncy;
-            } else if (dist_sq < second_sq) {
-                second_sq = dist_sq;
             }
         }
     }
 
     const int32_t nearest_dist = static_cast<int32_t>(isqrt64(nearest_sq));
-    const int32_t second_dist = static_cast<int32_t>(isqrt64(second_sq));
-    const int32_t edge_gap = clamp_fp(second_dist - nearest_dist, 0, EDGE_THRESHOLD);
 
-    // Brighter near each cell's center, darkened toward cell borders.
+    // Brighter near each cell's center.
     const int32_t glow = FP_ONE - clamp_fp((nearest_dist * FP_ONE) / (CELL_SIZE * 3 / 2), 0, FP_ONE / 2);
-    const int32_t edge_atten = (edge_gap * FP_ONE) / EDGE_THRESHOLD; // 0 at border, FP_ONE away from it
-    const int32_t value_fp = clamp_fp((glow * edge_atten) / FP_ONE, FP_ONE / 8, FP_ONE);
+    const int32_t value_fp = glow;
 
     const uint32_t hue_hash = hash2(owner_cx, owner_cy, 3);
     const float hue = static_cast<float>(hue_hash % 360u);
     const float value = static_cast<float>(value_fp) / static_cast<float>(FP_ONE);
 
     uint8_t r, g, b;
-    hsv_to_rgb(hue, 0.8f, value, &r, &g, &b);
+    hsv_to_rgb(hue, 1.0f, value, &r, &g, &b);
     return Color{r / 255.0f, g / 255.0f, b / 255.0f};
 }

@@ -9,8 +9,6 @@ class MatrixController {
 public:
 	esp_err_t init();
 	void deinit();
-	void render_dft(const std::vector<float>& magnitudes);
-	void render_sample_pattern();
 	void fill(const Color& color);
 
 	// Pixel-level access used by the IRenderTarget abstraction.
