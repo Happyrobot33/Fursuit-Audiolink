@@ -18,7 +18,8 @@ void render_shader_frame(IRenderTarget& target, IShader& shader, const Audiolink
         const float v = (h > 1) ? static_cast<float>(y) / static_cast<float>(h - 1) : 0.0f;
         for (uint16_t x = 0; x < w; ++x) {
             const float u = (w > 1) ? static_cast<float>(x) / static_cast<float>(w - 1) : 0.0f;
-            target.set_pixel(x, y, shader.render(u, v));
+            // V coordinate is flipped here to fix UV layout
+            target.set_pixel(x, y, shader.render(u, 1.0f - v));
         }
     }
     target.present();
