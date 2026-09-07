@@ -37,7 +37,7 @@ static constexpr OutputDevice ACTIVE_OUTPUT_DEVICE = OutputDevice::Matrix;
 static constexpr uint16_t LED_STRIP_LED_NUMBERS = 60 * 2;
 
 // Selects which IShader implementations are used; see Rendering/shader_config.h.
-static constexpr uint32_t FALLBACK_TIMEOUT_MS = 10000;
+static constexpr uint32_t FALLBACK_TIMEOUT_MS = 1 * 1000;
 
 // 10MHz resolution, 1 tick = 0.1us
 #define LED_STRIP_RMT_RES_HZ  (10 * 1000 * 1000)

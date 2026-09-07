@@ -2223,7 +2223,7 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   audioLink: {fileID: 2439678699266885654}
-  portName: COM6
+  portName: COM11
   baudRate: 921600
   sendInterval: 0.005
   useZlibCompression: 1

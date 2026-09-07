@@ -1,6 +1,7 @@
 #include "renderer.h"
 
 #include "shader_globals.h"
+#include "esp_log.h"
 
 void render_shader_frame(IRenderTarget& target, IShader& shader, const AudiolinkData& audio_data) {
     const uint16_t w = target.width();
