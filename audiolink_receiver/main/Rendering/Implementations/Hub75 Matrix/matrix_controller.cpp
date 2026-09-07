@@ -18,12 +18,15 @@ esp_err_t MatrixController::init() {
         MATRIX_A, MATRIX_B, MATRIX_C, MATRIX_D, -1,
         MATRIX_LAT, MATRIX_OE, MATRIX_CLK,
     };
-    HUB75_I2S_CFG config(MATRIX_WIDTH, MATRIX_HEIGHT, 1, pins,
+    HUB75_I2S_CFG config(MATRIX_WIDTH,
+                         MATRIX_HEIGHT,
+                         1,
+                         pins,
                          HUB75_I2S_CFG::SHIFTREG,
                          HUB75_I2S_CFG::TYPE138,
                          true,
                          HUB75_I2S_CFG::HZ_10M,
-                         2,
+                         5, //latching delay. TODO: Experiment with this more to fix flickering possibly
                          true,
                          60,
                          8);
@@ -152,5 +155,32 @@ void MatrixController::fill(const Color& color) {
                                      static_cast<uint8_t>(color.B * 255));
         }
     }
+    driver_->flipDMABuffer();
+}
+
+void MatrixController::set_pixel(uint16_t x, uint16_t y, const Color& color) {
+    if (driver_ == nullptr) {
+        return;
+    }
+
+    driver_->drawPixelRGB888(x, y,
+                             static_cast<uint8_t>(color.R * 255),
+                             static_cast<uint8_t>(color.G * 255),
+                             static_cast<uint8_t>(color.B * 255));
+}
+
+void MatrixController::clear() {
+    if (driver_ == nullptr) {
+        return;
+    }
+
+    driver_->clearScreen();
+}
+
+void MatrixController::present() {
+    if (driver_ == nullptr) {
+        return;
+    }
+
     driver_->flipDMABuffer();
 }

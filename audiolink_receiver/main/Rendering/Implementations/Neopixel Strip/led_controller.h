@@ -72,14 +72,3 @@ inline esp_err_t led_strip_set_pixel_color(led_strip_handle_t led_strip, uint32_
     return led_strip_set_pixel(led_strip, index, r, g, b);
 }
 
-/**
- * Convert HSV color to RGB
- * @param hue Hue angle (0-360)
- * @param saturation Saturation (0.0-1.0)
- * @param value Value/Brightness (0.0-1.0)
- * @param r Output red channel
- * @param g Output green channel
- * @param b Output blue channel
- */
-[[maybe_unused]] void hsv_to_rgb(float hue, float saturation, float value, 
-                                 uint8_t *r, uint8_t *g, uint8_t *b);

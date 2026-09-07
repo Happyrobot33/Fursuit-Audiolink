@@ -3,6 +3,7 @@
 #include <cstring>
 #include <vector>
 #include <zlib.h>
+#include "esp_attr.h"
 #include "freertos/FreeRTOS.h"
 #include "freertos/queue.h"
 #include "freertos/portmacro.h"
@@ -101,7 +102,7 @@ static bool receiver_init_pipeline_queues(void) {
     return true;
 }
 
-static bool decode_subpacket_data_callback(pb_istream_t *stream, const pb_field_t *field, void **arg) {
+static bool IRAM_ATTR decode_subpacket_data_callback(pb_istream_t *stream, const pb_field_t *field, void **arg) {
     std::vector<uint8_t> *buffer = static_cast<std::vector<uint8_t>*>(*arg);
     size_t bytes_to_read = stream->bytes_left;
     
@@ -115,7 +116,7 @@ static bool decode_subpacket_data_callback(pb_istream_t *stream, const pb_field_
     return true;
 }
 
-static bool decode_streaming_zlib_payload(const std::vector<uint8_t> &compressed_data,
+static bool IRAM_ATTR decode_streaming_zlib_payload(const std::vector<uint8_t> &compressed_data,
                                           AudiolinkData &decoded_audio,
                                           size_t *decompressed_size_out,
                                           uint64_t *zlib_time_us_out,

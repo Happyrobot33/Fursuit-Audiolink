@@ -5,180 +5,34 @@
  */
 #include <cstdio>
 #include <cmath>
+#include <memory>
 #include <vector>
-//TODO: Figure out how to add this to idf_component.yml without cmake complaining due to esp-idf
-#include "include/magic_enum/magic_enum.hpp"
 #include "freertos/FreeRTOS.h"
 #include "freertos/task.h"
 #include "esp_log.h"
-#include "driver/gpio.h"
-#include "led_controller.h"
-#include "matrix_controller.h"
+#include "color_utils.h"
+#include "render_target.h"
+#include "render_target_factory.h"
+#include "renderer.h"
+#include "shader_factory.h"
 #include "receiver.h"
 #include "config.h"
 #include <ctime>
-#include "main.h"
 
-// Global data structures
-LEDController led_controller;
-MatrixController matrix_controller;
+// Rendering is fully abstracted behind IRenderTarget/IShader; main has no knowledge of the
+// concrete matrix/LED-strip controllers or shader implementation.
+static std::unique_ptr<IRenderTarget> g_render_target;
+static std::unique_ptr<IShader> g_shader;
+static std::unique_ptr<IShader> g_fallback_shader;
+
+// Tracks whether real audio data is fresh enough to render with g_shader.
+static AudiolinkData g_last_audio_data;
+static uint32_t g_last_data_ms = 0;
+static bool g_has_received_data = false;
 
 // Framerate tracking
 static uint32_t frame_count = 0;
 static uint32_t last_log_time_ms = 0;
-static led_strip_handle_t g_led_strip = nullptr;
-static LEDController *g_led_controller = nullptr;
-
-static constexpr gpio_num_t BOOT_BUTTON_GPIO = GPIO_NUM_0;
-static constexpr TickType_t BOOT_BUTTON_DEBOUNCE_TICKS = pdMS_TO_TICKS(200);
-
-enum class LedMappingMode : uint8_t {
-    Bass = 0,
-    Lowmid,
-    Highmid,
-    Treble,
-    ColorChordStrip,
-    ColorChordLights,
-    Dft,
-    BassFiltered,
-    LowmidFiltered,
-    HighmidFiltered,
-    TrebleFiltered,
-    Count
-};
-
-static LedMappingMode g_mapping_mode = LedMappingMode::Bass;
-static int g_last_button_level = 1;
-static TickType_t g_last_button_change_tick = 0;
-static bool g_button_pressed_latched = false;
-
-static void cycle_mapping_mode() {
-    uint8_t next_mode = static_cast<uint8_t>(g_mapping_mode) + 1;
-    if (next_mode >= static_cast<uint8_t>(LedMappingMode::Count)) {
-        next_mode = 0;
-    }
-    g_mapping_mode = static_cast<LedMappingMode>(next_mode);
-    const auto mode_name = magic_enum::enum_name(g_mapping_mode);
-    ESP_LOGI(TAG,
-             "LED mapping switched to: %.*s",
-             static_cast<int>(mode_name.size()),
-             mode_name.data());
-}
-
-static float clamp01(float value) {
-    if (value < 0.0f) {
-        return 0.0f;
-    }
-    if (value > 1.0f) {
-        return 1.0f;
-    }
-    return value;
-}
-
-static void render_frequency_mapping(const std::vector<float> &frequency_values, const Color &color) {
-    if (!g_led_controller || !g_led_strip || frequency_values.empty()) {
-        return;
-    }
-
-    g_led_controller->map_to_leds(g_led_strip, frequency_values, 0, LED_STRIP_LED_NUMBERS, color);
-}
-
-static void render_color_mapping(const std::vector<Color> &colors) {
-    if (!g_led_controller || !g_led_strip || colors.empty()) {
-        return;
-    }
-
-    const uint16_t led_count = LED_STRIP_LED_NUMBERS;
-    const size_t color_count = colors.size();
-    for (uint16_t led_index = 0; led_index < led_count; ++led_index) {
-        size_t idx = (static_cast<size_t>(led_index) * color_count) /
-                     static_cast<size_t>(led_count);
-        if (idx >= color_count) {
-            idx = color_count - 1;
-        }
-        const Color &src = colors[idx];
-        g_led_controller->set_pixel(g_led_strip,
-                                    led_index,
-                                    Color{clamp01(src.R), clamp01(src.G), clamp01(src.B)});
-    }
-}
-
-static void render_selected_mapping(const AudiolinkData &audio_data) {
-    switch (g_mapping_mode) {
-        case LedMappingMode::Bass:
-            render_frequency_mapping(audio_data.history.bass, Color{1.0f, 0.0f, 0.0f});
-            break;
-        case LedMappingMode::Lowmid:
-            render_frequency_mapping(audio_data.history.lowmid, Color{1.0f, 0.5f, 0.0f});
-            break;
-        case LedMappingMode::Highmid:
-            render_frequency_mapping(audio_data.history.highmid, Color{0.0f, 1.0f, 0.0f});
-            break;
-        case LedMappingMode::Treble:
-            render_frequency_mapping(audio_data.history.treble, Color{0.0f, 0.5f, 1.0f});
-            break;
-        case LedMappingMode::ColorChordStrip:
-            render_color_mapping(audio_data.colorchord.strip);
-            break;
-        case LedMappingMode::ColorChordLights:
-            render_color_mapping(audio_data.colorchord.lights);
-            break;
-        case LedMappingMode::Dft:
-            render_frequency_mapping(audio_data.dft.mag, Color{0.7f, 0.0f, 1.0f});
-            break;
-        case LedMappingMode::BassFiltered:
-            render_frequency_mapping(audio_data.filtered_audiolink.bass, Color{1.0f, 0.0f, 0.3f});
-            break;
-        case LedMappingMode::LowmidFiltered:
-            render_frequency_mapping(audio_data.filtered_audiolink.lowmid, Color{1.0f, 0.7f, 0.0f});
-            break;
-        case LedMappingMode::HighmidFiltered:
-            render_frequency_mapping(audio_data.filtered_audiolink.highmid, Color{0.0f, 1.0f, 0.3f});
-            break;
-        case LedMappingMode::TrebleFiltered:
-            render_frequency_mapping(audio_data.filtered_audiolink.treble, Color{0.2f, 0.7f, 1.0f});
-            break;
-        default:
-            break;
-    }
-}
-
-static void boot_button_init() {
-    gpio_config_t io_conf = {};
-    io_conf.intr_type = GPIO_INTR_DISABLE;
-    io_conf.mode = GPIO_MODE_INPUT;
-    io_conf.pin_bit_mask = (1ULL << BOOT_BUTTON_GPIO);
-    io_conf.pull_down_en = GPIO_PULLDOWN_DISABLE;
-    io_conf.pull_up_en = GPIO_PULLUP_ENABLE;
-    ESP_ERROR_CHECK(gpio_config(&io_conf));
-
-    g_last_button_level = gpio_get_level(BOOT_BUTTON_GPIO);
-    g_last_button_change_tick = xTaskGetTickCount();
-    g_button_pressed_latched = false;
-    ESP_LOGI(TAG, "BOOT button ready on GPIO %d", static_cast<int>(BOOT_BUTTON_GPIO));
-}
-
-static void poll_boot_button() {
-    int current_level = gpio_get_level(BOOT_BUTTON_GPIO);
-    TickType_t now = xTaskGetTickCount();
-
-    if (current_level != g_last_button_level) {
-        g_last_button_level = current_level;
-        g_last_button_change_tick = now;
-    }
-
-    if ((now - g_last_button_change_tick) < BOOT_BUTTON_DEBOUNCE_TICKS) {
-        return;
-    }
-
-    const bool button_pressed = (current_level == 0);
-    if (button_pressed && !g_button_pressed_latched) {
-        g_button_pressed_latched = true;
-        cycle_mapping_mode();
-    } else if (!button_pressed && g_button_pressed_latched) {
-        g_button_pressed_latched = false;
-    }
-}
 
 static void receiver_process_task(void *arg) {
     while (1) {
@@ -189,156 +43,80 @@ static void receiver_process_task(void *arg) {
     }
 }
 
-// Test pattern: slides a full HSV hue sweep across the strip over time.
-[[maybe_unused]] static void render_hsv_slide_test() {
-    static constexpr float DEGREES_PER_LED = 360.0f / LED_STRIP_LED_NUMBERS;
-    static constexpr float DEGREES_PER_MS = 360.0f / 4000.0f; // full hue cycle every 4 seconds
-
-    uint32_t now_ms = xTaskGetTickCount() * portTICK_PERIOD_MS;
-    float base_hue = std::fmod(now_ms * DEGREES_PER_MS, 360.0f);
-
-    for (int i = 0; i < LED_STRIP_LED_NUMBERS; ++i) {
-        float hue = std::fmod(base_hue + i * DEGREES_PER_LED, 360.0f);
-        uint8_t r, g, b;
-        hsv_to_rgb(hue, 1.0f, 1.0f, &r, &g, &b);
-        g_led_controller->set_pixel(g_led_strip, i, Color{r / 255.0f, g / 255.0f, b / 255.0f});
-    }
-}
-
 static void led_update_task(void *arg) {
-    // while (1) {
-    //     render_hsv_slide_test();
-    //     ESP_ERROR_CHECK(led_strip_refresh(g_led_strip));
-    //     vTaskDelay(pdMS_TO_TICKS(16)); // roughly 60 FPS
-    // }
-
-    // while (1) {
-    //     matrix_controller.render_sample_pattern();
-
-    //     //fill the matrix with a color
-    //     //generate a HSV hue
-    //     // float hue = std::fmod(xTaskGetTickCount() * portTICK_PERIOD_MS * (360.0f / 4000.0f), 360.0f);
-    //     // uint8_t r, g, b;
-    //     // hsv_to_rgb(hue, 1.0f, 1.0f, &r, &g, &b);
-    //     // matrix_controller.fill(Color{r / 255.0f, g / 255.0f, b / 255.0f});
-
-    //     vTaskDelay(pdMS_TO_TICKS(16)); // roughly 60 FPS
-    // }
-
-    // while(1) { 
-    //     render_hsv_slide_test();
-    //     ESP_ERROR_CHECK(led_strip_refresh(g_led_strip));
-    //     vTaskDelay(pdMS_TO_TICKS(16)); // roughly 60 FPS
-    // }
-
     while (1) {
         AudiolinkData local_audio_data;
 
-        poll_boot_button();
-
         bool should_update = receiver_take_decoded_frame(local_audio_data, pdMS_TO_TICKS(5));
 
-        const bool output_ready = (ACTIVE_OUTPUT_DEVICE == OutputDevice::LedStrip)
-                                      ? (g_led_controller && g_led_strip)
-                                      : true;
+        const bool output_ready = static_cast<bool>(g_render_target);
+        const uint32_t current_time_ms = xTaskGetTickCount() * portTICK_PERIOD_MS;
 
-        if (should_update && output_ready) {
-            uint32_t current_time_ms = xTaskGetTickCount() * portTICK_PERIOD_MS;
+        if (should_update) {
+            g_last_audio_data = local_audio_data;
+            g_last_data_ms = current_time_ms;
+            g_has_received_data = true;
+        }
+
+        const bool data_is_stale = !g_has_received_data ||
+            (current_time_ms - g_last_data_ms) > FALLBACK_TIMEOUT_MS;
+
+        if (output_ready && (should_update || data_is_stale)) {
             frame_count++;
             uint32_t elapsed_time_ms = current_time_ms - last_log_time_ms;
             if (elapsed_time_ms >= 1000) {
                 float framerate = (frame_count * 1000.0f) / elapsed_time_ms;
-                ReceiverPerfSnapshot perf = {};
-                receiver_take_perf_snapshot(perf);
+                if (data_is_stale) {
+                    ESP_LOGI(TAG, "Fallback framerate: %.1f FPS", framerate);
+                } else {
+                    ReceiverPerfSnapshot perf = {};
+                    receiver_take_perf_snapshot(perf);
 
-                const float window_ms = static_cast<float>(elapsed_time_ms);
-                const float rx_ms = static_cast<float>(perf.rx_callback_time_us) / 1000.0f;
-                const float decode_ms = static_cast<float>(perf.decode_time_us) / 1000.0f;
-                const float decode_zlib_ms = static_cast<float>(perf.decode_zlib_time_us) / 1000.0f;
-                const float decode_nanopb_ms = static_cast<float>(perf.decode_nanopb_time_us) / 1000.0f;
-                const float rx_share_pct = window_ms > 0.0f ? (rx_ms * 100.0f / window_ms) : 0.0f;
-                const float decode_share_pct = window_ms > 0.0f ? (decode_ms * 100.0f / window_ms) : 0.0f;
-                const float decode_zlib_share_pct = window_ms > 0.0f ? (decode_zlib_ms * 100.0f / window_ms) : 0.0f;
-                const float decode_nanopb_share_pct = window_ms > 0.0f ? (decode_nanopb_ms * 100.0f / window_ms) : 0.0f;
+                    const float window_ms = static_cast<float>(elapsed_time_ms);
+                    const float rx_ms = static_cast<float>(perf.rx_callback_time_us) / 1000.0f;
+                    const float decode_ms = static_cast<float>(perf.decode_time_us) / 1000.0f;
+                    const float decode_zlib_ms = static_cast<float>(perf.decode_zlib_time_us) / 1000.0f;
+                    const float decode_nanopb_ms = static_cast<float>(perf.decode_nanopb_time_us) / 1000.0f;
+                    const float rx_share_pct = window_ms > 0.0f ? (rx_ms * 100.0f / window_ms) : 0.0f;
+                    const float decode_share_pct = window_ms > 0.0f ? (decode_ms * 100.0f / window_ms) : 0.0f;
+                    const float decode_zlib_share_pct = window_ms > 0.0f ? (decode_zlib_ms * 100.0f / window_ms) : 0.0f;
+                    const float decode_nanopb_share_pct = window_ms > 0.0f ? (decode_nanopb_ms * 100.0f / window_ms) : 0.0f;
 
-                ESP_LOGI(TAG,
-                         "Framerate: %.1f FPS | recv: %.2fms (%.1f%%, packets=%u bytes=%u frames=%u) | decode: %.2fms (%.1f%%, zlib %.2fms/%.1f%%, nanopb %.2fms/%.1f%%, ok=%u fail=%u)",
-                         framerate,
-                         rx_ms,
-                         rx_share_pct,
-                         perf.rx_packets,
-                         perf.rx_total_bytes,
-                         perf.rx_completed_frames,
-                         decode_ms,
-                         decode_share_pct,
-                         decode_zlib_ms,
-                         decode_zlib_share_pct,
-                         decode_nanopb_ms,
-                         decode_nanopb_share_pct,
-                         perf.decode_successes,
-                         perf.decode_failures);
+                    ESP_LOGI(TAG,
+                             "Framerate: %.1f FPS | recv: %.2fms (%.1f%%, packets=%u bytes=%u frames=%u) | decode: %.2fms (%.1f%%, zlib %.2fms/%.1f%%, nanopb %.2fms/%.1f%%, ok=%u fail=%u)",
+                             framerate,
+                             rx_ms,
+                             rx_share_pct,
+                             perf.rx_packets,
+                             perf.rx_total_bytes,
+                             perf.rx_completed_frames,
+                             decode_ms,
+                             decode_share_pct,
+                             decode_zlib_ms,
+                             decode_zlib_share_pct,
+                             decode_nanopb_ms,
+                             decode_nanopb_share_pct,
+                             perf.decode_successes,
+                             perf.decode_failures);
+                }
                 frame_count = 0;
                 last_log_time_ms = current_time_ms;
             }
+        }
 
-            if constexpr (ACTIVE_OUTPUT_DEVICE == OutputDevice::Matrix) {
-                matrix_controller.render_dft(local_audio_data.dft.mag);
-            } else {
-                g_led_controller->clear(g_led_strip);
-                // Previous bass-based rendering path (kept for quick fallback/testing):
-                // g_led_controller->map_to_leds(g_led_strip,
-                //                               local_audio_data.history.bass,
-                //                               0,
-                //                               LED_STRIP_LED_NUMBERS,
-                //                               Color{1.0f, 0.0f, 0.0f}); // Red for bass
-                render_selected_mapping(local_audio_data);
-                // ESP_ERROR_CHECK(led_strip_refresh(g_led_strip));
-
-                //display a pixel on the LED strip, shifting it using chronotensity increasing value
-                // g_led_controller->clear(g_led_strip);
-                // ChronotensityLoop(local_audio_data.chronotensity.bass.bounce, Color{1.0f, 0.0f, 0.0f}); // Red for bass
-                // ChronotensityLoop(local_audio_data.chronotensity.lowmid.bounce, Color{1.0f, 0.5f, 0.0f}); // Orange for lowmid
-                // ChronotensityLoop(local_audio_data.chronotensity.highmid.bounce, Color{0.0f, 1.0f, 0.0f}); // Green for highmid
-                // ChronotensityLoop(local_audio_data.chronotensity.treble.bounce, Color{0.0f, 0.5f, 1.0f}); // Blue for treble
-                //for testing, slide an HSV hue sweep across the strip
-                // render_hsv_slide_test();
-                ESP_ERROR_CHECK(led_strip_refresh(g_led_strip));
-            }
-
-            // //print the strings received
-            // ESP_LOGI(TAG, "Test: %f", local_audio_data.general_vu.msSinceInstanceStart);
-
-            // //convert the time to a human readable format
-            // time_t raw_time = static_cast<time_t>(local_audio_data.general_vu.msSinceUTCDayStart / 1000.0);
-            // //add the UTCDaysSinceEpoch to the raw_time
-            // raw_time += static_cast<time_t>(local_audio_data.general_vu.UTCDaysSinceEpoch * 24 * 60 * 60);
-            // struct tm *timeinfo = localtime(&raw_time);
-            // char buffer[80];
-            // strftime(buffer, sizeof(buffer), "%Y-%m-%d %I:%M:%S %p", timeinfo);
-            // ESP_LOGI(TAG, "Local wall clock: %s", buffer);
+        if (output_ready) {
+            IShader &active_shader = data_is_stale ? *g_fallback_shader : *g_shader;
+            render_shader_frame(*g_render_target, active_shader, g_last_audio_data);
         }
 
         vTaskDelay(pdMS_TO_TICKS(should_update ? 5 : 15));
     }
 }
 
-[[maybe_unused]] void ChronotensityLoop(uint32_t increasing_value, Color color = Color{1.0f, 1.0f, 1.0f})
-{
-    int pixel_index = static_cast<int>(increasing_value / 10000) % LED_STRIP_LED_NUMBERS;
-    g_led_controller->set_pixel(g_led_strip, pixel_index, color);
-}
-
 extern "C" void app_main(void) {
-    /* Initialize GPIO and LED strip */
-    boot_button_init();
-    if constexpr (ACTIVE_OUTPUT_DEVICE == OutputDevice::Matrix) {
-        ESP_ERROR_CHECK(matrix_controller.init());
-    } else {
-        gpio_set_drive_capability(LED_STRIP_BLINK_GPIO, GPIO_DRIVE_CAP_3);
-        led_strip_handle_t led_strip = led_controller.init();
-        g_led_strip = led_strip;
-        g_led_controller = &led_controller;
-    }
+    g_render_target = create_render_target();
+    g_shader = create_shader();
+    g_fallback_shader = create_fallback_shader();
 
     /* Start LED rendering on CPU 1 */
     BaseType_t task_created = xTaskCreatePinnedToCore(
