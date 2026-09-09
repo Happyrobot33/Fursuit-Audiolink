@@ -1,3 +1,4 @@
+#include <algorithm>
 #include <cmath>
 #include <cstring>
 #include "esp_log.h"
@@ -7,6 +8,17 @@
 #include "led_controller.h"
 #include "audiolink_data.h"
 #include "config.h"
+
+namespace {
+Color apply_strip_brightness(const Color& color, uint8_t brightness) {
+    const float scale = brightness / 255.0f;
+    return {
+        std::clamp(color.R * scale, 0.0f, 1.0f),
+        std::clamp(color.G * scale, 0.0f, 1.0f),
+        std::clamp(color.B * scale, 0.0f, 1.0f),
+    };
+}
+} // namespace
 
 LEDController::LEDController() {
     // Initialize all pixels to off
@@ -62,11 +74,14 @@ esp_err_t LEDController::map_to_leds(led_strip_handle_t led_strip,
         if (value < 0.0f) value = 0.0f;
         
         /* Scale the color by the frequency value (brightness modulation) */
-        Color scaled_color = {
-            color.R * value,
-            color.G * value,
-            color.B * value
-        };
+        Color scaled_color = apply_strip_brightness(
+            {
+                color.R * value,
+                color.G * value,
+                color.B * value
+            },
+            LED_STRIP_BRIGHTNESS
+        );
         
         /* Update local pixel state and LED */
         pixels[i] = scaled_color;
@@ -90,13 +105,15 @@ void LEDController::set_pixel(led_strip_handle_t led_strip, int index, const Col
         ESP_LOGW(TAG, "LED index %d out of bounds", index);
         return;
     }
-    pixels[index] = color;
-    ESP_ERROR_CHECK(led_strip_set_pixel_color(led_strip, index, color));
+    const Color adjusted_color = apply_strip_brightness(color, LED_STRIP_BRIGHTNESS);
+    pixels[index] = adjusted_color;
+    ESP_ERROR_CHECK(led_strip_set_pixel_color(led_strip, index, adjusted_color));
 }
 
 void LEDController::fill(led_strip_handle_t led_strip, const Color& color) {
+    const Color adjusted_color = apply_strip_brightness(color, LED_STRIP_BRIGHTNESS);
     for (uint16_t i = 0; i < LED_STRIP_LED_NUMBERS; i++) {
-        pixels[i] = color;
-        ESP_ERROR_CHECK(led_strip_set_pixel_color(led_strip, i, color));
+        pixels[i] = adjusted_color;
+        ESP_ERROR_CHECK(led_strip_set_pixel_color(led_strip, i, adjusted_color));
     }
 }

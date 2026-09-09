@@ -29,21 +29,28 @@
 // HUB75 matrix dimensions
 // Must be #define, not constexpr: the HUB75 library only skips its own default
 // (MATRIX_HEIGHT=32) via #ifndef, which doesn't see non-macro constants.
-#define MATRIX_WIDTH  64
-#define MATRIX_HEIGHT 64
+#define MATRIX_WIDTH  32
+#define MATRIX_HEIGHT 8
 
 // Selects which output device the receiver renders audio data to
 enum class OutputDevice : uint8_t {
     LedStrip,
     Matrix,
+    MatrixStrip,
 };
 // static constexpr OutputDevice ACTIVE_OUTPUT_DEVICE = OutputDevice::LedStrip;
-static constexpr OutputDevice ACTIVE_OUTPUT_DEVICE = OutputDevice::Matrix;
+// static constexpr OutputDevice ACTIVE_OUTPUT_DEVICE = OutputDevice::Matrix;
+static constexpr OutputDevice ACTIVE_OUTPUT_DEVICE = OutputDevice::MatrixStrip;
 
-// Number of LEDs in the strip
+// Number of LEDs in the strip. For a strip-driven matrix, the strip must be large enough
+// to cover every pixel in the logical matrix.
 // static constexpr uint16_t LED_STRIP_LED_NUMBERS = 60 * 2;
-static constexpr uint16_t LED_STRIP_LED_NUMBERS = 8 * 2; //sticks
-
+// static constexpr uint16_t LED_STRIP_LED_NUMBERS = 8 * 2; //sticks
+static constexpr uint16_t LED_STRIP_LED_NUMBERS = MATRIX_WIDTH * MATRIX_HEIGHT;
+// Brightness tuning for both output devices. 0..255, where 255 is full brightness.
+//LED strip still applies to strip matrices
+static constexpr uint8_t LED_STRIP_BRIGHTNESS = 20;
+static constexpr uint8_t MATRIX_BRIGHTNESS = 128;
 // Selects which IShader implementations are used; see Rendering/shader_config.h.
 static constexpr uint32_t FALLBACK_TIMEOUT_MS = 1 * 1000;
 

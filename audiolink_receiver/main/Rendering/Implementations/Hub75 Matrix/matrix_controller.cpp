@@ -41,6 +41,7 @@ esp_err_t MatrixController::init() {
         return ESP_FAIL;
     }
 
+    driver_->setBrightness8(MATRIX_BRIGHTNESS);
     return ESP_OK;
 }
 

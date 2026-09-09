@@ -113,7 +113,14 @@ static void led_update_task(void *arg) {
 
         if (output_ready) {
             IShader &active_shader = data_is_stale ? *g_fallback_shader : *g_shader;
-            render_shader_frame(*g_render_target, active_shader, g_last_audio_data);
+            const UvFitMode fit_mode = data_is_stale ? FallbackShaderUVConfig::FIT_MODE
+                                                    : SelectedShaderUVConfig::FIT_MODE;
+            const UvAlignment fit_alignment = data_is_stale ? FallbackShaderUVConfig::FIT_ALIGNMENT
+                                                           : SelectedShaderUVConfig::FIT_ALIGNMENT;
+            const UvRepeatMode repeat_mode = data_is_stale ? FallbackShaderUVConfig::REPEAT_MODE
+                                                            : SelectedShaderUVConfig::REPEAT_MODE;
+            render_shader_frame(*g_render_target, active_shader, g_last_audio_data, fit_mode, fit_alignment,
+                                repeat_mode);
         }
 
         vTaskDelay(min_delay_ticks(should_update ? 5 : 15));
