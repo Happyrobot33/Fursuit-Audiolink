@@ -11,7 +11,7 @@
 #define COBS_MAX_ENC        4096 * 2
 #define COBS_MAX_DEC        4000 * 2
 //This buffer size is to account for the additional data of the protobuf object that the sub packet is being encoded into.
-#define ESP_NOW_BUFFER_MARGIN_SIZE 10
+#define ESP_NOW_BUFFER_MARGIN_SIZE 15
 #define SUB_PACKET_DATA_COUNT (ESP_NOW_MAX_DATA_LEN_V2 - ESP_NOW_BUFFER_MARGIN_SIZE)
 
 /* Queue message for passing decoded audio data to sender task */
