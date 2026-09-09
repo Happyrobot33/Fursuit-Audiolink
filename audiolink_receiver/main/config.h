@@ -51,7 +51,7 @@ static constexpr uint32_t FALLBACK_TIMEOUT_MS = 1 * 1000;
 #define LED_STRIP_RMT_RES_HZ  (10 * 1000 * 1000)
 
 // Buffer for receiving Sub_Packets and reconstructing Audiolink_Data
-#define MAX_SUB_PACKETS 20
-#define MAX_AUDIO_DATA_SIZE 46000
+#define MAX_SUB_PACKETS 6
+#define MAX_AUDIO_DATA_SIZE 15000
 
 static const char *TAG [[maybe_unused]] = "audiolink";

@@ -20,6 +20,26 @@
 #include "config.h"
 #include "receiver.h"
 #include "audio_converters.hpp"
+#include "magic_enum.hpp"
+
+// Mirrors zlib.h's Z_* return code #defines (zlib has no real enum type to reflect on)
+// so magic_enum can name them for logging; values come from the library's own macros.
+enum class ZlibStatus : int8_t {
+    VersionError = Z_VERSION_ERROR,
+    BufError = Z_BUF_ERROR,
+    MemError = Z_MEM_ERROR,
+    DataError = Z_DATA_ERROR,
+    StreamError = Z_STREAM_ERROR,
+    Errno = Z_ERRNO,
+    Ok = Z_OK,
+    StreamEnd = Z_STREAM_END,
+    NeedDict = Z_NEED_DICT,
+};
+
+static magic_enum::string_view zlib_status_name(int code) {
+    const auto name = magic_enum::enum_name(static_cast<ZlibStatus>(code));
+    return name.empty() ? magic_enum::string_view{"UNKNOWN"} : name;
+}
 
 using namespace NanoPb::Converter;
 
@@ -105,8 +125,15 @@ static bool receiver_init_pipeline_queues(void) {
 static bool IRAM_ATTR decode_subpacket_data_callback(pb_istream_t *stream, const pb_field_t *field, void **arg) {
     std::vector<uint8_t> *buffer = static_cast<std::vector<uint8_t>*>(*arg);
     size_t bytes_to_read = stream->bytes_left;
-    
+
+    // A corrupted/malicious over-the-air packet can carry a bogus wire-format length
+    // prefix here; without a bound this resize() can request gigabytes and abort() the
+    // whole device (operator new has no exception handling in this build).
+    constexpr size_t MAX_SUBPACKET_PAYLOAD_SIZE = 1500;
     size_t old_size = buffer->size();
+    if (bytes_to_read > MAX_SUBPACKET_PAYLOAD_SIZE || old_size > MAX_SUBPACKET_PAYLOAD_SIZE - bytes_to_read) {
+        return false;
+    }
     buffer->resize(old_size + bytes_to_read);
     
     if (!pb_read(stream, buffer->data() + old_size, bytes_to_read)) {
@@ -133,7 +160,14 @@ static bool IRAM_ATTR decode_streaming_zlib_payload(const std::vector<uint8_t> &
         return false;
     }
 
-    const size_t heap_limit = 16 * 1024;
+    // zlib's inflate state needs roughly (1 << windowBits) for the history window plus a
+    // few KB of fixed overhead (code tables, struct fields). Gate on the smallest window
+    // we'll actually try (see loop below) rather than an unrelated flat guess — anything
+    // needing a bigger window that still doesn't fit is already handled per-attempt by
+    // inflateInit2()/inflate() returning Z_MEM_ERROR below.
+    constexpr int MIN_WINDOW_BITS = 12;
+    constexpr size_t ZLIB_INFLATE_STATE_OVERHEAD = 7 * 1024;
+    const size_t heap_limit = (static_cast<size_t>(1) << MIN_WINDOW_BITS) + ZLIB_INFLATE_STATE_OVERHEAD;
     size_t free_heap = heap_caps_get_free_size(MALLOC_CAP_8BIT);
     size_t largest_block = heap_caps_get_largest_free_block(MALLOC_CAP_8BIT);
     if (largest_block < heap_limit) {
@@ -153,7 +187,7 @@ static bool IRAM_ATTR decode_streaming_zlib_payload(const std::vector<uint8_t> &
 
     // Prefer smaller windows to avoid requiring a large contiguous heap block.
     // Retry with larger windows when the compressed stream needs more history.
-    for (int window_bits : { -12, -13, -14, -MAX_WBITS, 12, 13, 14, MAX_WBITS }) {
+    for (int window_bits : { -MIN_WINDOW_BITS, -13, -14, -MAX_WBITS, MIN_WINDOW_BITS, 13, 14, MAX_WBITS }) {
         z_stream zstream = {};
         zstream.next_in = const_cast<Bytef *>(compressed_data.data());
         zstream.avail_in = static_cast<uInt>(compressed_data.size());
@@ -173,13 +207,17 @@ static bool IRAM_ATTR decode_streaming_zlib_payload(const std::vector<uint8_t> &
             if (zlib_result != Z_OK && zlib_result != Z_STREAM_END) {
                 if (zlib_result == Z_MEM_ERROR) {
                     ESP_LOGW(TAG,
-                             "ZLIB memory error: free_heap=%u largest_block=%u compressed_size=%zu window_bits=%d",
+                             "ZLIB memory error (%.*s): free_heap=%u largest_block=%u compressed_size=%zu window_bits=%d",
+                             static_cast<int>(zlib_status_name(zlib_result).size()),
+                             zlib_status_name(zlib_result).data(),
                              static_cast<unsigned>(free_heap),
                              static_cast<unsigned>(largest_block),
                              compressed_data.size(),
                              window_bits);
                 } else {
-                    ESP_LOGW(TAG, "ZLIB decompression failed with code %d (window_bits=%d)", zlib_result, window_bits);
+                    const auto status_name = zlib_status_name(zlib_result);
+                    ESP_LOGW(TAG, "ZLIB decompression failed with code %.*s (%d) (window_bits=%d)",
+                             static_cast<int>(status_name.size()), status_name.data(), zlib_result, window_bits);
                 }
                 inflateEnd(&zstream);
                 break;
