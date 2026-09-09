@@ -2,19 +2,18 @@
   "C_Cpp.intelliSenseEngine": "default",
   "idf.extensionActivationMode": "always",
   "idf.openOcdConfigs": [
-    "interface/ftdi/esp_ftdi.cfg",
-    "target/esp32.cfg"
+    "board/esp32s3-bridge.cfg"
   ],
-  "idf.portWin": "COM3",
+  "idf.portWin": "COM7",
   "idf.currentSetup": "C:\\esp\\v6.0.2\\esp-idf",
   "idf.customExtraVars": {
-    "IDF_TARGET": "esp32"
+    "IDF_TARGET": "esp32s3"
   },
   "clangd.path": "C:\\Espressif\\tools\\esp-clang\\esp-20.1.1_20250829\\esp-clang\\bin\\clangd.exe",
   "clangd.arguments": [
     "--background-index",
     "--query-driver=**",
-    "--compile-commands-dir=e:\\Storage\\Personal\\Coding\\Fursuit-Audiolink\\sender_test\\build"
+    "--compile-commands-dir=e:\\Storage\\Personal\\Coding\\Fursuit-Audiolink\\audiolink_transmitter\\build"
   ],
   "idf.flashType": "UART"
 }

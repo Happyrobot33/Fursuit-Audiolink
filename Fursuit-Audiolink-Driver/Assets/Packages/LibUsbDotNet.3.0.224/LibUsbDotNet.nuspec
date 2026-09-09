@@ -1,0 +1,24 @@
+﻿<?xml version="1.0" encoding="utf-8"?>
+<package xmlns="http://schemas.microsoft.com/packaging/2013/05/nuspec.xsd">
+  <metadata>
+    <id>LibUsbDotNet</id>
+    <version>3.0.224</version>
+    <authors>Travis Robinson,Stevie-O,Quamotion</authors>
+    <license type="expression">LGPL-3.0-or-later</license>
+    <licenseUrl>https://licenses.nuget.org/LGPL-3.0-or-later</licenseUrl>
+    <icon>icon.png</icon>
+    <readme>Readme.md</readme>
+    <projectUrl>https://github.com/LibUsbDotNet/LibUsbDotNet/</projectUrl>
+    <description>.NET USB library, which acts as a wrapper for libusb-1.0. You can write applications that with on all operating systems and drivers without modification. Lots of example code. Open source software hosted on GitHub.</description>
+    <repository type="git" url="https://github.com/LibUsbDotNet/LibUsbDotNet" branch="refs/heads/master" commit="a89bc81569327840e98a2c30207e5b74bbc97b3a" />
+    <dependencies>
+      <group targetFramework="net8.0" />
+      <group targetFramework="net10.0" />
+      <group targetFramework=".NETStandard2.0">
+        <dependency id="Microsoft.Bcl.HashCode" version="6.0.0" exclude="Build,Analyzers" />
+        <dependency id="Microsoft.Bcl.Memory" version="10.0.7" exclude="Build,Analyzers" />
+        <dependency id="System.Threading.Channels" version="10.0.7" exclude="Build,Analyzers" />
+      </group>
+    </dependencies>
+  </metadata>
+</package>

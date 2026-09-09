@@ -38,7 +38,7 @@ RenderSettings:
   m_ReflectionIntensity: 1
   m_CustomReflection: {fileID: 0}
   m_Sun: {fileID: 705507994}
-  m_IndirectSpecularColor: {r: 0.44657874, g: 0.49641275, b: 0.5748172, a: 1}
+  m_IndirectSpecularColor: {r: 0.44657898, g: 0.4964133, b: 0.5748178, a: 1}
   m_UseRadianceAmbientProbe: 0
 --- !u!157 &3
 LightmapSettings:
@@ -1051,10 +1051,10 @@ RectTransform:
   m_Father: {fileID: 1637064915}
   m_RootOrder: 1
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
-  m_AnchorMin: {x: 0, y: 0}
-  m_AnchorMax: {x: 0, y: 0}
-  m_AnchoredPosition: {x: 0, y: 0}
-  m_SizeDelta: {x: 0, y: 130.75876}
+  m_AnchorMin: {x: 0, y: 1}
+  m_AnchorMax: {x: 0, y: 1}
+  m_AnchoredPosition: {x: 0, y: -261.51752}
+  m_SizeDelta: {x: 232.46, y: 0}
   m_Pivot: {x: 0, y: 0}
 --- !u!114 &514124468
 MonoBehaviour:
@@ -1570,9 +1570,9 @@ AudioSource:
   serializedVersion: 4
   OutputAudioMixerGroup: {fileID: -6582174281052801837, guid: 96ec86db3a7f7c24f845a076f0d5d14e,
     type: 2}
-  m_audioClip: {fileID: 8300000, guid: 6c1eabb5d6f126a45ab777f8678e4aa0, type: 3}
+  m_audioClip: {fileID: 8300000, guid: bfd23a87a3bd2e444b8fa71c64f82eee, type: 3}
   m_PlayOnAwake: 1
-  m_Volume: 1
+  m_Volume: 0.072
   m_Pitch: 1
   Loop: 1
   Mute: 0
@@ -1865,10 +1865,10 @@ RectTransform:
   m_Father: {fileID: 1637064915}
   m_RootOrder: 2
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
-  m_AnchorMin: {x: 0, y: 0}
-  m_AnchorMax: {x: 0, y: 0}
-  m_AnchoredPosition: {x: 0, y: 0}
-  m_SizeDelta: {x: 0, y: 232.46}
+  m_AnchorMin: {x: 0, y: 1}
+  m_AnchorMax: {x: 0, y: 1}
+  m_AnchoredPosition: {x: 0, y: -493.97754}
+  m_SizeDelta: {x: 232.46, y: 0}
   m_Pivot: {x: 0, y: 0}
 --- !u!114 &1050810398
 MonoBehaviour:
@@ -2223,15 +2223,13 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   audioLink: {fileID: 2439678699266885654}
-  portName: COM11
-  baudRate: 921600
-  sendInterval: 0.005
+  sendInterval: 0.0001
   useZlibCompression: 1
   logPacketSizeDifference: 1
   packetSizeText: {fileID: 396753617}
-  logReceivedSerialData: 0
+  logReceivedSerialData: 1
   generateNewData: 1
-  Features: 12
+  Features: 1022
 --- !u!4 &1319370884
 Transform:
   m_ObjectHideFlags: 0
@@ -2281,10 +2279,10 @@ RectTransform:
   m_Father: {fileID: 1637064915}
   m_RootOrder: 0
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
-  m_AnchorMin: {x: 0, y: 0}
-  m_AnchorMax: {x: 0, y: 0}
-  m_AnchoredPosition: {x: 0, y: 0}
-  m_SizeDelta: {x: 0, y: 130.75876}
+  m_AnchorMin: {x: 0, y: 1}
+  m_AnchorMax: {x: 0, y: 1}
+  m_AnchoredPosition: {x: 0, y: -130.75876}
+  m_SizeDelta: {x: 232.46, y: 0}
   m_Pivot: {x: 0, y: 0}
 --- !u!114 &1419741900
 MonoBehaviour:

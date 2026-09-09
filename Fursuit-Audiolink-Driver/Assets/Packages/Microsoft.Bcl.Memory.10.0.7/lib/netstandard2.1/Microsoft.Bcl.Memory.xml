@@ -1,0 +1,1325 @@
+<?xml version="1.0"?>
+<doc>
+    <assembly>
+        <name>Microsoft.Bcl.Memory</name>
+    </assembly>
+    <members>
+        <member name="M:System.Buffers.Text.Base64Url.GetMaxDecodedLength(System.Int32)">
+            <summary>
+            Returns the maximum length (in bytes) of the result if you were to decode base 64 encoded text from a span of size <paramref name="base64Length"/>.
+            </summary>
+            <exception cref="T:System.ArgumentOutOfRangeException">The specified <paramref name="base64Length"/> is less than 0.
+            </exception>
+        </member>
+        <member name="M:System.Buffers.Text.Base64Url.DecodeFromUtf8(System.ReadOnlySpan{System.Byte},System.Span{System.Byte},System.Int32@,System.Int32@,System.Boolean)">
+            <summary>
+            Decodes the span of UTF-8 encoded text represented as Base64Url into binary data.
+            </summary>
+            <param name="source">The input span which contains UTF-8 encoded text in Base64Url that needs to be decoded.</param>
+            <param name="destination">The output span which contains the result of the operation, i.e. the decoded binary data.</param>
+            <param name="bytesConsumed">When this method returns, contains the number of input bytes consumed during the operation. This can be used to slice the input for subsequent calls, if necessary. This parameter is treated as uninitialized.</param>
+            <param name="bytesWritten">When this method returns, contains the number of bytes written into the output span. This can be used to slice the output for subsequent calls, if necessary. This parameter is treated as uninitialized.</param>
+            <param name="isFinalBlock"><see langword="true"/> when the input span contains the entirety of data to encode; <see langword="false"/> when more data may follow,
+            such as when calling in a loop. Calls with <see langword="false"/> should be followed up with another call where this parameter is <see langword="true"/> call. The default is <see langword="true" />.</param>
+            <returns>One of the enumeration values that indicates the success or failure of the operation.</returns>
+            <remarks>
+            As padding is optional for Base64Url the <paramref name="source"/> length not required to be a multiple of 4 even if <paramref name="isFinalBlock"/> is <see langword="true"/>.
+            If the <paramref name="source"/> length is not a multiple of 4 and <paramref name="isFinalBlock"/> is <see langword="true"/> the remainders decoded accordingly:
+            - Remainder of 3 bytes - decoded into 2 bytes data, decoding succeeds.
+            - Remainder of 2 bytes - decoded into 1 byte data. decoding succeeds.
+            - Remainder of 1 byte - will cause OperationStatus.InvalidData result.
+            </remarks>
+        </member>
+        <member name="M:System.Buffers.Text.Base64Url.DecodeFromUtf8InPlace(System.Span{System.Byte})">
+            <summary>
+            Decodes the span of UTF-8 encoded text in Base64Url into binary data, in-place.
+            The decoded binary output is smaller than the text data contained in the input (the operation deflates the data).
+            </summary>
+            <param name="buffer">The input span which contains the base 64 text data that needs to be decoded.</param>
+            <returns>The number of bytes written into <paramref name="buffer"/>. This can be used to slice the output for subsequent calls, if necessary.</returns>
+            <exception cref="T:System.FormatException"><paramref name="buffer"/> contains an invalid Base64Url character,
+            more than two padding characters, or a non white space character among the padding characters.</exception>
+            <remarks>
+            As padding is optional for Base64Url the <paramref name="buffer"/> length not required to be a multiple of 4.
+            If the <paramref name="buffer"/> length is not a multiple of 4 the remainders decoded accordingly:
+            - Remainder of 3 bytes - decoded into 2 bytes data, decoding succeeds.
+            - Remainder of 2 bytes - decoded into 1 byte data. decoding succeeds.
+            - Remainder of 1 byte - is invalid input, causes FormatException.
+            </remarks>
+        </member>
+        <member name="M:System.Buffers.Text.Base64Url.DecodeFromUtf8(System.ReadOnlySpan{System.Byte},System.Span{System.Byte})">
+            <summary>
+            Decodes the span of UTF-8 encoded text represented as Base64Url into binary data.
+            </summary>
+            <param name="source">The input span which contains UTF-8 encoded text in Base64Url that needs to be decoded.</param>
+            <param name="destination">The output span which contains the result of the operation, i.e. the decoded binary data.</param>
+            <returns>The number of bytes written into <paramref name="destination"/>. This can be used to slice the output for subsequent calls, if necessary.</returns>
+            <exception cref="T:System.ArgumentException">The buffer in <paramref name="destination"/> is too small to hold the encoded output.</exception>
+            <exception cref="T:System.FormatException"><paramref name="source"/> contains an invalid Base64Url character,
+            more than two padding characters, or a non white space character among the padding characters.</exception>
+            <remarks>
+            As padding is optional for Base64Url the <paramref name="source"/> length not required to be a multiple of 4.
+            If the <paramref name="source"/> length is not a multiple of 4 the remainders decoded accordingly:
+            - Remainder of 3 bytes - decoded into 2 bytes data, decoding succeeds.
+            - Remainder of 2 bytes - decoded into 1 byte data. decoding succeeds.
+            - Remainder of 1 byte - is invalid input, causes FormatException.
+            </remarks>
+        </member>
+        <member name="M:System.Buffers.Text.Base64Url.TryDecodeFromUtf8(System.ReadOnlySpan{System.Byte},System.Span{System.Byte},System.Int32@)">
+            <summary>
+            Decodes the span of UTF-8 encoded text represented as Base64Url into binary data.
+            </summary>
+            <param name="source">The input span which contains UTF-8 encoded text in Base64Url that needs to be decoded.</param>
+            <param name="destination">The output span which contains the result of the operation, i.e. the decoded binary data.</param>
+            <param name="bytesWritten">When this method returns, contains the number of bytes written into the output span. This can be used to slice the output for subsequent calls, if necessary. This parameter is treated as uninitialized.</param>
+            <returns><see langword="true"/> if bytes decoded successfully, otherwise <see langword="false"/>.</returns>
+            <exception cref="T:System.FormatException"><paramref name="source"/> contains an invalid Base64Url character,
+            more than two padding characters, or a non white space character among the padding characters.</exception>
+        </member>
+        <member name="M:System.Buffers.Text.Base64Url.DecodeFromUtf8(System.ReadOnlySpan{System.Byte})">
+            <summary>
+            Decodes the span of UTF-8 encoded text represented as Base64Url into binary data.
+            </summary>
+            <param name="source">The input span which contains UTF-8 encoded text in Base64Url that needs to be decoded.</param>
+            <returns>>A byte array which contains the result of the decoding operation.</returns>
+            <exception cref="T:System.FormatException"><paramref name="source"/> contains an invalid Base64Url character,
+            more than two padding characters, or a non white space character among the padding characters.</exception>
+        </member>
+        <member name="M:System.Buffers.Text.Base64Url.DecodeFromChars(System.ReadOnlySpan{System.Char},System.Span{System.Byte},System.Int32@,System.Int32@,System.Boolean)">
+            <summary>
+            Decodes the span of unicode ASCII chars represented as Base64Url into binary data.
+            </summary>
+            <param name="source">The input span which contains unicode ASCII chars in Base64Url that needs to be decoded.</param>
+            <param name="destination">The output span which contains the result of the operation, i.e. the decoded binary data.</param>
+            <param name="charsConsumed">When this method returns, contains the number of input chars consumed during the operation. This can be used to slice the input for subsequent calls, if necessary. This parameter is treated as uninitialized.</param>
+            <param name="bytesWritten">When this method returns, contains the number of bytes written into the output span. This can be used to slice the output for subsequent calls, if necessary. This parameter is treated as uninitialized.</param>
+            <param name="isFinalBlock"><see langword="true"/> when the input span contains the entirety of data to encode; <see langword="false"/> when more data may follow,
+            such as when calling in a loop. Calls with <see langword="false"/> should be followed up with another call where this parameter is <see langword="true"/> call. The default is <see langword="true" />.</param>
+            <returns>One of the enumeration values that indicates the success or failure of the operation.</returns>
+            <remarks>
+            As padding is optional for Base64Url the <paramref name="source"/> length not required to be a multiple of 4 even if <paramref name="isFinalBlock"/> is <see langword="true"/>.
+            If the <paramref name="source"/> length is not a multiple of 4 and <paramref name="isFinalBlock"/> is <see langword="true"/> the remainders decoded accordingly:
+            - Remainder of 3 chars - decoded into 2 bytes data, decoding succeeds.
+            - Remainder of 2 chars - decoded into 1 byte data. decoding succeeds.
+            - Remainder of 1 char - will cause OperationStatus.InvalidData result.
+            </remarks>
+        </member>
+        <member name="M:System.Buffers.Text.Base64Url.DecodeFromChars(System.ReadOnlySpan{System.Char},System.Span{System.Byte})">
+            <summary>
+            Decodes the span of unicode ASCII chars represented as Base64Url into binary data.
+            </summary>
+            <param name="source">The input span which contains ASCII chars in Base64Url that needs to be decoded.</param>
+            <param name="destination">The output span which contains the result of the operation, i.e. the decoded binary data.</param>
+            <returns>The number of bytes written into the output span. This can be used to slice the output for subsequent calls, if necessary.</returns>
+            <exception cref="T:System.ArgumentException">The buffer in <paramref name="destination"/> is too small to hold the encoded output.</exception>
+            <exception cref="T:System.FormatException"><paramref name="source"/> contains a invalid Base64Url character,
+            more than two padding characters, or a non white space character among the padding characters.</exception>
+        </member>
+        <member name="M:System.Buffers.Text.Base64Url.TryDecodeFromChars(System.ReadOnlySpan{System.Char},System.Span{System.Byte},System.Int32@)">
+            <summary>
+            Decodes the span of unicode ASCII chars represented as Base64Url into binary data.
+            </summary>
+            <param name="source">The input span which contains ASCII chars in Base64Url that needs to be decoded.</param>
+            <param name="destination">The output span which contains the result of the operation, i.e. the decoded binary data.</param>
+            <param name="bytesWritten">When this method returns, contains the number of bytes written into the output span. This can be used to slice the output for subsequent calls, if necessary. This parameter is treated as uninitialized.</param>
+            <returns><see langword="true"/> if bytes decoded successfully, otherwise <see langword="false"/>.</returns>
+            <exception cref="T:System.FormatException"><paramref name="source"/> contains an invalid Base64Url character,
+            more than two padding characters, or a non white space character among the padding characters.</exception>
+        </member>
+        <member name="M:System.Buffers.Text.Base64Url.DecodeFromChars(System.ReadOnlySpan{System.Char})">
+            <summary>
+            Decodes the span of unicode ASCII chars represented as Base64Url into binary data.
+            </summary>
+            <param name="source">The input span which contains ASCII chars in Base64Url that needs to be decoded.</param>
+            <returns>A byte array which contains the result of the decoding operation.</returns>
+            <exception cref="T:System.FormatException"><paramref name="source"/> contains a invalid Base64Url character,
+            more than two padding characters, or a non white space character among the padding characters.</exception>
+        </member>
+        <member name="M:System.Buffers.Text.Base64Url.EncodeToUtf8(System.ReadOnlySpan{System.Byte},System.Span{System.Byte},System.Int32@,System.Int32@,System.Boolean)">
+            <summary>
+            Encodes the span of binary data into UTF-8 encoded text represented as Base64Url.
+            </summary>
+            <param name="source">The input span which contains binary data that needs to be encoded.</param>
+            <param name="destination">The output span which contains the result of the operation, i.e. the UTF-8 encoded text in Base64Url.</param>
+            <param name="bytesConsumed">When this method returns, contains the number of input bytes consumed during the operation. This can be used to slice the input for subsequent calls, if necessary. This parameter is treated as uninitialized.</param>
+            <param name="bytesWritten">When this method returns, contains the number of bytes written into the output span. This can be used to slice the output for subsequent calls, if necessary. This parameter is treated as uninitialized.</param>
+            <param name="isFinalBlock"><see langword="true"/> when the input span contains the entirety of data to encode; <see langword="false"/> when more data may follow,
+            such as when calling in a loop, subsequent calls with <see langword="false"/> should end with <see langword="true"/> call. The default is <see langword="true" />.</param>
+            <returns>One of the enumeration values that indicates the success or failure of the operation.</returns>
+            <remarks>This implementation of the base64url encoding omits the optional padding characters.</remarks>
+        </member>
+        <member name="M:System.Buffers.Text.Base64Url.GetEncodedLength(System.Int32)">
+            <summary>
+            Returns the length (in bytes) of the result if you were to encode binary data within a byte span of size <paramref name="bytesLength"/>.
+            </summary>
+            <exception cref="T:System.ArgumentOutOfRangeException">
+            <paramref name="bytesLength"/> is less than 0 or greater than 1610612733.
+            </exception>
+        </member>
+        <member name="M:System.Buffers.Text.Base64Url.EncodeToUtf8(System.ReadOnlySpan{System.Byte},System.Span{System.Byte})">
+            <summary>
+            Encodes the span of binary data into UTF-8 encoded text represented as Base64Url.
+            </summary>
+            <param name="source">The input span which contains binary data that needs to be encoded.</param>
+            <param name="destination">The output span which contains the result of the operation, i.e. the UTF-8 encoded text in Base64Url.</param>
+            <returns>The number of bytes written into the destination span. This can be used to slice the output for subsequent calls, if necessary.</returns>
+            <exception cref="T:System.ArgumentException">The buffer in <paramref name="destination"/> is too small to hold the encoded output.</exception>
+            <remarks>This implementation of the base64url encoding omits the optional padding characters.</remarks>
+        </member>
+        <member name="M:System.Buffers.Text.Base64Url.EncodeToUtf8(System.ReadOnlySpan{System.Byte})">
+            <summary>
+            Encodes the span of binary data into UTF-8 encoded text represented as Base64Url.
+            </summary>
+            <param name="source">The input span which contains binary data that needs to be encoded.</param>
+            <returns>The output byte array which contains the result of the operation, i.e. the UTF-8 encoded text in Base64Url.</returns>
+            <remarks>This implementation of the base64url encoding omits the optional padding characters.</remarks>
+        </member>
+        <member name="M:System.Buffers.Text.Base64Url.EncodeToChars(System.ReadOnlySpan{System.Byte},System.Span{System.Char},System.Int32@,System.Int32@,System.Boolean)">
+            <summary>
+            Encodes the span of binary data into unicode ASCII chars represented as Base64Url.
+            </summary>
+            <param name="source">The input span which contains binary data that needs to be encoded.</param>
+            <param name="destination">The output span which contains the result of the operation, i.e. the ASCII chars in Base64Url.</param>
+            <param name="bytesConsumed">>When this method returns, contains the number of input bytes consumed during the operation. This can be used to slice the input for subsequent calls, if necessary. This parameter is treated as uninitialized.</param>
+            <param name="charsWritten">>When this method returns, contains the number of chars written into the output span. This can be used to slice the output for subsequent calls, if necessary. This parameter is treated as uninitialized.</param>
+            <param name="isFinalBlock"><see langword="true"/> when the input span contains the entirety of data to encode; <see langword="false"/> when more data may follow,
+            such as when calling in a loop, subsequent calls with <see langword="false"/> should end with <see langword="true"/> call. The default is <see langword="true" />.</param>
+            <returns>One of the enumeration values that indicates the success or failure of the operation.</returns>
+            <remarks>This implementation of the base64url encoding omits the optional padding characters.</remarks>
+        </member>
+        <member name="M:System.Buffers.Text.Base64Url.EncodeToChars(System.ReadOnlySpan{System.Byte},System.Span{System.Char})">
+            <summary>
+            Encodes the span of binary data into unicode ASCII chars represented as Base64Url.
+            </summary>
+            <param name="source">The input span which contains binary data that needs to be encoded.</param>
+            <param name="destination">The output span which contains the result of the operation, i.e. the ASCII chars in Base64Url.</param>
+            <returns>The number of bytes written into the destination span. This can be used to slice the output for subsequent calls, if necessary.</returns>
+            <exception cref="T:System.ArgumentException">The buffer in <paramref name="destination"/> is too small to hold the encoded output.</exception>
+            <remarks>This implementation of the base64url encoding omits the optional padding characters.</remarks>
+        </member>
+        <member name="M:System.Buffers.Text.Base64Url.EncodeToChars(System.ReadOnlySpan{System.Byte})">
+            <summary>
+            Encodes the span of binary data into unicode ASCII chars represented as Base64Url.
+            </summary>
+            <param name="source">The input span which contains binary data that needs to be encoded.</param>
+            <returns>A char array which contains the result of the operation, i.e. the ASCII chars in Base64Url.</returns>
+            <remarks>This implementation of the base64url encoding omits the optional padding characters.</remarks>
+        </member>
+        <member name="M:System.Buffers.Text.Base64Url.EncodeToString(System.ReadOnlySpan{System.Byte})">
+            <summary>
+            Encodes the span of binary data into unicode string represented as Base64Url ASCII chars.
+            </summary>
+            <param name="source">The input span which contains binary data that needs to be encoded.</param>
+            <returns>A string which contains the result of the operation, i.e. the ASCII string in Base64Url.</returns>
+            <remarks>This implementation of the base64url encoding omits the optional padding characters.</remarks>
+        </member>
+        <member name="M:System.Buffers.Text.Base64Url.TryEncodeToChars(System.ReadOnlySpan{System.Byte},System.Span{System.Char},System.Int32@)">
+            <summary>
+            Encodes the span of binary data into unicode ASCII chars represented as Base64Url.
+            </summary>
+            <param name="source">The input span which contains binary data that needs to be encoded.</param>
+            <param name="destination">The output span which contains the result of the operation, i.e. the ASCII chars in Base64Url.</param>
+            <param name="charsWritten">When this method returns, contains the number of chars written into the output span. This can be used to slice the output for subsequent calls, if necessary. This parameter is treated as uninitialized.</param>
+            <returns><see langword="true"/> if chars encoded successfully, otherwise <see langword="false"/>.</returns>
+            <remarks>This implementation of the base64url encoding omits the optional padding characters.</remarks>
+        </member>
+        <member name="M:System.Buffers.Text.Base64Url.TryEncodeToUtf8(System.ReadOnlySpan{System.Byte},System.Span{System.Byte},System.Int32@)">
+            <summary>
+            Encodes the span of binary data into UTF-8 encoded chars represented as Base64Url.
+            </summary>
+            <param name="source">The input span which contains binary data that needs to be encoded.</param>
+            <param name="destination">The output span which contains the result of the operation, i.e. the UTF-8 encoded text in Base64Url.</param>
+            <param name="bytesWritten">When this method returns, contains the number of chars written into the output span. This can be used to slice the output for subsequent calls, if necessary. This parameter is treated as uninitialized.</param>
+            <returns><see langword="true"/> if bytes encoded successfully, otherwise <see langword="false"/>.</returns>
+            <remarks>This implementation of the base64url encoding omits the optional padding characters.</remarks>
+        </member>
+        <member name="M:System.Buffers.Text.Base64Url.TryEncodeToUtf8InPlace(System.Span{System.Byte},System.Int32,System.Int32@)">
+            <summary>
+            Encodes the span of binary data (in-place) into UTF-8 encoded text represented as base 64.
+            The encoded text output is larger than the binary data contained in the input (the operation inflates the data).
+            </summary>
+            <param name="buffer">The input span which contains binary data that needs to be encoded.
+            It needs to be large enough to fit the result of the operation.</param>
+            <param name="dataLength">The amount of binary data contained within the buffer that needs to be encoded
+            (and needs to be smaller than the buffer length).</param>
+            <param name="bytesWritten">When this method returns, contains the number of bytes written into the buffer. This parameter is treated as uninitialized.</param>
+            <returns><see langword="true"/> if bytes encoded successfully, otherwise <see langword="false"/>.</returns>
+            <remarks>This implementation of the base64url encoding omits the optional padding characters.</remarks>
+        </member>
+        <member name="M:System.Buffers.Text.Base64Url.IsValid(System.ReadOnlySpan{System.Char})">
+            <summary>Validates that the specified span of text is comprised of valid base-64 encoded data.</summary>
+            <param name="base64UrlText">A span of text to validate.</param>
+            <returns><see langword="true"/> if <paramref name="base64UrlText"/> contains a valid, decodable sequence of base-64 encoded data; otherwise, <see langword="false"/>.</returns>
+            <remarks>
+            If the method returns <see langword="true"/>, the same text passed to <see cref="M:System.Buffers.Text.Base64Url.DecodeFromChars(System.ReadOnlySpan{System.Char})"/> and
+            <see cref="M:System.Buffers.Text.Base64Url.TryDecodeFromChars(System.ReadOnlySpan{System.Char},System.Span{System.Byte},System.Int32@)"/> would successfully decode (in the case
+            of <see cref="M:System.Buffers.Text.Base64Url.TryDecodeFromChars(System.ReadOnlySpan{System.Char},System.Span{System.Byte},System.Int32@)"/> assuming sufficient output space).
+            Any amount of whitespace is allowed anywhere in the input, where whitespace is defined as the characters ' ', '\t', '\r', or '\n'.
+            </remarks>
+        </member>
+        <member name="M:System.Buffers.Text.Base64Url.IsValid(System.ReadOnlySpan{System.Char},System.Int32@)">
+            <summary>Validates that the specified span of text is comprised of valid base-64 encoded data.</summary>
+            <param name="base64UrlText">A span of text to validate.</param>
+            <param name="decodedLength">If the method returns true, the number of decoded bytes that will result from decoding the input text.</param>
+            <returns><see langword="true"/> if <paramref name="base64UrlText"/> contains a valid, decodable sequence of base-64 encoded data; otherwise, <see langword="false"/>.</returns>
+            <remarks>
+            If the method returns <see langword="true"/>, the same text passed to <see cref="M:System.Buffers.Text.Base64Url.DecodeFromChars(System.ReadOnlySpan{System.Char})"/> and
+            <see cref="M:System.Buffers.Text.Base64Url.TryDecodeFromChars(System.ReadOnlySpan{System.Char},System.Span{System.Byte},System.Int32@)"/> would successfully decode (in the case
+            of <see cref="M:System.Buffers.Text.Base64Url.TryDecodeFromChars(System.ReadOnlySpan{System.Char},System.Span{System.Byte},System.Int32@)"/> assuming sufficient output space).
+            Any amount of whitespace is allowed anywhere in the input, where whitespace is defined as the characters ' ', '\t', '\r', or '\n'.
+            </remarks>
+        </member>
+        <member name="M:System.Buffers.Text.Base64Url.IsValid(System.ReadOnlySpan{System.Byte})">
+            <summary>Validates that the specified span of UTF-8 text is comprised of valid base-64 encoded data.</summary>
+            <param name="utf8Base64UrlText">A span of UTF-8 text to validate.</param>
+            <returns><see langword="true"/> if <paramref name="utf8Base64UrlText"/> contains a valid, decodable sequence of base-64 encoded data; otherwise, <see langword="false"/>.</returns>
+            <remarks>
+            where whitespace is defined as the characters ' ', '\t', '\r', or '\n' (as bytes).
+            </remarks>
+        </member>
+        <member name="M:System.Buffers.Text.Base64Url.IsValid(System.ReadOnlySpan{System.Byte},System.Int32@)">
+            <summary>Validates that the specified span of UTF-8 text is comprised of valid base-64 encoded data.</summary>
+            <param name="utf8Base64UrlText">A span of UTF-8 text to validate.</param>
+            <param name="decodedLength">If the method returns true, the number of decoded bytes that will result from decoding the input UTF-8 text.</param>
+            <returns><see langword="true"/> if <paramref name="utf8Base64UrlText"/> contains a valid, decodable sequence of base-64 encoded data; otherwise, <see langword="false"/>.</returns>
+            <remarks>
+            where whitespace is defined as the characters ' ', '\t', '\r', or '\n' (as bytes).
+            </remarks>
+        </member>
+        <member name="M:System.Numerics.BitOperations.TrailingZeroCount(System.UInt32)">
+            <summary>
+            Count the number of trailing zero bits in an integer value.
+            Similar in behavior to the x86 instruction TZCNT.
+            </summary>
+            <param name="value">The value.</param>
+        </member>
+        <member name="M:System.Numerics.BitOperations.RotateLeft(System.UInt32,System.Int32)">
+            <summary>
+            Rotates the specified value left by the specified number of bits.
+            Similar in behavior to the x86 instruction ROL.
+            </summary>
+            <param name="value">The value to rotate.</param>
+            <param name="offset">The number of bits to rotate by.
+            Any value outside the range [0..31] is treated as congruent mod 32.</param>
+            <returns>The rotated value.</returns>
+        </member>
+        <member name="M:System.Numerics.BitOperations.RotateRight(System.UInt32,System.Int32)">
+            <summary>
+            Rotates the specified value right by the specified number of bits.
+            Similar in behavior to the x86 instruction ROR.
+            </summary>
+            <param name="value">The value to rotate.</param>
+            <param name="offset">The number of bits to rotate by.
+            Any value outside the range [0..31] is treated as congruent mod 32.</param>
+            <returns>The rotated value.</returns>
+        </member>
+        <member name="M:System.Text.Ascii.AllBytesInUInt64AreAscii(System.UInt64)">
+            <summary>
+            Returns <see langword="true"/> iff all bytes in <paramref name="value"/> are ASCII.
+            </summary>
+        </member>
+        <member name="M:System.Text.Ascii.AllCharsInUInt32AreAscii(System.UInt32)">
+            <summary>
+            Returns <see langword="true"/> iff all chars in <paramref name="value"/> are ASCII.
+            </summary>
+        </member>
+        <member name="M:System.Text.Ascii.AllCharsInUInt64AreAscii(System.UInt64)">
+            <summary>
+            Returns <see langword="true"/> iff all chars in <paramref name="value"/> are ASCII.
+            </summary>
+        </member>
+        <member name="M:System.Text.Ascii.FirstCharInUInt32IsAscii(System.UInt32)">
+            <summary>
+            Given a DWORD which represents two packed chars in machine-endian order,
+            <see langword="true"/> iff the first char (in machine-endian order) is ASCII.
+            </summary>
+            <param name="value"></param>
+            <returns></returns>
+        </member>
+        <member name="M:System.Text.Ascii.GetIndexOfFirstNonAsciiByte(System.Byte*,System.UIntPtr)">
+            <summary>
+            Returns the index in <paramref name="pBuffer"/> where the first non-ASCII byte is found.
+            Returns <paramref name="bufferLength"/> if the buffer is empty or all-ASCII.
+            </summary>
+            <returns>An ASCII byte is defined as 0x00 - 0x7F, inclusive.</returns>
+        </member>
+        <member name="M:System.Text.Ascii.GetIndexOfFirstNonAsciiChar(System.Char*,System.UIntPtr)">
+            <summary>
+            Returns the index in <paramref name="pBuffer"/> where the first non-ASCII char is found.
+            Returns <paramref name="bufferLength"/> if the buffer is empty or all-ASCII.
+            </summary>
+            <returns>An ASCII char is defined as 0x0000 - 0x007F, inclusive.</returns>
+        </member>
+        <member name="M:System.Text.Ascii.NarrowFourUtf16CharsToAsciiAndWriteToBuffer(System.Byte@,System.UInt64)">
+            <summary>
+            Given a QWORD which represents a buffer of 4 ASCII chars in machine-endian order,
+            narrows each WORD to a BYTE, then writes the 4-byte result to the output buffer
+            also in machine-endian order.
+            </summary>
+        </member>
+        <member name="M:System.Text.Ascii.NarrowTwoUtf16CharsToAsciiAndWriteToBuffer(System.Byte@,System.UInt32)">
+            <summary>
+            Given a DWORD which represents a buffer of 2 ASCII chars in machine-endian order,
+            narrows each WORD to a BYTE, then writes the 2-byte result to the output buffer also in
+            machine-endian order.
+            </summary>
+        </member>
+        <member name="M:System.Text.Ascii.NarrowUtf16ToAscii(System.Char*,System.Byte*,System.UIntPtr)">
+            <summary>
+            Copies as many ASCII characters (U+0000..U+007F) as possible from <paramref name="pUtf16Buffer"/>
+            to <paramref name="pAsciiBuffer"/>, stopping when the first non-ASCII character is encountered
+            or once <paramref name="elementCount"/> elements have been converted. Returns the total number
+            of elements that were able to be converted.
+            </summary>
+        </member>
+        <member name="M:System.Text.Ascii.WidenAsciiToUtf16(System.Byte*,System.Char*,System.UIntPtr)">
+            <summary>
+            Copies as many ASCII bytes (00..7F) as possible from <paramref name="pAsciiBuffer"/>
+            to <paramref name="pUtf16Buffer"/>, stopping when the first non-ASCII byte is encountered
+            or once <paramref name="elementCount"/> elements have been converted. Returns the total number
+            of elements that were able to be converted.
+            </summary>
+        </member>
+        <member name="M:System.Text.Ascii.WidenFourAsciiBytesToUtf16AndWriteToBuffer(System.Char@,System.UInt32)">
+            <summary>
+            Given a DWORD which represents a buffer of 4 bytes, widens the buffer into 4 WORDs and
+            writes them to the output buffer with machine endianness.
+            </summary>
+        </member>
+        <member name="F:System.Text.Ascii.UInt32HighBitsOnlyMask">
+            <summary>
+            A mask which selects only the high bit of each byte of the given <see cref="T:System.UInt32"/>.
+            </summary>
+        </member>
+        <member name="F:System.Text.Ascii.UInt64HighBitsOnlyMask">
+            <summary>
+            A mask which selects only the high bit of each byte of the given <see cref="T:System.UInt64"/>.
+            </summary>
+        </member>
+        <member name="M:System.Text.Ascii.AllBytesInUInt32AreAscii(System.UInt32)">
+            <summary>
+            Returns <see langword="true"/> iff all bytes in <paramref name="value"/> are ASCII.
+            </summary>
+        </member>
+        <member name="M:System.Text.Ascii.CountNumberOfLeadingAsciiBytesFromUInt32WithSomeNonAsciiData(System.UInt32)">
+            <summary>
+            Given a DWORD which represents a four-byte buffer read in machine endianness, and which
+            the caller has asserted contains a non-ASCII byte *somewhere* in the data, counts the
+            number of consecutive ASCII bytes starting from the beginning of the buffer. Returns
+            a value 0 - 3, inclusive. (The caller is responsible for ensuring that the buffer doesn't
+            contain all-ASCII data.)
+            </summary>
+        </member>
+        <member name="T:System.Text.Rune">
+            <summary>
+            Represents a Unicode scalar value ([ U+0000..U+D7FF ], inclusive; or [ U+E000..U+10FFFF ], inclusive).
+            </summary>
+            <remarks>
+            This type's constructors and conversion operators validate the input, so consumers can call the APIs
+            assuming that the underlying <see cref="T:System.Text.Rune"/> instance is well-formed.
+            </remarks>
+        </member>
+        <member name="M:System.Text.Rune.#ctor(System.Char)">
+            <summary>
+            Creates a <see cref="T:System.Text.Rune"/> from the provided UTF-16 code unit.
+            </summary>
+            <exception cref="T:System.ArgumentOutOfRangeException">
+            If <paramref name="ch"/> represents a UTF-16 surrogate code point
+            U+D800..U+DFFF, inclusive.
+            </exception>
+        </member>
+        <member name="M:System.Text.Rune.#ctor(System.Char,System.Char)">
+            <summary>
+            Creates a <see cref="T:System.Text.Rune"/> from the provided UTF-16 surrogate pair.
+            </summary>
+            <exception cref="T:System.ArgumentOutOfRangeException">
+            If <paramref name="highSurrogate"/> does not represent a UTF-16 high surrogate code point
+            or <paramref name="lowSurrogate"/> does not represent a UTF-16 low surrogate code point.
+            </exception>
+        </member>
+        <member name="M:System.Text.Rune.#ctor(System.Int32)">
+            <summary>
+            Creates a <see cref="T:System.Text.Rune"/> from the provided Unicode scalar value.
+            </summary>
+            <exception cref="T:System.ArgumentOutOfRangeException">
+            If <paramref name="value"/> does not represent a value Unicode scalar value.
+            </exception>
+        </member>
+        <member name="M:System.Text.Rune.#ctor(System.UInt32)">
+            <summary>
+            Creates a <see cref="T:System.Text.Rune"/> from the provided Unicode scalar value.
+            </summary>
+            <exception cref="T:System.ArgumentOutOfRangeException">
+            If <paramref name="value"/> does not represent a value Unicode scalar value.
+            </exception>
+        </member>
+        <member name="P:System.Text.Rune.IsAscii">
+            <summary>
+            Returns true if and only if this scalar value is ASCII ([ U+0000..U+007F ])
+            and therefore representable by a single UTF-8 code unit.
+            </summary>
+        </member>
+        <member name="P:System.Text.Rune.IsBmp">
+            <summary>
+            Returns true if and only if this scalar value is within the BMP ([ U+0000..U+FFFF ])
+            and therefore representable by a single UTF-16 code unit.
+            </summary>
+        </member>
+        <member name="P:System.Text.Rune.Plane">
+            <summary>
+            Returns the Unicode plane (0 to 16, inclusive) which contains this scalar.
+            </summary>
+        </member>
+        <member name="P:System.Text.Rune.ReplacementChar">
+            <summary>
+            A <see cref="T:System.Text.Rune"/> instance that represents the Unicode replacement character U+FFFD.
+            </summary>
+        </member>
+        <member name="P:System.Text.Rune.Utf16SequenceLength">
+            <summary>
+            Returns the length in code units (<see cref="T:System.Char"/>) of the
+            UTF-16 sequence required to represent this scalar value.
+            </summary>
+            <remarks>
+            The return value will be 1 or 2.
+            </remarks>
+        </member>
+        <member name="P:System.Text.Rune.Utf8SequenceLength">
+            <summary>
+            Returns the length in code units of the
+            UTF-8 sequence required to represent this scalar value.
+            </summary>
+            <remarks>
+            The return value will be 1 through 4, inclusive.
+            </remarks>
+        </member>
+        <member name="P:System.Text.Rune.Value">
+            <summary>
+            Returns the Unicode scalar value as an integer.
+            </summary>
+        </member>
+        <member name="M:System.Text.Rune.DecodeFromUtf16(System.ReadOnlySpan{System.Char},System.Text.Rune@,System.Int32@)">
+            <summary>
+            Decodes the <see cref="T:System.Text.Rune"/> at the beginning of the provided UTF-16 source buffer.
+            </summary>
+            <returns>
+            <para>
+            If the source buffer begins with a valid UTF-16 encoded scalar value, returns <see cref="F:System.Buffers.OperationStatus.Done"/>,
+            and outs via <paramref name="result"/> the decoded <see cref="T:System.Text.Rune"/> and via <paramref name="charsConsumed"/> the
+            number of <see langword="char"/>s used in the input buffer to encode the <see cref="T:System.Text.Rune"/>.
+            </para>
+            <para>
+            If the source buffer is empty or contains only a standalone UTF-16 high surrogate character, returns <see cref="F:System.Buffers.OperationStatus.NeedMoreData"/>,
+            and outs via <paramref name="result"/> <see cref="P:System.Text.Rune.ReplacementChar"/> and via <paramref name="charsConsumed"/> the length of the input buffer.
+            </para>
+            <para>
+            If the source buffer begins with an ill-formed UTF-16 encoded scalar value, returns <see cref="F:System.Buffers.OperationStatus.InvalidData"/>,
+            and outs via <paramref name="result"/> <see cref="P:System.Text.Rune.ReplacementChar"/> and via <paramref name="charsConsumed"/> the number of
+            <see langword="char"/>s used in the input buffer to encode the ill-formed sequence.
+            </para>
+            </returns>
+            <remarks>
+            The general calling convention is to call this method in a loop, slicing the <paramref name="source"/> buffer by
+            <paramref name="charsConsumed"/> elements on each iteration of the loop. On each iteration of the loop <paramref name="result"/>
+            will contain the real scalar value if successfully decoded, or it will contain <see cref="P:System.Text.Rune.ReplacementChar"/> if
+            the data could not be successfully decoded. This pattern provides convenient automatic U+FFFD substitution of
+            invalid sequences while iterating through the loop.
+            </remarks>
+        </member>
+        <member name="M:System.Text.Rune.DecodeFromUtf8(System.ReadOnlySpan{System.Byte},System.Text.Rune@,System.Int32@)">
+            <summary>
+            Decodes the <see cref="T:System.Text.Rune"/> at the beginning of the provided UTF-8 source buffer.
+            </summary>
+            <returns>
+            <para>
+            If the source buffer begins with a valid UTF-8 encoded scalar value, returns <see cref="F:System.Buffers.OperationStatus.Done"/>,
+            and outs via <paramref name="result"/> the decoded <see cref="T:System.Text.Rune"/> and via <paramref name="bytesConsumed"/> the
+            number of <see langword="byte"/>s used in the input buffer to encode the <see cref="T:System.Text.Rune"/>.
+            </para>
+            <para>
+            If the source buffer is empty or contains only a partial UTF-8 subsequence, returns <see cref="F:System.Buffers.OperationStatus.NeedMoreData"/>,
+            and outs via <paramref name="result"/> <see cref="P:System.Text.Rune.ReplacementChar"/> and via <paramref name="bytesConsumed"/> the length of the input buffer.
+            </para>
+            <para>
+            If the source buffer begins with an ill-formed UTF-8 encoded scalar value, returns <see cref="F:System.Buffers.OperationStatus.InvalidData"/>,
+            and outs via <paramref name="result"/> <see cref="P:System.Text.Rune.ReplacementChar"/> and via <paramref name="bytesConsumed"/> the number of
+            <see langword="char"/>s used in the input buffer to encode the ill-formed sequence.
+            </para>
+            </returns>
+            <remarks>
+            The general calling convention is to call this method in a loop, slicing the <paramref name="source"/> buffer by
+            <paramref name="bytesConsumed"/> elements on each iteration of the loop. On each iteration of the loop <paramref name="result"/>
+            will contain the real scalar value if successfully decoded, or it will contain <see cref="P:System.Text.Rune.ReplacementChar"/> if
+            the data could not be successfully decoded. This pattern provides convenient automatic U+FFFD substitution of
+            invalid sequences while iterating through the loop.
+            </remarks>
+        </member>
+        <member name="M:System.Text.Rune.DecodeLastFromUtf16(System.ReadOnlySpan{System.Char},System.Text.Rune@,System.Int32@)">
+            <summary>
+            Decodes the <see cref="T:System.Text.Rune"/> at the end of the provided UTF-16 source buffer.
+            </summary>
+            <remarks>
+            This method is very similar to <see cref="M:System.Text.Rune.DecodeFromUtf16(System.ReadOnlySpan{System.Char},System.Text.Rune@,System.Int32@)"/>, but it allows
+            the caller to loop backward instead of forward. The typical calling convention is that on each iteration
+            of the loop, the caller should slice off the final <paramref name="charsConsumed"/> elements of
+            the <paramref name="source"/> buffer.
+            </remarks>
+        </member>
+        <member name="M:System.Text.Rune.DecodeLastFromUtf8(System.ReadOnlySpan{System.Byte},System.Text.Rune@,System.Int32@)">
+            <summary>
+            Decodes the <see cref="T:System.Text.Rune"/> at the end of the provided UTF-8 source buffer.
+            </summary>
+            <remarks>
+            This method is very similar to <see cref="M:System.Text.Rune.DecodeFromUtf8(System.ReadOnlySpan{System.Byte},System.Text.Rune@,System.Int32@)"/>, but it allows
+            the caller to loop backward instead of forward. The typical calling convention is that on each iteration
+            of the loop, the caller should slice off the final <paramref name="bytesConsumed"/> elements of
+            the <paramref name="source"/> buffer.
+            </remarks>
+        </member>
+        <member name="M:System.Text.Rune.EncodeToUtf16(System.Span{System.Char})">
+            <summary>
+            Encodes this <see cref="T:System.Text.Rune"/> to a UTF-16 destination buffer.
+            </summary>
+            <param name="destination">The buffer to which to write this value as UTF-16.</param>
+            <returns>The number of <see cref="T:System.Char"/>s written to <paramref name="destination"/>.</returns>
+            <exception cref="T:System.ArgumentException">
+            If <paramref name="destination"/> is not large enough to hold the output.
+            </exception>
+        </member>
+        <member name="M:System.Text.Rune.EncodeToUtf8(System.Span{System.Byte})">
+            <summary>
+            Encodes this <see cref="T:System.Text.Rune"/> to a UTF-8 destination buffer.
+            </summary>
+            <param name="destination">The buffer to which to write this value as UTF-8.</param>
+            <returns>The number of <see cref="T:System.Byte"/>s written to <paramref name="destination"/>.</returns>
+            <exception cref="T:System.ArgumentException">
+            If <paramref name="destination"/> is not large enough to hold the output.
+            </exception>
+        </member>
+        <member name="M:System.Text.Rune.IsValid(System.Int32)">
+            <summary>
+            Returns <see langword="true"/> iff <paramref name="value"/> is a valid Unicode scalar
+            value, i.e., is in [ U+0000..U+D7FF ], inclusive; or [ U+E000..U+10FFFF ], inclusive.
+            </summary>
+        </member>
+        <member name="M:System.Text.Rune.IsValid(System.UInt32)">
+            <summary>
+            Returns <see langword="true"/> iff <paramref name="value"/> is a valid Unicode scalar
+            value, i.e., is in [ U+0000..U+D7FF ], inclusive; or [ U+E000..U+10FFFF ], inclusive.
+            </summary>
+        </member>
+        <member name="M:System.Text.Rune.ToString">
+            <summary>
+            Returns a <see cref="T:System.String"/> representation of this <see cref="T:System.Text.Rune"/> instance.
+            </summary>
+        </member>
+        <member name="M:System.Text.Rune.TryCreate(System.Char,System.Text.Rune@)">
+            <summary>
+            Attempts to create a <see cref="T:System.Text.Rune"/> from the provided input value.
+            </summary>
+        </member>
+        <member name="M:System.Text.Rune.TryCreate(System.Char,System.Char,System.Text.Rune@)">
+            <summary>
+            Attempts to create a <see cref="T:System.Text.Rune"/> from the provided UTF-16 surrogate pair.
+            Returns <see langword="false"/> if the input values don't represent a well-formed UTF-16surrogate pair.
+            </summary>
+        </member>
+        <member name="M:System.Text.Rune.TryCreate(System.Int32,System.Text.Rune@)">
+            <summary>
+            Attempts to create a <see cref="T:System.Text.Rune"/> from the provided input value.
+            </summary>
+        </member>
+        <member name="M:System.Text.Rune.TryCreate(System.UInt32,System.Text.Rune@)">
+            <summary>
+            Attempts to create a <see cref="T:System.Text.Rune"/> from the provided input value.
+            </summary>
+        </member>
+        <member name="M:System.Text.Rune.TryEncodeToUtf16(System.Span{System.Char},System.Int32@)">
+            <summary>
+            Encodes this <see cref="T:System.Text.Rune"/> to a UTF-16 destination buffer.
+            </summary>
+            <param name="destination">The buffer to which to write this value as UTF-16.</param>
+            <param name="charsWritten">
+            The number of <see cref="T:System.Char"/>s written to <paramref name="destination"/>,
+            or 0 if the destination buffer is not large enough to contain the output.</param>
+            <returns>True if the value was written to the buffer; otherwise, false.</returns>
+            <remarks>
+            The <see cref="P:System.Text.Rune.Utf16SequenceLength"/> property can be queried ahead of time to determine
+            the required size of the <paramref name="destination"/> buffer.
+            </remarks>
+        </member>
+        <member name="M:System.Text.Rune.TryEncodeToUtf8(System.Span{System.Byte},System.Int32@)">
+            <summary>
+            Encodes this <see cref="T:System.Text.Rune"/> to a destination buffer as UTF-8 bytes.
+            </summary>
+            <param name="destination">The buffer to which to write this value as UTF-8.</param>
+            <param name="bytesWritten">
+            The number of <see cref="T:System.Byte"/>s written to <paramref name="destination"/>,
+            or 0 if the destination buffer is not large enough to contain the output.</param>
+            <returns>True if the value was written to the buffer; otherwise, false.</returns>
+            <remarks>
+            The <see cref="P:System.Text.Rune.Utf8SequenceLength"/> property can be queried ahead of time to determine
+            the required size of the <paramref name="destination"/> buffer.
+            </remarks>
+        </member>
+        <member name="M:System.Text.Rune.UnsafeCreate(System.UInt32)">
+            <summary>
+            Creates a <see cref="T:System.Text.Rune"/> without performing validation on the input.
+            </summary>
+        </member>
+        <member name="M:System.Text.Rune.System#IComparable#CompareTo(System.Object)">
+            <inheritdoc cref="M:System.IComparable.CompareTo(System.Object)" />
+        </member>
+        <member name="M:System.Text.UnicodeDebug.ToHexString(System.UInt32)">
+            <summary>
+            Formats a code point as the hex string "U+XXXX".
+            </summary>
+            <remarks>
+            The input value doesn't have to be a real code point in the Unicode codespace. It can be any integer.
+            </remarks>
+        </member>
+        <member name="F:System.Text.UnicodeUtility.ReplacementChar">
+            <summary>
+            The Unicode replacement character U+FFFD.
+            </summary>
+        </member>
+        <member name="M:System.Text.UnicodeUtility.GetPlane(System.UInt32)">
+            <summary>
+            Returns the Unicode plane (0 through 16, inclusive) which contains this code point.
+            </summary>
+        </member>
+        <member name="M:System.Text.UnicodeUtility.GetScalarFromUtf16SurrogatePair(System.UInt32,System.UInt32)">
+            <summary>
+            Returns a Unicode scalar value from two code points representing a UTF-16 surrogate pair.
+            </summary>
+        </member>
+        <member name="M:System.Text.UnicodeUtility.GetUtf16SequenceLength(System.UInt32)">
+            <summary>
+            Given a Unicode scalar value, gets the number of UTF-16 code units required to represent this value.
+            </summary>
+        </member>
+        <member name="M:System.Text.UnicodeUtility.GetUtf16SurrogatesFromSupplementaryPlaneScalar(System.UInt32,System.Char@,System.Char@)">
+            <summary>
+            Decomposes an astral Unicode scalar into UTF-16 high and low surrogate code units.
+            </summary>
+        </member>
+        <member name="M:System.Text.UnicodeUtility.GetUtf8SequenceLength(System.UInt32)">
+            <summary>
+            Given a Unicode scalar value, gets the number of UTF-8 code units required to represent this value.
+            </summary>
+        </member>
+        <member name="M:System.Text.UnicodeUtility.IsAsciiCodePoint(System.UInt32)">
+            <summary>
+            Returns <see langword="true"/> iff <paramref name="value"/> is an ASCII
+            character ([ U+0000..U+007F ]).
+            </summary>
+            <remarks>
+            Per http://www.unicode.org/glossary/#ASCII, ASCII is only U+0000..U+007F.
+            </remarks>
+        </member>
+        <member name="M:System.Text.UnicodeUtility.IsBmpCodePoint(System.UInt32)">
+            <summary>
+            Returns <see langword="true"/> iff <paramref name="value"/> is in the
+            Basic Multilingual Plane (BMP).
+            </summary>
+        </member>
+        <member name="M:System.Text.UnicodeUtility.IsHighSurrogateCodePoint(System.UInt32)">
+            <summary>
+            Returns <see langword="true"/> iff <paramref name="value"/> is a UTF-16 high surrogate code point,
+            i.e., is in [ U+D800..U+DBFF ], inclusive.
+            </summary>
+        </member>
+        <member name="M:System.Text.UnicodeUtility.IsInRangeInclusive(System.UInt32,System.UInt32,System.UInt32)">
+            <summary>
+            Returns <see langword="true"/> iff <paramref name="value"/> is between
+            <paramref name="lowerBound"/> and <paramref name="upperBound"/>, inclusive.
+            </summary>
+        </member>
+        <member name="M:System.Text.UnicodeUtility.IsLowSurrogateCodePoint(System.UInt32)">
+            <summary>
+            Returns <see langword="true"/> iff <paramref name="value"/> is a UTF-16 low surrogate code point,
+            i.e., is in [ U+DC00..U+DFFF ], inclusive.
+            </summary>
+        </member>
+        <member name="M:System.Text.UnicodeUtility.IsSurrogateCodePoint(System.UInt32)">
+            <summary>
+            Returns <see langword="true"/> iff <paramref name="value"/> is a UTF-16 surrogate code point,
+            i.e., is in [ U+D800..U+DFFF ], inclusive.
+            </summary>
+        </member>
+        <member name="M:System.Text.UnicodeUtility.IsValidCodePoint(System.UInt32)">
+            <summary>
+            Returns <see langword="true"/> iff <paramref name="codePoint"/> is a valid Unicode code
+            point, i.e., is in [ U+0000..U+10FFFF ], inclusive.
+            </summary>
+        </member>
+        <member name="M:System.Text.UnicodeUtility.IsValidUnicodeScalar(System.UInt32)">
+            <summary>
+            Returns <see langword="true"/> iff <paramref name="value"/> is a valid Unicode scalar
+            value, i.e., is in [ U+0000..U+D7FF ], inclusive; or [ U+E000..U+10FFFF ], inclusive.
+            </summary>
+        </member>
+        <member name="M:System.Text.Unicode.Utf16Utility.AllCharsInUInt32AreAscii(System.UInt32)">
+            <summary>
+            Returns true iff the UInt32 represents two ASCII UTF-16 characters in machine endianness.
+            </summary>
+        </member>
+        <member name="M:System.Text.Unicode.Utf16Utility.AllCharsInUInt64AreAscii(System.UInt64)">
+            <summary>
+            Returns true iff the UInt64 represents four ASCII UTF-16 characters in machine endianness.
+            </summary>
+        </member>
+        <member name="M:System.Text.Unicode.Utf16Utility.ConvertAllAsciiCharsInUInt32ToLowercase(System.UInt32)">
+            <summary>
+            Given a UInt32 that represents two ASCII UTF-16 characters, returns the invariant
+            lowercase representation of those characters. Requires the input value to contain
+            two ASCII UTF-16 characters in machine endianness.
+            </summary>
+            <remarks>
+            This is a branchless implementation.
+            </remarks>
+        </member>
+        <member name="M:System.Text.Unicode.Utf16Utility.ConvertAllAsciiCharsInUInt32ToUppercase(System.UInt32)">
+            <summary>
+            Given a UInt32 that represents two ASCII UTF-16 characters, returns the invariant
+            uppercase representation of those characters. Requires the input value to contain
+            two ASCII UTF-16 characters in machine endianness.
+            </summary>
+            <remarks>
+            This is a branchless implementation.
+            </remarks>
+        </member>
+        <member name="M:System.Text.Unicode.Utf16Utility.ConvertAllAsciiCharsInUInt64ToUppercase(System.UInt64)">
+            <summary>
+            Given a UInt64 that represents four ASCII UTF-16 characters, returns the invariant
+            uppercase representation of those characters. Requires the input value to contain
+            four ASCII UTF-16 characters in machine endianness.
+            </summary>
+            <remarks>
+            This is a branchless implementation.
+            </remarks>
+        </member>
+        <member name="M:System.Text.Unicode.Utf16Utility.ConvertAllAsciiCharsInUInt64ToLowercase(System.UInt64)">
+            <summary>
+            Given a UInt64 that represents four ASCII UTF-16 characters, returns the invariant
+            lowercase representation of those characters. Requires the input value to contain
+            four ASCII UTF-16 characters in machine endianness.
+            </summary>
+            <remarks>
+            This is a branchless implementation.
+            </remarks>
+        </member>
+        <member name="M:System.Text.Unicode.Utf16Utility.UInt32ContainsAnyLowercaseAsciiChar(System.UInt32)">
+            <summary>
+            Given a UInt32 that represents two ASCII UTF-16 characters, returns true iff
+            the input contains one or more lowercase ASCII characters.
+            </summary>
+            <remarks>
+            This is a branchless implementation.
+            </remarks>
+        </member>
+        <member name="M:System.Text.Unicode.Utf16Utility.UInt32ContainsAnyUppercaseAsciiChar(System.UInt32)">
+            <summary>
+            Given a UInt32 that represents two ASCII UTF-16 characters, returns true iff
+            the input contains one or more uppercase ASCII characters.
+            </summary>
+            <remarks>
+            This is a branchless implementation.
+            </remarks>
+        </member>
+        <member name="M:System.Text.Unicode.Utf16Utility.UInt32OrdinalIgnoreCaseAscii(System.UInt32,System.UInt32)">
+            <summary>
+            Given two UInt32s that represent two ASCII UTF-16 characters each, returns true iff
+            the two inputs are equal using an ordinal case-insensitive comparison.
+            </summary>
+            <remarks>
+            This is a branchless implementation.
+            </remarks>
+        </member>
+        <member name="M:System.Text.Unicode.Utf16Utility.UInt64OrdinalIgnoreCaseAscii(System.UInt64,System.UInt64)">
+            <summary>
+            Given two UInt64s that represent four ASCII UTF-16 characters each, returns true iff
+            the two inputs are equal using an ordinal case-insensitive comparison.
+            </summary>
+            <remarks>
+            This is a branchless implementation.
+            </remarks>
+        </member>
+        <member name="T:System.Text.Unicode.Utf8">
+            <summary>
+            Provides static methods that convert chunked data between UTF-8 and UTF-16 encodings.
+            </summary>
+        </member>
+        <member name="M:System.Text.Unicode.Utf8.FromUtf16(System.ReadOnlySpan{System.Char},System.Span{System.Byte},System.Int32@,System.Int32@,System.Boolean,System.Boolean)">
+            <summary>
+            Transcodes the UTF-16 <paramref name="source"/> buffer to <paramref name="destination"/> as UTF-8.
+            </summary>
+            <remarks>
+            If <paramref name="replaceInvalidSequences"/> is <see langword="true"/>, invalid UTF-16 sequences
+            in <paramref name="source"/> will be replaced with U+FFFD in <paramref name="destination"/>, and
+            this method will not return <see cref="F:System.Buffers.OperationStatus.InvalidData"/>.
+            </remarks>
+        </member>
+        <member name="M:System.Text.Unicode.Utf8.ToUtf16(System.ReadOnlySpan{System.Byte},System.Span{System.Char},System.Int32@,System.Int32@,System.Boolean,System.Boolean)">
+            <summary>
+            Transcodes the UTF-8 <paramref name="source"/> buffer to <paramref name="destination"/> as UTF-16.
+            </summary>
+            <remarks>
+            If <paramref name="replaceInvalidSequences"/> is <see langword="true"/>, invalid UTF-8 sequences
+            in <paramref name="source"/> will be replaced with U+FFFD in <paramref name="destination"/>, and
+            this method will not return <see cref="F:System.Buffers.OperationStatus.InvalidData"/>.
+            </remarks>
+        </member>
+        <member name="M:System.Text.Unicode.Utf8.IsValid(System.ReadOnlySpan{System.Byte})">
+            <summary>
+            Validates that the value is well-formed UTF-8.
+            </summary>
+            <param name="value">The <see cref="T:System.ReadOnlySpan`1"/> string.</param>
+            <returns><c>true</c> if value is well-formed UTF-8, <c>false</c> otherwise.</returns>
+        </member>
+        <member name="F:System.Text.Unicode.Utf8Utility.MaxBytesPerScalar">
+            <summary>
+            The maximum number of bytes that can result from UTF-8 transcoding
+            any Unicode scalar value.
+            </summary>
+        </member>
+        <member name="M:System.Text.Unicode.Utf8Utility.GetIndexOfFirstInvalidUtf8Sequence(System.ReadOnlySpan{System.Byte},System.Boolean@)">
+            <summary>
+            Returns the byte index in <paramref name="utf8Data"/> where the first invalid UTF-8 sequence begins,
+            or -1 if the buffer contains no invalid sequences. Also outs the <paramref name="isAscii"/> parameter
+            stating whether all data observed (up to the first invalid sequence or the end of the buffer, whichever
+            comes first) is ASCII.
+            </summary>
+        </member>
+        <member name="M:System.Text.Unicode.Utf8Utility.AllBytesInUInt32AreAscii(System.UInt32)">
+            <summary>
+            Returns true iff the UInt32 represents four ASCII UTF-8 characters in machine endianness.
+            </summary>
+        </member>
+        <member name="M:System.Text.Unicode.Utf8Utility.AllBytesInUInt64AreAscii(System.UInt64)">
+            <summary>
+            Returns true iff the UInt64 represents eighty ASCII UTF-8 characters in machine endianness.
+            </summary>
+        </member>
+        <member name="M:System.Text.Unicode.Utf8Utility.ConvertAllAsciiBytesInUInt32ToLowercase(System.UInt32)">
+            <summary>
+            Given a UInt32 that represents four ASCII UTF-8 characters, returns the invariant
+            lowercase representation of those characters. Requires the input value to contain
+            four ASCII UTF-8 characters in machine endianness.
+            </summary>
+            <remarks>
+            This is a branchless implementation.
+            </remarks>
+        </member>
+        <member name="M:System.Text.Unicode.Utf8Utility.ConvertAllAsciiBytesInUInt32ToUppercase(System.UInt32)">
+            <summary>
+            Given a UInt32 that represents four ASCII UTF-8 characters, returns the invariant
+            uppercase representation of those characters. Requires the input value to contain
+            four ASCII UTF-8 characters in machine endianness.
+            </summary>
+            <remarks>
+            This is a branchless implementation.
+            </remarks>
+        </member>
+        <member name="M:System.Text.Unicode.Utf8Utility.ConvertAllAsciiBytesInUInt64ToUppercase(System.UInt64)">
+            <summary>
+            Given a UInt64 that represents eight ASCII UTF-8 characters, returns the invariant
+            uppercase representation of those characters. Requires the input value to contain
+            eight ASCII UTF-8 characters in machine endianness.
+            </summary>
+            <remarks>
+            This is a branchless implementation.
+            </remarks>
+        </member>
+        <member name="M:System.Text.Unicode.Utf8Utility.ConvertAllAsciiBytesInUInt64ToLowercase(System.UInt64)">
+            <summary>
+            Given a UInt64 that represents eight ASCII UTF-8 characters, returns the invariant
+            uppercase representation of those characters. Requires the input value to contain
+            eight ASCII UTF-8 characters in machine endianness.
+            </summary>
+            <remarks>
+            This is a branchless implementation.
+            </remarks>
+        </member>
+        <member name="M:System.Text.Unicode.Utf8Utility.UInt32OrdinalIgnoreCaseAscii(System.UInt32,System.UInt32)">
+            <summary>
+            Given two UInt32s that represent four ASCII UTF-8 characters each, returns true iff
+            the two inputs are equal using an ordinal case-insensitive comparison.
+            </summary>
+            <remarks>
+            This is a branchless implementation.
+            </remarks>
+        </member>
+        <member name="M:System.Text.Unicode.Utf8Utility.UInt64OrdinalIgnoreCaseAscii(System.UInt64,System.UInt64)">
+            <summary>
+            Given two UInt64s that represent eight ASCII UTF-8 characters each, returns true iff
+            the two inputs are equal using an ordinal case-insensitive comparison.
+            </summary>
+            <remarks>
+            This is a branchless implementation.
+            </remarks>
+        </member>
+        <member name="M:System.Text.Unicode.Utf8Utility.ExtractCharFromFirstThreeByteSequence(System.UInt32)">
+            <summary>
+            Given a machine-endian DWORD which four bytes of UTF-8 data, interprets the
+            first three bytes as a three-byte UTF-8 subsequence and returns the UTF-16 representation.
+            </summary>
+        </member>
+        <member name="M:System.Text.Unicode.Utf8Utility.ExtractCharFromFirstTwoByteSequence(System.UInt32)">
+            <summary>
+            Given a machine-endian DWORD which four bytes of UTF-8 data, interprets the
+            first two bytes as a two-byte UTF-8 subsequence and returns the UTF-16 representation.
+            </summary>
+        </member>
+        <member name="M:System.Text.Unicode.Utf8Utility.ExtractCharsFromFourByteSequence(System.UInt32)">
+            <summary>
+            Given a machine-endian DWORD which represents four bytes of UTF-8 data, interprets the input as a
+            four-byte UTF-8 sequence and returns the machine-endian DWORD of the UTF-16 representation.
+            </summary>
+        </member>
+        <member name="M:System.Text.Unicode.Utf8Utility.ExtractFourUtf8BytesFromSurrogatePair(System.UInt32)">
+            <summary>
+            Given a 32-bit integer that represents a valid packed UTF-16 surrogate pair, all in machine-endian order,
+            returns the packed 4-byte UTF-8 representation of this scalar value, also in machine-endian order.
+            </summary>
+        </member>
+        <member name="M:System.Text.Unicode.Utf8Utility.ExtractTwoCharsPackedFromTwoAdjacentTwoByteSequences(System.UInt32)">
+            <summary>
+            Given a machine-endian DWORD which represents two adjacent UTF-8 two-byte sequences,
+            returns the machine-endian DWORD representation of that same data as two adjacent
+            UTF-16 byte sequences.
+            </summary>
+            <param name="value"></param>
+            <returns></returns>
+        </member>
+        <member name="M:System.Text.Unicode.Utf8Utility.ExtractTwoUtf8TwoByteSequencesFromTwoPackedUtf16Chars(System.UInt32)">
+            <summary>
+            Given a machine-endian DWORD which represents two adjacent UTF-16 sequences,
+            returns the machine-endian DWORD representation of that same data as two
+            adjacent UTF-8 two-byte sequences.
+            </summary>
+        </member>
+        <member name="M:System.Text.Unicode.Utf8Utility.ExtractUtf8TwoByteSequenceFromFirstUtf16Char(System.UInt32)">
+            <summary>
+            Given a machine-endian DWORD which represents two adjacent UTF-16 sequences,
+            returns the machine-endian DWORD representation of the first UTF-16 char
+            as a UTF-8 two-byte sequence packed into a WORD and zero-extended to DWORD.
+            </summary>
+        </member>
+        <member name="M:System.Text.Unicode.Utf8Utility.IsFirstCharAscii(System.UInt32)">
+            <summary>
+            Given a 32-bit integer that represents two packed UTF-16 characters, all in machine-endian order,
+            returns true iff the first UTF-16 character is ASCII.
+            </summary>
+        </member>
+        <member name="M:System.Text.Unicode.Utf8Utility.IsFirstCharAtLeastThreeUtf8Bytes(System.UInt32)">
+            <summary>
+            Given a 32-bit integer that represents two packed UTF-16 characters, all in machine-endian order,
+            returns true iff the first UTF-16 character requires *at least* 3 bytes to encode in UTF-8.
+            This also returns true if the first UTF-16 character is a surrogate character (well-formedness is not validated).
+            </summary>
+        </member>
+        <member name="M:System.Text.Unicode.Utf8Utility.IsFirstCharSurrogate(System.UInt32)">
+            <summary>
+            Given a 32-bit integer that represents two packed UTF-16 characters, all in machine-endian order,
+            returns true iff the first UTF-16 character is a surrogate character (either high or low).
+            </summary>
+        </member>
+        <member name="M:System.Text.Unicode.Utf8Utility.IsFirstCharTwoUtf8Bytes(System.UInt32)">
+            <summary>
+            Given a 32-bit integer that represents two packed UTF-16 characters, all in machine-endian order,
+            returns true iff the first UTF-16 character would be encoded as exactly 2 bytes in UTF-8.
+            </summary>
+        </member>
+        <member name="M:System.Text.Unicode.Utf8Utility.IsLowByteUtf8ContinuationByte(System.UInt32)">
+            <summary>
+            Returns <see langword="true"/> iff the low byte of <paramref name="value"/>
+            is a UTF-8 continuation byte.
+            </summary>
+        </member>
+        <member name="M:System.Text.Unicode.Utf8Utility.IsSecondCharAscii(System.UInt32)">
+            <summary>
+            Given a 32-bit integer that represents two packed UTF-16 characters, all in machine-endian order,
+            returns true iff the second UTF-16 character is ASCII.
+            </summary>
+        </member>
+        <member name="M:System.Text.Unicode.Utf8Utility.IsSecondCharAtLeastThreeUtf8Bytes(System.UInt32)">
+            <summary>
+            Given a 32-bit integer that represents two packed UTF-16 characters, all in machine-endian order,
+            returns true iff the second UTF-16 character requires *at least* 3 bytes to encode in UTF-8.
+            This also returns true if the second UTF-16 character is a surrogate character (well-formedness is not validated).
+            </summary>
+        </member>
+        <member name="M:System.Text.Unicode.Utf8Utility.IsSecondCharSurrogate(System.UInt32)">
+            <summary>
+            Given a 32-bit integer that represents two packed UTF-16 characters, all in machine-endian order,
+            returns true iff the second UTF-16 character is a surrogate character (either high or low).
+            </summary>
+        </member>
+        <member name="M:System.Text.Unicode.Utf8Utility.IsSecondCharTwoUtf8Bytes(System.UInt32)">
+            <summary>
+            Given a 32-bit integer that represents two packed UTF-16 characters, all in machine-endian order,
+            returns true iff the second UTF-16 character would be encoded as exactly 2 bytes in UTF-8.
+            </summary>
+        </member>
+        <member name="M:System.Text.Unicode.Utf8Utility.IsUtf8ContinuationByte(System.Byte@)">
+            <summary>
+            Returns <see langword="true"/> iff <paramref name="value"/> is a UTF-8 continuation byte;
+            i.e., has binary representation 10xxxxxx, where x is any bit.
+            </summary>
+        </member>
+        <member name="M:System.Text.Unicode.Utf8Utility.IsWellFormedUtf16SurrogatePair(System.UInt32)">
+            <summary>
+            Given a 32-bit integer that represents two packed UTF-16 characters, all in machine-endian order,
+            returns true iff the two characters represent a well-formed UTF-16 surrogate pair.
+            </summary>
+        </member>
+        <member name="M:System.Text.Unicode.Utf8Utility.ToLittleEndian(System.UInt32)">
+            <summary>
+            Converts a DWORD from machine-endian to little-endian.
+            </summary>
+        </member>
+        <member name="M:System.Text.Unicode.Utf8Utility.UInt32BeginsWithOverlongUtf8TwoByteSequence(System.UInt32)">
+            <summary>
+            Given a UTF-8 buffer which has been read into a DWORD in machine endianness,
+            returns <see langword="true"/> iff the first two bytes of the buffer are
+            an overlong representation of a sequence that should be represented as one byte.
+            This method *does not* validate that the sequence matches the appropriate
+            2-byte sequence mask (see <see cref="M:System.Text.Unicode.Utf8Utility.UInt32BeginsWithUtf8TwoByteMask(System.UInt32)"/>).
+            </summary>
+        </member>
+        <member name="M:System.Text.Unicode.Utf8Utility.UInt32BeginsWithUtf8FourByteMask(System.UInt32)">
+            <summary>
+            Given a UTF-8 buffer which has been read into a DWORD in machine endianness,
+            returns <see langword="true"/> iff the first four bytes of the buffer match
+            the UTF-8 4-byte sequence mask [ 11110www 10zzzzzz 10yyyyyy 10xxxxxx ]. This
+            method *does not* validate that the sequence is well-formed; the caller must
+            still perform overlong form or out-of-range checking.
+            </summary>
+        </member>
+        <member name="M:System.Text.Unicode.Utf8Utility.UInt32BeginsWithUtf8ThreeByteMask(System.UInt32)">
+            <summary>
+            Given a UTF-8 buffer which has been read into a DWORD in machine endianness,
+            returns <see langword="true"/> iff the first three bytes of the buffer match
+            the UTF-8 3-byte sequence mask [ 1110zzzz 10yyyyyy 10xxxxxx ]. This method *does not*
+            validate that the sequence is well-formed; the caller must still perform
+            overlong form or surrogate checking.
+            </summary>
+        </member>
+        <member name="M:System.Text.Unicode.Utf8Utility.UInt32BeginsWithUtf8TwoByteMask(System.UInt32)">
+            <summary>
+            Given a UTF-8 buffer which has been read into a DWORD in machine endianness,
+            returns <see langword="true"/> iff the first two bytes of the buffer match
+            the UTF-8 2-byte sequence mask [ 110yyyyy 10xxxxxx ]. This method *does not*
+            validate that the sequence is well-formed; the caller must still perform
+            overlong form checking.
+            </summary>
+        </member>
+        <member name="M:System.Text.Unicode.Utf8Utility.UInt32EndsWithOverlongUtf8TwoByteSequence(System.UInt32)">
+            <summary>
+            Given a UTF-8 buffer which has been read into a DWORD in machine endianness,
+            returns <see langword="true"/> iff the first two bytes of the buffer are
+            an overlong representation of a sequence that should be represented as one byte.
+            This method *does not* validate that the sequence matches the appropriate
+            2-byte sequence mask (see <see cref="M:System.Text.Unicode.Utf8Utility.UInt32BeginsWithUtf8TwoByteMask(System.UInt32)"/>).
+            </summary>
+        </member>
+        <member name="M:System.Text.Unicode.Utf8Utility.UInt32EndsWithUtf8TwoByteMask(System.UInt32)">
+            <summary>
+            Given a UTF-8 buffer which has been read into a DWORD in machine endianness,
+            returns <see langword="true"/> iff the last two bytes of the buffer match
+            the UTF-8 2-byte sequence mask [ 110yyyyy 10xxxxxx ]. This method *does not*
+            validate that the sequence is well-formed; the caller must still perform
+            overlong form checking.
+            </summary>
+        </member>
+        <member name="M:System.Text.Unicode.Utf8Utility.UInt32BeginsWithValidUtf8TwoByteSequenceLittleEndian(System.UInt32)">
+            <summary>
+            Given a UTF-8 buffer which has been read into a DWORD on a little-endian machine,
+            returns <see langword="true"/> iff the first two bytes of the buffer are a well-formed
+            UTF-8 two-byte sequence. This wraps the mask check and the overlong check into a
+            single operation. Returns <see langword="false"/> if running on a big-endian machine.
+            </summary>
+        </member>
+        <member name="M:System.Text.Unicode.Utf8Utility.UInt32EndsWithValidUtf8TwoByteSequenceLittleEndian(System.UInt32)">
+            <summary>
+            Given a UTF-8 buffer which has been read into a DWORD on a little-endian machine,
+            returns <see langword="true"/> iff the last two bytes of the buffer are a well-formed
+            UTF-8 two-byte sequence. This wraps the mask check and the overlong check into a
+            single operation. Returns <see langword="false"/> if running on a big-endian machine.
+            </summary>
+        </member>
+        <member name="M:System.Text.Unicode.Utf8Utility.UInt32FirstByteIsAscii(System.UInt32)">
+            <summary>
+            Given a UTF-8 buffer which has been read into a DWORD in machine endianness,
+            returns <see langword="true"/> iff the first byte of the buffer is ASCII.
+            </summary>
+        </member>
+        <member name="M:System.Text.Unicode.Utf8Utility.UInt32FourthByteIsAscii(System.UInt32)">
+            <summary>
+            Given a UTF-8 buffer which has been read into a DWORD in machine endianness,
+            returns <see langword="true"/> iff the fourth byte of the buffer is ASCII.
+            </summary>
+        </member>
+        <member name="M:System.Text.Unicode.Utf8Utility.UInt32SecondByteIsAscii(System.UInt32)">
+            <summary>
+            Given a UTF-8 buffer which has been read into a DWORD in machine endianness,
+            returns <see langword="true"/> iff the second byte of the buffer is ASCII.
+            </summary>
+        </member>
+        <member name="M:System.Text.Unicode.Utf8Utility.UInt32ThirdByteIsAscii(System.UInt32)">
+            <summary>
+            Given a UTF-8 buffer which has been read into a DWORD in machine endianness,
+            returns <see langword="true"/> iff the third byte of the buffer is ASCII.
+            </summary>
+        </member>
+        <member name="M:System.Text.Unicode.Utf8Utility.WriteTwoUtf16CharsAsTwoUtf8ThreeByteSequences(System.Byte@,System.UInt32)">
+            <summary>
+            Given a DWORD which represents a buffer of 2 packed UTF-16 values in machine endianness,
+            converts those scalar values to their 3-byte UTF-8 representation and writes the
+            resulting 6 bytes to the destination buffer.
+            </summary>
+        </member>
+        <member name="M:System.Text.Unicode.Utf8Utility.WriteFirstUtf16CharAsUtf8ThreeByteSequence(System.Byte@,System.UInt32)">
+            <summary>
+            Given a DWORD which represents a buffer of 2 packed UTF-16 values in machine endianness,
+            converts the first UTF-16 value to its 3-byte UTF-8 representation and writes the
+            resulting 3 bytes to the destination buffer.
+            </summary>
+        </member>
+        <member name="M:System.Text.Unicode.Utf8Utility.GetPointerToFirstInvalidByte(System.Byte*,System.Int32,System.Int32@,System.Int32@)">
+            <summary>
+            Given an input buffer <paramref name="pInputBuffer"/> of byte length <paramref name="inputLength"/>,
+            returns a pointer to where the first invalid data appears in <paramref name="pInputBuffer"/>.
+            </summary>
+            <remarks>
+            Returns a pointer to the end of <paramref name="pInputBuffer"/> if the buffer is well-formed.
+            </remarks>
+        </member>
+        <member name="P:System.SR.Argument_DestinationTooShort">
+            <summary>Destination is too short.</summary>
+        </member>
+        <member name="P:System.SR.Format_BadBase64Char">
+            <summary>The input is not a valid Base64Url string as it contains a non-Base64Url character, more than two padding characters, or an illegal character among the padding characters.</summary>
+        </member>
+        <member name="T:System.Runtime.InteropServices.LibraryImportAttribute">
+            <summary>
+            Attribute used to indicate a source generator should create a function for marshalling
+            arguments instead of relying on the runtime to generate an equivalent marshalling function at run-time.
+            </summary>
+            <remarks>
+            This attribute is meaningless if the source generator associated with it is not enabled.
+            The current built-in source generator only supports C# and only supplies an implementation when
+            applied to static, partial, non-generic methods.
+            </remarks>
+        </member>
+        <member name="M:System.Runtime.InteropServices.LibraryImportAttribute.#ctor(System.String)">
+            <summary>
+            Initializes a new instance of the <see cref="T:System.Runtime.InteropServices.LibraryImportAttribute"/>.
+            </summary>
+            <param name="libraryName">Name of the library containing the import.</param>
+        </member>
+        <member name="P:System.Runtime.InteropServices.LibraryImportAttribute.LibraryName">
+            <summary>
+            Gets the name of the library containing the import.
+            </summary>
+        </member>
+        <member name="P:System.Runtime.InteropServices.LibraryImportAttribute.EntryPoint">
+            <summary>
+            Gets or sets the name of the entry point to be called.
+            </summary>
+        </member>
+        <member name="P:System.Runtime.InteropServices.LibraryImportAttribute.StringMarshalling">
+            <summary>
+            Gets or sets how to marshal string arguments to the method.
+            </summary>
+            <remarks>
+            If this field is set to a value other than <see cref="F:System.Runtime.InteropServices.StringMarshalling.Custom" />,
+            <see cref="P:System.Runtime.InteropServices.LibraryImportAttribute.StringMarshallingCustomType" /> must not be specified.
+            </remarks>
+        </member>
+        <member name="P:System.Runtime.InteropServices.LibraryImportAttribute.StringMarshallingCustomType">
+            <summary>
+            Gets or sets the <see cref="T:System.Type"/> used to control how string arguments to the method are marshalled.
+            </summary>
+            <remarks>
+            If this field is specified, <see cref="P:System.Runtime.InteropServices.LibraryImportAttribute.StringMarshalling" /> must not be specified
+            or must be set to <see cref="F:System.Runtime.InteropServices.StringMarshalling.Custom" />.
+            </remarks>
+        </member>
+        <member name="P:System.Runtime.InteropServices.LibraryImportAttribute.SetLastError">
+            <summary>
+            Gets or sets whether the callee sets an error (SetLastError on Windows or errno
+            on other platforms) before returning from the attributed method.
+            </summary>
+        </member>
+        <member name="T:System.Runtime.InteropServices.StringMarshalling">
+            <summary>
+            Specifies how strings should be marshalled for generated p/invokes
+            </summary>
+        </member>
+        <member name="F:System.Runtime.InteropServices.StringMarshalling.Custom">
+            <summary>
+            Indicates the user is supplying a specific marshaller in <see cref="P:System.Runtime.InteropServices.LibraryImportAttribute.StringMarshallingCustomType"/>.
+            </summary>
+        </member>
+        <member name="F:System.Runtime.InteropServices.StringMarshalling.Utf8">
+            <summary>
+            Use the platform-provided UTF-8 marshaller.
+            </summary>
+        </member>
+        <member name="F:System.Runtime.InteropServices.StringMarshalling.Utf16">
+            <summary>
+            Use the platform-provided UTF-16 marshaller.
+            </summary>
+        </member>
+        <member name="T:System.Diagnostics.CodeAnalysis.MemberNotNullAttribute">
+            <summary>Specifies that the method or property will ensure that the listed field and property members have not-null values.</summary>
+        </member>
+        <member name="M:System.Diagnostics.CodeAnalysis.MemberNotNullAttribute.#ctor(System.String)">
+            <summary>Initializes the attribute with a field or property member.</summary>
+            <param name="member">
+            The field or property member that is promised to be not-null.
+            </param>
+        </member>
+        <member name="M:System.Diagnostics.CodeAnalysis.MemberNotNullAttribute.#ctor(System.String[])">
+            <summary>Initializes the attribute with the list of field and property members.</summary>
+            <param name="members">
+            The list of field and property members that are promised to be not-null.
+            </param>
+        </member>
+        <member name="P:System.Diagnostics.CodeAnalysis.MemberNotNullAttribute.Members">
+            <summary>Gets field or property member names.</summary>
+        </member>
+        <member name="T:System.Diagnostics.CodeAnalysis.MemberNotNullWhenAttribute">
+            <summary>Specifies that the method or property will ensure that the listed field and property members have not-null values when returning with the specified return value condition.</summary>
+        </member>
+        <member name="M:System.Diagnostics.CodeAnalysis.MemberNotNullWhenAttribute.#ctor(System.Boolean,System.String)">
+            <summary>Initializes the attribute with the specified return value condition and a field or property member.</summary>
+            <param name="returnValue">
+            The return value condition. If the method returns this value, the associated field or property member will not be null.
+            </param>
+            <param name="member">
+            The field or property member that is promised to be not-null.
+            </param>
+        </member>
+        <member name="M:System.Diagnostics.CodeAnalysis.MemberNotNullWhenAttribute.#ctor(System.Boolean,System.String[])">
+            <summary>Initializes the attribute with the specified return value condition and list of field and property members.</summary>
+            <param name="returnValue">
+            The return value condition. If the method returns this value, the associated field and property members will not be null.
+            </param>
+            <param name="members">
+            The list of field and property members that are promised to be not-null.
+            </param>
+        </member>
+        <member name="P:System.Diagnostics.CodeAnalysis.MemberNotNullWhenAttribute.ReturnValue">
+            <summary>Gets the return value condition.</summary>
+        </member>
+        <member name="P:System.Diagnostics.CodeAnalysis.MemberNotNullWhenAttribute.Members">
+            <summary>Gets field or property member names.</summary>
+        </member>
+        <member name="T:System.ExceptionPolyfills">
+            <summary>Provides downlevel polyfills for static methods on Exception-derived types.</summary>
+        </member>
+    </members>
+</doc>

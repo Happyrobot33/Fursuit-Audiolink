@@ -12,12 +12,14 @@ idf_component_register(
          "cobs.cpp"
          "${GENERATED_C}"
     INCLUDE_DIRS "."
+                 "include"
                  "${CMAKE_CURRENT_BINARY_DIR}"
     REQUIRES nvs_flash
              esp_wifi
              esp_netif
              esp_timer
              esp_driver_uart
+             esp_tinyusb
              nanopb
 )
 

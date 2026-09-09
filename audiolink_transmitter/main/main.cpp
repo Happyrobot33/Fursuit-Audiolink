@@ -41,10 +41,11 @@ extern "C" void app_main(void)
         return;
     }
 
-    /* Create ESP-NOW sender task */
-    xTaskCreate(espnow_sender_task, "espnow_sender", 16384, NULL, 6, NULL);
-    /* Create UART reader task */
-    xTaskCreate(serial_rx_task, "serial_rx", 16384, NULL, 5, NULL);
+    /* Create ESP-NOW sender task, pinned to core 0 alongside the WiFi driver */
+    xTaskCreatePinnedToCore(espnow_sender_task, "espnow_sender", 16384, NULL, 6, NULL, 0);
+    /* Pin UART reader to core 1 so WiFi's core-0 critical sections (during high-rate ESP-NOW
+     * sends) can't stall the UART ISR and corrupt bytes at high baud */
+    xTaskCreatePinnedToCore(serial_rx_task, "serial_rx", 16384, NULL, 7, NULL, 1);
 
     ESP_LOGI(TAG, "Tasks created, application running");
 }

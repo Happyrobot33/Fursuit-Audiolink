@@ -3,7 +3,6 @@ using System.Collections;
 using System.Collections.Generic;
 using System.IO;
 using System.IO.Compression;
-using System.IO.Ports;
 using System.Text;
 using System.Threading;
 using UnityEngine;
@@ -14,10 +13,8 @@ using Google.Protobuf;
 
 public class SerialExport : MonoBehaviour
 {
-    private SerialPort serialPort;
+    private IUsbSerialDevice usbDevice;
     public AudioLink audioLink;
-    [SerializeField] private string portName = "COM3";
-    [SerializeField] private int baudRate = 921600;
     public float sendInterval = 0.5f; // Send every 10 seconds
     public bool useZlibCompression = true;
     public bool logPacketSizeDifference = true;
@@ -89,56 +86,22 @@ public class SerialExport : MonoBehaviour
 
     private void InitializeSerialPort()
     {
-        string trimmedPortName = portName == null ? string.Empty : portName.Trim();
-        if (string.IsNullOrEmpty(trimmedPortName))
+        usbDevice = new LibUsbSerialDevice();
+
+        if (!usbDevice.Open())
         {
-            Debug.LogWarning("Serial port name is empty. Serial export is disabled until a valid port name is set.");
+            Debug.LogWarning("WinUSB device not found. Serial export is disabled until the ESP32-S3 is connected.");
+            usbDevice = null;
             return;
         }
 
-        string[] availablePorts = SerialPort.GetPortNames();
-        bool portExists = false;
-        for (int i = 0; i < availablePorts.Length; i++)
-        {
-            if (string.Equals(availablePorts[i], trimmedPortName, StringComparison.OrdinalIgnoreCase))
-            {
-                portExists = true;
-                break;
-            }
-        }
+        Debug.Log("WinUSB device opened successfully");
 
-        if (!portExists)
-        {
-            Debug.LogWarning($"Serial port {trimmedPortName} was not found. Serial export is disabled. Available ports: {string.Join(", ", availablePorts)}");
-        }
-
-        if (portExists)
-        {
-            try
-            {
-                serialPort = new SerialPort(trimmedPortName, baudRate);
-                serialPort.Open();
-                //automatically derive the write timeout based on the baud rate and data size
-                int bytesToWrite = 4096 * 4; // Example value, adjust as needed
-                int calculatedTimeoutMs = (int)((bytesToWrite * 10.0 / baudRate) * 1000.0 * 2.0);
-                serialPort.WriteTimeout = calculatedTimeoutMs;
-                Debug.Log("Serial port " + trimmedPortName + " opened successfully");
-            }
-            catch (Exception ex)
-            {
-                Debug.LogWarning($"Failed to open serial port {trimmedPortName}. Serial export is disabled. Reason: {ex.Message}");
-                serialPort = null;
-            }
-        }
-
-        if (serialPort != null && serialPort.IsOpen)
-        {
-            // Start background serial thread only when serial output is available
-            serialThreadRunning = true;
-            serialThread = new Thread(SerialWriteThread);
-            serialThread.Name = "SerialWrite";
-            serialThread.Start();
-        }
+        // Start background write thread only when the USB device is available
+        serialThreadRunning = true;
+        serialThread = new Thread(SerialWriteThread);
+        serialThread.Name = "SerialWrite";
+        serialThread.Start();
     }
 
     private void ReinitializeSerialPort()
@@ -152,32 +115,40 @@ public class SerialExport : MonoBehaviour
         serialThreadRunning = false;
         if (serialThread != null && serialThread.IsAlive)
         {
-            serialThread.Join(1000);
+            // Must exceed LibUsbSerialDevice's write timeout, otherwise we can dispose native
+            // USB handles while the background thread is still inside a blocking write call.
+            serialThread.Join(2000);
+        }
+
+        if (serialThread != null && serialThread.IsAlive)
+        {
+            // Thread is stuck; leak the device rather than disposing native handles it may
+            // still be using, which would risk a hard native crash.
+            Debug.LogWarning("Serial write thread did not exit in time; skipping USB device cleanup to avoid a crash.");
+            serialThread = null;
+            return;
         }
 
         serialThread = null;
 
-        bool wasOpen = serialPort != null && serialPort.IsOpen;
-        if (serialPort != null)
+        bool wasOpen = usbDevice != null && usbDevice.IsOpen;
+        if (usbDevice != null)
         {
             try
             {
-                if (serialPort.IsOpen)
-                {
-                    serialPort.Close();
-                }
+                usbDevice.Close();
             }
             catch (Exception ex)
             {
-                Debug.LogWarning($"Failed closing serial port: {ex.Message}");
+                Debug.LogWarning($"Failed closing WinUSB device: {ex.Message}");
             }
 
-            serialPort = null;
+            usbDevice = null;
         }
 
         if (logClose && wasOpen)
         {
-            Debug.Log("Serial port closed");
+            Debug.Log("WinUSB device closed");
         }
     }
 
@@ -288,8 +259,8 @@ public class SerialExport : MonoBehaviour
 
             lock (queueLock)
             {
-                // Only queue if serial output is active; generation still runs even without a serial device.
-                if (serialPort != null && serialPort.IsOpen && dataQueue.Count < 2)
+                // Only queue if the USB device is active; generation still runs even without one.
+                if (usbDevice != null && usbDevice.IsOpen && dataQueue.Count < 2)
                 {
                     dataQueue.Enqueue(dataToSend);
                 }
@@ -1005,7 +976,8 @@ public class SerialExport : MonoBehaviour
         return index;
     }
 
-    // Background thread for serial port writing and reading
+    // Background thread for USB bulk writing. The firmware never sends data back on this
+    // channel, so there is no read path here (logReceivedSerialData is not supported over WinUSB).
     void SerialWriteThread()
     {
         while (serialThreadRunning)
@@ -1020,47 +992,21 @@ public class SerialExport : MonoBehaviour
                 }
             }
             
-            if (dataToWrite != null && serialPort != null && serialPort.IsOpen)
+            if (dataToWrite != null && usbDevice != null && usbDevice.IsOpen)
             {
                 try
                 {
-                    serialPort.Write(dataToWrite, 0, dataToWrite.Length);
-                }
-                catch (System.Exception ex)
-                {
-                    Debug.LogError("Serial write error: " + ex.Message);
-                }
-            }
-            
-            // Read incoming data
-            if (logReceivedSerialData)
-            {
-                try
-                {
-                    if (serialPort != null && serialPort.IsOpen && serialPort.BytesToRead > 0)
+                    var sw = System.Diagnostics.Stopwatch.StartNew();
+                    usbDevice.Write(dataToWrite, 0, dataToWrite.Length);
+                    sw.Stop();
+                    if (sw.ElapsedMilliseconds >= 5)
                     {
-                        byte[] buffer = new byte[Mathf.Min(serialPort.BytesToRead, 4096)];
-                        int bytesRead = serialPort.Read(buffer, 0, buffer.Length);
-                        
-                        if (bytesRead > 0)
-                        {
-                            lock (queueLock)
-                            {
-                                for (int i = 0; i < bytesRead; i++)
-                                {
-                                    receivedDataBuffer.Add(buffer[i]);
-                                }
-                                
-                                string dataString = System.Text.Encoding.ASCII.GetString(receivedDataBuffer.ToArray());
-                                Debug.Log($"Received {receivedDataBuffer.Count} bytes: {dataString}");
-                                receivedDataBuffer.Clear();
-                            }
-                        }
+                        Debug.LogWarning($"USB write took {sw.ElapsedMilliseconds}ms for {dataToWrite.Length} bytes");
                     }
                 }
                 catch (System.Exception ex)
                 {
-                    Debug.LogError("Serial read error: " + ex.Message);
+                    Debug.LogError("USB write error: " + ex);
                 }
             }
             

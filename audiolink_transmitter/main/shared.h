@@ -5,11 +5,7 @@
 #include <stddef.h>
 #include "freertos/queue.h"
 
-/* UART Configuration */
-#define SERIAL_UART_NUM     UART_NUM_0
-#define SERIAL_UART_RX_PIN  3
-#define SERIAL_UART_TX_PIN  1
-#define SERIAL_BAUD_RATE    921600
+/* Data channel is native USB CDC-ACM (TinyUSB); logs stay on the plain UART0 console */
 
 /* Buffer sizes */
 #define COBS_MAX_ENC        4096 * 2
