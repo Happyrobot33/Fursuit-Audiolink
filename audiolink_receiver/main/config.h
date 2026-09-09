@@ -17,13 +17,20 @@
 #define MATRIX_B   GPIO_NUM_19
 #define MATRIX_C   GPIO_NUM_5
 #define MATRIX_D   GPIO_NUM_17
+#define MATRIX_E   GPIO_NUM_21 //set to -1 to disable
 #define MATRIX_LAT GPIO_NUM_4
 #define MATRIX_OE  GPIO_NUM_15
 #define MATRIX_CLK GPIO_NUM_22
 
+// Invert I2S clock phase; flip if the panel shows garbled/shifted pixels.
+// #define MATRIX_CLOCK_PHASE_INVERT true
+#define MATRIX_CLOCK_PHASE_INVERT false
+
 // HUB75 matrix dimensions
-static constexpr uint16_t MATRIX_WIDTH = 64;
-static constexpr uint16_t MATRIX_HEIGHT = 32;
+// Must be #define, not constexpr: the HUB75 library only skips its own default
+// (MATRIX_HEIGHT=32) via #ifndef, which doesn't see non-macro constants.
+#define MATRIX_WIDTH  64
+#define MATRIX_HEIGHT 64
 
 // Selects which output device the receiver renders audio data to
 enum class OutputDevice : uint8_t {

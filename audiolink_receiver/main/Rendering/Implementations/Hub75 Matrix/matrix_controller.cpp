@@ -15,7 +15,7 @@ esp_err_t MatrixController::init() {
     HUB75_I2S_CFG::i2s_pins pins = {
         MATRIX_R1, MATRIX_G1, MATRIX_B1,
         MATRIX_R2, MATRIX_G2, MATRIX_B2,
-        MATRIX_A, MATRIX_B, MATRIX_C, MATRIX_D, -1,
+        MATRIX_A, MATRIX_B, MATRIX_C, MATRIX_D, MATRIX_E,
         MATRIX_LAT, MATRIX_OE, MATRIX_CLK,
     };
     HUB75_I2S_CFG config(MATRIX_WIDTH,
@@ -27,7 +27,7 @@ esp_err_t MatrixController::init() {
                          true,
                          HUB75_I2S_CFG::HZ_10M,
                          5, //latching delay. TODO: Experiment with this more to fix flickering possibly
-                         true,
+                         MATRIX_CLOCK_PHASE_INVERT,
                          60,
                          8);
 

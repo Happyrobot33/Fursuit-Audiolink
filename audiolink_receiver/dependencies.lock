@@ -31,13 +31,13 @@ dependencies:
       type: service
     version: 0.4.9
   mrcodetastic/esp32-hub75-matrixpanel-dma:
-    component_hash: 8b965998669a1381dd094374e462f8cd119e62110fc9a4783a2404981262eee6
+    component_hash: 222ad95a12e52e4bd4d59b0f2a1e4bedeea9a59184d62b7dddef90a9f0a98654
     dependencies: []
     source:
       git: https://github.com/Happyrobot33/ESP32-HUB75-MatrixPanel-DMA.git
       path: .
       type: git
-    version: cf09801a362c71fc61da99751972b6dfb6e63b63
+    version: 3c3d4a4e9ca9477da037084353b9d0f4056a7010
   nopnop2002/mirf:
     component_hash: c2125d8b02cda80cb893045bac67ad29670c05839ba712f1216a261d5d8a2b02
     dependencies: []

@@ -34,12 +34,19 @@ static bool g_has_received_data = false;
 static uint32_t frame_count = 0;
 static uint32_t last_log_time_ms = 0;
 
+// CONFIG_FREERTOS_HZ=100 makes pdMS_TO_TICKS() truncate to 0 for ms values below 10,
+// and vTaskDelay(0) never yields to a lower-priority task (e.g. IDLE), starving the WDT.
+static inline TickType_t min_delay_ticks(uint32_t ms) {
+    const TickType_t ticks = pdMS_TO_TICKS(ms);
+    return ticks > 0 ? ticks : 1;
+}
+
 static void receiver_process_task(void *arg) {
     while (1) {
         /* Block until callback signals a completed frame, with periodic timeout as safeguard. */
         (void)ulTaskNotifyTake(pdTRUE, pdMS_TO_TICKS(50));
         receiver_process_pending();
-        vTaskDelay(pdMS_TO_TICKS(1));
+        vTaskDelay(min_delay_ticks(1));
     }
 }
 
@@ -109,7 +116,7 @@ static void led_update_task(void *arg) {
             render_shader_frame(*g_render_target, active_shader, g_last_audio_data);
         }
 
-        vTaskDelay(pdMS_TO_TICKS(should_update ? 5 : 15));
+        vTaskDelay(min_delay_ticks(should_update ? 5 : 15));
     }
 }
 
