@@ -32,6 +32,7 @@ idf_component_register(
     REQUIRES    spi_flash
                 esp_driver_gpio
                 driver
+                esp_timer
                 esp_hal_i2s
                 esp_wifi
                 nvs_flash

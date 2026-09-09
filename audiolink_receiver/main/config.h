@@ -29,8 +29,8 @@
 // HUB75 matrix dimensions
 //the width and height should match what an INDIVIDUAL panel looks like
 #define MATRIX_WIDTH  64
-#define MATRIX_HEIGHT 64
-#define MATRIX_COUNT 2
+#define MATRIX_HEIGHT 32
+#define MATRIX_COUNT 1
 // EDIT THESE FOR THE LAYOUT OF YOUR PANELS
 #define SCREEN_WIDTH  MATRIX_WIDTH * MATRIX_COUNT
 #define SCREEN_HEIGHT MATRIX_HEIGHT

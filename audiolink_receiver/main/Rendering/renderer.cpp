@@ -3,11 +3,52 @@
 #include <algorithm>
 #include <cmath>
 
-#include "shader_globals.h"
 #include "shader_config.h"
+#if RENDER_PROFILING_ENABLED
+#include "esp_timer.h"
 #include "esp_log.h"
+#endif
+#include "shader_globals.h"
 
 namespace {
+#if RENDER_PROFILING_ENABLED
+constexpr uint16_t PROFILE_SAMPLE_MASK = 0xFF;
+constexpr uint32_t PROFILE_LOG_FRAMES = 30;
+
+struct RenderProfile {
+    uint32_t frames = 0;
+    uint32_t samples = 0;
+    int64_t frame_us = 0;
+    int64_t clear_us = 0;
+    int64_t uv_us = 0;
+    int64_t shader_us = 0;
+    int64_t output_us = 0;
+    int64_t present_us = 0;
+};
+
+RenderProfile render_profile;
+
+void log_render_profile() {
+    if (render_profile.frames < PROFILE_LOG_FRAMES) {
+        return;
+    }
+
+    const float frames = static_cast<float>(render_profile.frames);
+    const float samples = static_cast<float>(render_profile.samples);
+    ESP_LOGI("render_profile",
+             "avg %.2fms/frame (%.2f FPS) | clear %.2fms | sampled uv %.2fus, shader %.2fus, output %.2fus | present %.2fms | samples/frame %.1f",
+             static_cast<float>(render_profile.frame_us) / frames / 1000.0f,
+             1000000.0f / (static_cast<float>(render_profile.frame_us) / frames),
+             static_cast<float>(render_profile.clear_us) / frames / 1000.0f,
+             samples > 0.0f ? static_cast<float>(render_profile.uv_us) / samples : 0.0f,
+             samples > 0.0f ? static_cast<float>(render_profile.shader_us) / samples : 0.0f,
+             samples > 0.0f ? static_cast<float>(render_profile.output_us) / samples : 0.0f,
+             static_cast<float>(render_profile.present_us) / frames / 1000.0f,
+             samples / frames);
+    render_profile = {};
+}
+#endif
+
 bool apply_repeat_mode(float& u, float& v, UvRepeatMode repeat_mode) {
     switch (repeat_mode) {
         case UvRepeatMode::Blank:
@@ -123,21 +164,69 @@ void render_shader_frame(IRenderTarget& target, IShader& shader, const Audiolink
         return;
     }
 
+#if RENDER_PROFILING_ENABLED
+    const int64_t frame_start = esp_timer_get_time();
+#endif
     update_shader_globals(audio_data);
+    shader.begin_frame();
 
+#if RENDER_PROFILING_ENABLED
+    int64_t stage_start = esp_timer_get_time();
+#endif
     target.clear();
+#if RENDER_PROFILING_ENABLED
+    render_profile.clear_us += esp_timer_get_time() - stage_start;
+#endif
+
     for (uint16_t y = 0; y < h; ++y) {
         for (uint16_t x = 0; x < w; ++x) {
+#if RENDER_PROFILING_ENABLED
+            const bool sample = ((static_cast<uint32_t>(y) * w + x) & PROFILE_SAMPLE_MASK) == 0;
+#endif
             float u = 0.0f;
             float v = 0.0f;
+#if RENDER_PROFILING_ENABLED
+            if (sample) {
+                stage_start = esp_timer_get_time();
+            }
+#endif
             if (!compute_uv(u, v, x, y, w, h, fit_mode, alignment, repeat_mode)) {
                 continue;
             }
+#if RENDER_PROFILING_ENABLED
+            if (sample) {
+                render_profile.uv_us += esp_timer_get_time() - stage_start;
+                stage_start = esp_timer_get_time();
+            }
+#endif
             // V coordinate is flipped here to fix UV layout.
-            target.set_pixel(x, y, shader.render(u, flipped_v(v)));
+            const Color color = shader.render(u, flipped_v(v));
+#if RENDER_PROFILING_ENABLED
+            if (sample) {
+                render_profile.shader_us += esp_timer_get_time() - stage_start;
+                stage_start = esp_timer_get_time();
+            }
+#endif
+            target.set_pixel(x, y, color);
+#if RENDER_PROFILING_ENABLED
+            if (sample) {
+                render_profile.output_us += esp_timer_get_time() - stage_start;
+                render_profile.samples++;
+            }
+#endif
         }
     }
+
+#if RENDER_PROFILING_ENABLED
+    stage_start = esp_timer_get_time();
+#endif
     target.present();
+#if RENDER_PROFILING_ENABLED
+    render_profile.present_us += esp_timer_get_time() - stage_start;
+    render_profile.frames++;
+    render_profile.frame_us += esp_timer_get_time() - frame_start;
+    log_render_profile();
+#endif
 }
 
 void render_shader_frame(IRenderTarget& target, IShader& shader, const AudiolinkData& audio_data, UvFitMode fit_mode) {
@@ -147,19 +236,67 @@ void render_shader_frame(IRenderTarget& target, IShader& shader, const Audiolink
         return;
     }
 
+#if RENDER_PROFILING_ENABLED
+    const int64_t frame_start = esp_timer_get_time();
+#endif
     update_shader_globals(audio_data);
+    shader.begin_frame();
 
+#if RENDER_PROFILING_ENABLED
+    int64_t stage_start = esp_timer_get_time();
+#endif
     target.clear();
+#if RENDER_PROFILING_ENABLED
+    render_profile.clear_us += esp_timer_get_time() - stage_start;
+#endif
+
     for (uint16_t y = 0; y < h; ++y) {
         for (uint16_t x = 0; x < w; ++x) {
+#if RENDER_PROFILING_ENABLED
+            const bool sample = ((static_cast<uint32_t>(y) * w + x) & PROFILE_SAMPLE_MASK) == 0;
+#endif
             float u = 0.0f;
             float v = 0.0f;
+#if RENDER_PROFILING_ENABLED
+            if (sample) {
+                stage_start = esp_timer_get_time();
+            }
+#endif
             if (!compute_uv(u, v, x, y, w, h, fit_mode, UvAlignment::Center, UvRepeatMode::Repeat)) {
                 continue;
             }
+#if RENDER_PROFILING_ENABLED
+            if (sample) {
+                render_profile.uv_us += esp_timer_get_time() - stage_start;
+                stage_start = esp_timer_get_time();
+            }
+#endif
             // V coordinate is flipped here to fix UV layout.
-            target.set_pixel(x, y, shader.render(u, flipped_v(v)));
+            const Color color = shader.render(u, flipped_v(v));
+#if RENDER_PROFILING_ENABLED
+            if (sample) {
+                render_profile.shader_us += esp_timer_get_time() - stage_start;
+                stage_start = esp_timer_get_time();
+            }
+#endif
+            target.set_pixel(x, y, color);
+#if RENDER_PROFILING_ENABLED
+            if (sample) {
+                render_profile.output_us += esp_timer_get_time() - stage_start;
+                render_profile.samples++;
+            }
+#endif
         }
     }
+
+#if RENDER_PROFILING_ENABLED
+    stage_start = esp_timer_get_time();
+#endif
     target.present();
+#if RENDER_PROFILING_ENABLED
+    render_profile.present_us += esp_timer_get_time() - stage_start;
+    render_profile.frames++;
+    render_profile.frame_us += esp_timer_get_time() - frame_start;
+    log_render_profile();
+#endif
 }

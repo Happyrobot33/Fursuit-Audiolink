@@ -2,6 +2,9 @@
 
 #include <cstdint>
 
+// Set to 0 to compile out temporary render timing instrumentation.
+#define RENDER_PROFILING_ENABLED 0
+
 // Selects which IShader implementations are used; to add a new shader, write it and
 // change these lines to point at it. Kept out of config.h (included almost everywhere)
 // so editing/adding a shader only recompiles shader_factory.cpp instead of the whole project.

@@ -1,5 +1,6 @@
 #include "voronoi_shader.h"
 
+#include <cmath>
 #include <cstdint>
 #include "shader_globals.h"
 #include "color_utils.h"
@@ -15,6 +16,7 @@ constexpr int32_t GRID_SIZE = 8;              // feature cells across the UV spa
 constexpr int32_t CELL_SIZE = FP_ONE / GRID_SIZE;
 constexpr int32_t WOBBLE_AMPLITUDE = CELL_SIZE / 4;
 constexpr uint32_t ANIM_PERIOD_MS = 6000;     // full point-wobble cycle
+constexpr uint32_t GLOW_LUT_SHIFT = 16;
 
 // Classic multiplicative integer hash; no floating point involved.
 uint32_t hash2(int32_t x, int32_t y, uint32_t salt) {
@@ -33,25 +35,6 @@ int32_t triangle_wave(uint32_t phase, int32_t amplitude) {
                       ? static_cast<int32_t>(p)
                       : static_cast<int32_t>(FP_ONE - p);
     return (tri * 4 * amplitude) / FP_ONE - amplitude;
-}
-
-// Binary integer square root (floor), avoids any float/double sqrt().
-uint32_t isqrt64(uint64_t n) {
-    uint64_t res = 0;
-    uint64_t bit = 1ULL << 62;
-    while (bit > n) {
-        bit >>= 2;
-    }
-    while (bit != 0) {
-        if (n >= res + bit) {
-            n -= res + bit;
-            res = (res >> 1) + bit;
-        } else {
-            res >>= 1;
-        }
-        bit >>= 2;
-    }
-    return static_cast<uint32_t>(res);
 }
 
 // Animated position of the feature point that "owns" fixed-point cell (cx, cy).
@@ -77,19 +60,54 @@ int32_t clamp_fp(int32_t value, int32_t lo, int32_t hi) {
 
 } // namespace
 
+void VoronoiShader::initialize_glow_lut() {
+    if (glow_lut_initialized_) {
+        return;
+    }
+
+    for (uint32_t index = 0; index < GLOW_LUT_SIZE; ++index) {
+        const uint32_t distance_sq = index << GLOW_LUT_SHIFT;
+        const int32_t distance = static_cast<int32_t>(sqrtf(static_cast<float>(distance_sq)));
+        const int32_t glow = FP_ONE - clamp_fp(
+            (distance * FP_ONE) / (CELL_SIZE * 3 / 2), 0, FP_ONE / 2);
+        glow_lut_[index] = static_cast<uint16_t>(glow >= FP_ONE ? FP_ONE - 1 : glow);
+    }
+    glow_lut_initialized_ = true;
+}
+
+void VoronoiShader::update_feature_cache(uint32_t t) {
+    for (int32_t cache_y = 0; cache_y < FEATURE_CACHE_SIZE; ++cache_y) {
+        for (int32_t cache_x = 0; cache_x < FEATURE_CACHE_SIZE; ++cache_x) {
+            feature_point(cache_x - 1, cache_y - 1, t,
+                          &feature_x_[cache_y][cache_x],
+                          &feature_y_[cache_y][cache_x]);
+
+            const uint32_t color_hash = hash2(cache_x - 1, cache_y - 1, 3);
+            const float hue = static_cast<float>(color_hash % 360u);
+            hsv_to_rgb(hue, 1.0f, 1.0f,
+                       &color_r_[cache_y][cache_x],
+                       &color_g_[cache_y][cache_x],
+                       &color_b_[cache_y][cache_x]);
+        }
+    }
+}
+
+void VoronoiShader::begin_frame() {
+    initialize_glow_lut();
+    const uint32_t now_ms = static_cast<uint32_t>(_Time * 1000.0f);
+    frame_time_ = (static_cast<uint64_t>(now_ms % ANIM_PERIOD_MS) * FP_ONE) / ANIM_PERIOD_MS;
+    update_feature_cache(frame_time_);
+}
+
 Color VoronoiShader::render(float x, float y) {
     // Boundary conversion in: UV floats -> Q16.16 fixed point.
     const int32_t fx = static_cast<int32_t>(x * FP_ONE);
     const int32_t fy = static_cast<int32_t>(y * FP_ONE);
 
-    // Boundary conversion in: global _Time (seconds) -> integer milliseconds for the fixed-point phase.
-    const uint32_t now_ms = static_cast<uint32_t>(_Time * 1000.0f);
-    const uint32_t t = (static_cast<uint64_t>(now_ms % ANIM_PERIOD_MS) * FP_ONE) / ANIM_PERIOD_MS;
-
     const int32_t cell_x = fx / CELL_SIZE;
     const int32_t cell_y = fy / CELL_SIZE;
 
-    uint64_t nearest_sq = UINT64_MAX;
+    uint32_t nearest_sq = UINT32_MAX;
     int32_t owner_cx = 0;
     int32_t owner_cy = 0;
 
@@ -99,11 +117,19 @@ Color VoronoiShader::render(float x, float y) {
             const int32_t ncy = cell_y + dy;
 
             int32_t point_x, point_y;
-            feature_point(ncx, ncy, t, &point_x, &point_y);
+            if (ncx >= -1 && ncx < FEATURE_CACHE_SIZE - 1 &&
+                ncy >= -1 && ncy < FEATURE_CACHE_SIZE - 1) {
+                const uint8_t cache_x = static_cast<uint8_t>(ncx + 1);
+                const uint8_t cache_y = static_cast<uint8_t>(ncy + 1);
+                point_x = feature_x_[cache_y][cache_x];
+                point_y = feature_y_[cache_y][cache_x];
+            } else {
+                feature_point(ncx, ncy, frame_time_, &point_x, &point_y);
+            }
 
-            const int64_t ddx = fx - point_x;
-            const int64_t ddy = fy - point_y;
-            const uint64_t dist_sq = static_cast<uint64_t>(ddx * ddx + ddy * ddy);
+            const int32_t ddx = fx - point_x;
+            const int32_t ddy = fy - point_y;
+            const uint32_t dist_sq = static_cast<uint32_t>(ddx * ddx + ddy * ddy);
 
             if (dist_sq < nearest_sq) {
                 nearest_sq = dist_sq;
@@ -113,16 +139,28 @@ Color VoronoiShader::render(float x, float y) {
         }
     }
 
-    const int32_t nearest_dist = static_cast<int32_t>(isqrt64(nearest_sq));
-
     // Brighter near each cell's center.
-    const int32_t glow = FP_ONE - clamp_fp((nearest_dist * FP_ONE) / (CELL_SIZE * 3 / 2), 0, FP_ONE / 2);
-    const int32_t value_fp = glow;
+    uint32_t glow_index = nearest_sq >> GLOW_LUT_SHIFT;
+    if (glow_index >= GLOW_LUT_SIZE) {
+        glow_index = GLOW_LUT_SIZE - 1;
+    }
+    const int32_t value_fp = glow_lut_[glow_index];
+
+    const float value = static_cast<float>(value_fp) / static_cast<float>(FP_ONE);
+
+    if (owner_cx >= -1 && owner_cx < FEATURE_CACHE_SIZE - 1 &&
+        owner_cy >= -1 && owner_cy < FEATURE_CACHE_SIZE - 1) {
+        const uint8_t cache_x = static_cast<uint8_t>(owner_cx + 1);
+        const uint8_t cache_y = static_cast<uint8_t>(owner_cy + 1);
+        return Color{
+            static_cast<float>(color_r_[cache_y][cache_x]) * value / 255.0f,
+            static_cast<float>(color_g_[cache_y][cache_x]) * value / 255.0f,
+            static_cast<float>(color_b_[cache_y][cache_x]) * value / 255.0f,
+        };
+    }
 
     const uint32_t hue_hash = hash2(owner_cx, owner_cy, 3);
     const float hue = static_cast<float>(hue_hash % 360u);
-    const float value = static_cast<float>(value_fp) / static_cast<float>(FP_ONE);
-
     uint8_t r, g, b;
     hsv_to_rgb(hue, 1.0f, value, &r, &g, &b);
     return Color{r / 255.0f, g / 255.0f, b / 255.0f};
