@@ -6,6 +6,7 @@
 #include <cstdio>
 #include <cmath>
 #include <memory>
+#include <utility>
 #include <vector>
 #include "freertos/FreeRTOS.h"
 #include "freertos/task.h"
@@ -60,7 +61,7 @@ static void led_update_task(void *arg) {
         const uint32_t current_time_ms = xTaskGetTickCount() * portTICK_PERIOD_MS;
 
         if (should_update) {
-            g_last_audio_data = local_audio_data;
+            g_last_audio_data = std::move(local_audio_data); // local_audio_data is a stack temporary; avoid a deep vector copy
             g_last_data_ms = current_time_ms;
             g_has_received_data = true;
         }
@@ -112,15 +113,20 @@ static void led_update_task(void *arg) {
         }
 
         if (output_ready) {
-            IShader &active_shader = data_is_stale ? *g_fallback_shader : *g_shader;
-            const UvFitMode fit_mode = data_is_stale ? FallbackShaderUVConfig::FIT_MODE
-                                                    : SelectedShaderUVConfig::FIT_MODE;
-            const UvAlignment fit_alignment = data_is_stale ? FallbackShaderUVConfig::FIT_ALIGNMENT
-                                                           : SelectedShaderUVConfig::FIT_ALIGNMENT;
-            const UvRepeatMode repeat_mode = data_is_stale ? FallbackShaderUVConfig::REPEAT_MODE
-                                                            : SelectedShaderUVConfig::REPEAT_MODE;
-            render_shader_frame(*g_render_target, active_shader, g_last_audio_data, fit_mode, fit_alignment,
-                                repeat_mode);
+            // Fallback shaders animate on time and must always render; the active shader
+            // only needs to re-render when new audiolink data actually arrived.
+            const bool should_render = data_is_stale || should_update || !RENDER_ONLY_ON_NEW_DATA;
+            if (should_render) {
+                IShader &active_shader = data_is_stale ? *g_fallback_shader : *g_shader;
+                const UvFitMode fit_mode = data_is_stale ? FallbackShaderUVConfig::FIT_MODE
+                                                        : SelectedShaderUVConfig::FIT_MODE;
+                const UvAlignment fit_alignment = data_is_stale ? FallbackShaderUVConfig::FIT_ALIGNMENT
+                                                               : SelectedShaderUVConfig::FIT_ALIGNMENT;
+                const UvRepeatMode repeat_mode = data_is_stale ? FallbackShaderUVConfig::REPEAT_MODE
+                                                                : SelectedShaderUVConfig::REPEAT_MODE;
+                render_shader_frame(*g_render_target, active_shader, g_last_audio_data, fit_mode, fit_alignment,
+                                    repeat_mode);
+            }
         }
 
         vTaskDelay(min_delay_ticks(should_update ? 5 : 15));

@@ -1,6 +1,9 @@
 #include <algorithm>
 #include <cstdint>
+#include <cstdio>
+#include <cstdlib>
 #include <cstring>
+#include <utility>
 #include <vector>
 #include <zlib.h>
 #include "esp_attr.h"
@@ -50,6 +53,7 @@ static std::vector<uint8_t> reconstructed_data;
 static std::vector<std::vector<uint8_t>> packet_chunks;
 static int packet_count = 0;
 static int expected_packet_count = 0;
+static uint32_t current_packet_id = 0; // identifies the in-progress message; see PROTO_Sub_Packet.packet_id
 static TaskHandle_t process_task_handle = nullptr;
 
 constexpr size_t FRAME_QUEUE_DEPTH = 2;
@@ -83,7 +87,7 @@ static void release_byte_vector_if_large(std::vector<uint8_t> &buffer) {
     }
 }
 
-static void reset_reconstruction_state(bool release_capacity) {
+static void IRAM_ATTR reset_reconstruction_state(bool release_capacity) {
     if (release_capacity) {
         std::vector<uint8_t>().swap(reconstructed_data);
         std::vector<std::vector<uint8_t>>().swap(packet_chunks);
@@ -94,6 +98,21 @@ static void reset_reconstruction_state(bool release_capacity) {
 
     packet_count = 0;
     expected_packet_count = 0;
+}
+// Logs the specific packet indices still unfilled in packet_chunks (e.g. "0,2,3 received, missing: 1").
+// Must be called before packet_chunks is reset/reassigned. No heap allocation (fixed stack buffer).
+static void IRAM_ATTR log_missing_packet_indices(int expected_count) {
+    char missing_buf[64];
+    size_t offset = 0;
+    for (int i = 0; i < expected_count && i < static_cast<int>(packet_chunks.size()) && offset + 4 < sizeof(missing_buf); ++i) {
+        if (packet_chunks[i].empty()) {
+            int written = snprintf(missing_buf + offset, sizeof(missing_buf) - offset, offset ? ",%d" : "%d", i);
+            if (written > 0) {
+                offset += static_cast<size_t>(written);
+            }
+        }
+    }
+    ESP_LOGW(TAG, "Missing packet index/indices: %s", offset ? missing_buf : "(none)");
 }
 
 static bool receiver_init_pipeline_queues(void) {
@@ -110,6 +129,9 @@ static bool receiver_init_pipeline_queues(void) {
         ESP_LOGE(TAG, "Failed to create receiver pipeline queues");
         return false;
     }
+
+    // Reserve once up front so reassembly never needs a cold allocation under heap pressure.
+    reconstructed_data.reserve(MAX_AUDIO_DATA_SIZE);
 
     for (size_t i = 0; i < FRAME_QUEUE_DEPTH; ++i) {
         std::vector<uint8_t> *compressed_slot = &compressed_frame_pool[i];
@@ -162,11 +184,14 @@ static bool IRAM_ATTR decode_streaming_zlib_payload(const std::vector<uint8_t> &
 
     // zlib's inflate state needs roughly (1 << windowBits) for the history window plus a
     // few KB of fixed overhead (code tables, struct fields). Gate on the smallest window
-    // we'll actually try (see loop below) rather than an unrelated flat guess — anything
-    // needing a bigger window that still doesn't fit is already handled per-attempt by
-    // inflateInit2()/inflate() returning Z_MEM_ERROR below.
+    // we'll actually try (see loop below) as a fast bail-out; each candidate below is also
+    // checked individually since larger windows (e.g. +-15 needs ~32KB) can transiently
+    // starve unrelated allocations on other tasks (WiFi RX callback, etc.) even though
+    // inflateInit2()/inflate() would themselves fail cleanly with Z_MEM_ERROR.
     constexpr int MIN_WINDOW_BITS = 12;
     constexpr size_t ZLIB_INFLATE_STATE_OVERHEAD = 7 * 1024;
+    // Extra headroom left free for concurrent tasks (WiFi RX, decode buffers) while zlib holds its window.
+    constexpr size_t HEAP_SAFETY_MARGIN = 8 * 1024;
     const size_t heap_limit = (static_cast<size_t>(1) << MIN_WINDOW_BITS) + ZLIB_INFLATE_STATE_OVERHEAD;
     size_t free_heap = heap_caps_get_free_size(MALLOC_CAP_8BIT);
     size_t largest_block = heap_caps_get_largest_free_block(MALLOC_CAP_8BIT);
@@ -188,6 +213,13 @@ static bool IRAM_ATTR decode_streaming_zlib_payload(const std::vector<uint8_t> &
     // Prefer smaller windows to avoid requiring a large contiguous heap block.
     // Retry with larger windows when the compressed stream needs more history.
     for (int window_bits : { -MIN_WINDOW_BITS, -13, -14, -MAX_WBITS, MIN_WINDOW_BITS, 13, 14, MAX_WBITS }) {
+        const size_t window_size = static_cast<size_t>(1) << std::abs(window_bits);
+        const size_t attempt_limit = window_size + ZLIB_INFLATE_STATE_OVERHEAD + HEAP_SAFETY_MARGIN;
+        if (heap_caps_get_largest_free_block(MALLOC_CAP_8BIT) < attempt_limit) {
+            ESP_LOGD(TAG, "Skipping window_bits=%d: insufficient heap headroom", window_bits);
+            continue;
+        }
+
         z_stream zstream = {};
         zstream.next_in = const_cast<Bytef *>(compressed_data.data());
         zstream.avail_in = static_cast<uInt>(compressed_data.size());
@@ -308,7 +340,9 @@ static bool try_reconstruct_audio_data(const std::vector<uint8_t> &compressed_da
     }
 }
 
-static void receiver_espnow_callback(const esp_now_recv_info_t *recv_info, const uint8_t *data, int len) {
+// IRAM-resident: this runs synchronously inside the WiFi driver's RX path with no queuing,
+// so a flash i-cache stall here (e.g. from concurrent HUB75 DMA/bus activity) can drop packets.
+static void IRAM_ATTR receiver_espnow_callback(const esp_now_recv_info_t *recv_info, const uint8_t *data, int len) {
     const uint64_t callback_start_us = now_us();
 
     if (len > 0) {
@@ -348,10 +382,10 @@ static void receiver_espnow_callback(const esp_now_recv_info_t *recv_info, const
     }
     
     /* Use debug logging to avoid blocking in callback */
-    ESP_LOGD(TAG, "Packet received - MAC: %02x:%02x:%02x:%02x:%02x:%02x, Index: %d, Count: %d, Data size: %zu",
+    ESP_LOGD(TAG, "Packet received - MAC: %02x:%02x:%02x:%02x:%02x:%02x, Id: %u, Index: %d, Count: %d, Data size: %zu",
              recv_info->src_addr[0], recv_info->src_addr[1], recv_info->src_addr[2],
              recv_info->src_addr[3], recv_info->src_addr[4], recv_info->src_addr[5],
-             sub_pkt.packet_index, sub_pkt.packet_count, pkt_data.size());
+             sub_pkt.packet_id, sub_pkt.packet_index, sub_pkt.packet_count, pkt_data.size());
 
     if (sub_pkt.packet_count <= 0 || sub_pkt.packet_count > MAX_SUB_PACKETS) {
         ESP_LOGW(TAG, "Ignoring packet with invalid packet_count %d", sub_pkt.packet_count);
@@ -367,11 +401,30 @@ static void receiver_espnow_callback(const esp_now_recv_info_t *recv_info, const
     
     /* Check if this is a new message (packet_index == 0) or continuation */
     if (sub_pkt.packet_index == 0) {
-        /* New message: reset the buffer */
+        const bool is_new_message = expected_packet_count == 0 || sub_pkt.packet_id != current_packet_id;
+        if (is_new_message) {
+            if (expected_packet_count > 0 && packet_count < expected_packet_count) {
+                ESP_LOGW(TAG, "Missed %d/%d sub-packet(s) of audio frame id=%u; discarding it",
+                         expected_packet_count - packet_count, expected_packet_count, current_packet_id);
+                log_missing_packet_indices(expected_packet_count);
+            }
+
+            /* New message: reset the buffer */
+            reset_reconstruction_state(false);
+            current_packet_id = sub_pkt.packet_id;
+            expected_packet_count = sub_pkt.packet_count;
+            packet_chunks.assign(expected_packet_count, std::vector<uint8_t>());
+            ESP_LOGD(TAG, "Starting new audio message id=%u (expecting %d packets)", current_packet_id, expected_packet_count);
+        }
+        // else: a duplicate/retransmitted start packet for the message already in progress;
+        // fall through and let the existing per-index duplicate check below handle it.
+    } else if (expected_packet_count > 0 && sub_pkt.packet_id != current_packet_id) {
+        // packet_id is sent on every sub-packet and identifies its message; a continuation
+        // packet with a different id means its message's own index-0 (start) packet was missed.
+        ESP_LOGW(TAG, "Missed start-of-frame packet (packet_id changed %u -> %u); discarding in-progress frame",
+                 current_packet_id, sub_pkt.packet_id);
+        log_missing_packet_indices(expected_packet_count);
         reset_reconstruction_state(false);
-        expected_packet_count = sub_pkt.packet_count;
-        packet_chunks.assign(expected_packet_count, std::vector<uint8_t>());
-        ESP_LOGD(TAG, "Starting new audio message (expecting %d packets)", expected_packet_count);
     }
 
     if (expected_packet_count > 0 && sub_pkt.packet_index < expected_packet_count) {
@@ -444,7 +497,9 @@ static void receiver_espnow_callback(const esp_now_recv_info_t *recv_info, const
                     ESP_LOGW(TAG, "No free compressed frame slot available");
                 }
 
-                reset_reconstruction_state(true);
+                // Keep reconstructed_data's capacity; releasing it here forced the next
+                // message to pay a cold allocation right when the heap is most pressured.
+                reset_reconstruction_state(false);
             }
         }
     } else {
@@ -544,7 +599,7 @@ bool receiver_take_decoded_frame(AudiolinkData &out_audio, TickType_t wait_ticks
         return false;
     }
 
-    out_audio = *decoded_slot;
+    out_audio = std::move(*decoded_slot); // decoded_slot is recycled below; avoid a deep vector copy
     (void)xQueueSend(free_decoded_queue, &decoded_slot, 0);
     return true;
 }

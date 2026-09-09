@@ -3,6 +3,12 @@
 #include <cstdint>
 #include "driver/gpio.h"
 
+// If true, the active (non-fallback) shader only re-renders when new audiolink data has
+// arrived, instead of every loop tick. Fallback shaders always render continuously since
+// their animation is usually time-based, not data-driven.
+// #define RENDER_ONLY_ON_NEW_DATA false
+#define RENDER_ONLY_ON_NEW_DATA true
+
 // GPIO assignment
 #define LED_STRIP_BLINK_GPIO  GPIO_NUM_13
 
@@ -29,11 +35,19 @@
 // HUB75 matrix dimensions
 //the width and height should match what an INDIVIDUAL panel looks like
 #define MATRIX_WIDTH  64
-#define MATRIX_HEIGHT 32
-#define MATRIX_COUNT 1
+#define MATRIX_HEIGHT 64
+#define MATRIX_COUNT 2
 // EDIT THESE FOR THE LAYOUT OF YOUR PANELS
 #define SCREEN_WIDTH  MATRIX_WIDTH * MATRIX_COUNT
 #define SCREEN_HEIGHT MATRIX_HEIGHT
+
+// Higher values force more BCM bit-plane DMA-buffer sharing, which uses LESS RAM (at the
+// cost of color-depth banding); lower values use MORE RAM, not less. Don't go below ~60.
+#define MATRIX_MIN_REFRESH_RATE 100
+
+// Bits per color channel (2-12). Lower values use less DMA framebuffer RAM at the cost of color banding.
+#define MATRIX_COLOR_DEPTH_BITS 8
+// #define MATRIX_COLOR_DEPTH_BITS 6
 
 // Selects which output device the receiver renders audio data to
 enum class OutputDevice : uint8_t {

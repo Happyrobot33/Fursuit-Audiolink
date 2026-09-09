@@ -39,10 +39,10 @@ using SelectedShader = StackedHistoryWaveformShader;
 // using SelectedShader = TrebleHistoryBrightnessShader;
 
 // Shown at boot and whenever no audio data has arrived for FALLBACK_TIMEOUT_MS (see config.h).
-// #include "rotating_square_shader.h"
-// using FallbackShaderType = RotatingSquareShader;
-#include "voronoi_shader.h"
-using FallbackShaderType = VoronoiShader;
+#include "rotating_square_shader.h"
+using FallbackShaderType = RotatingSquareShader;
+// #include "voronoi_shader.h"
+// using FallbackShaderType = VoronoiShader;
 // #include "rainbow_shader.h"
 // using FallbackShaderType = RainbowShader;
 // #include "fallback_shader.h"

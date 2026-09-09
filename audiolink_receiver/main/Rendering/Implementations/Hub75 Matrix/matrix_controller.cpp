@@ -28,8 +28,8 @@ esp_err_t MatrixController::init() {
                          HUB75_I2S_CFG::HZ_10M,
                          5, //latching delay. TODO: Experiment with this more to fix flickering possibly
                          MATRIX_CLOCK_PHASE_INVERT,
-                         60,
-                         8);
+                         MATRIX_MIN_REFRESH_RATE,
+                         MATRIX_COLOR_DEPTH_BITS);
 
     //explicelty set latch speed
     // config.latch_blanking = 8; // Set latch speed to 8 (example value)
