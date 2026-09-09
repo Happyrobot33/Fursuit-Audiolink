@@ -71,6 +71,8 @@ void espnow_sender_task(void *arg)
     QueuedAudioFrame frame;
     bool have_frame = false;
     bool send_wait_hit = false;
+    uint32_t next_packet_id = 0;
+    uint32_t current_packet_id = 0;
 
     uint32_t fps_frames = 0;
     uint32_t fps_packets = 0;
@@ -83,6 +85,7 @@ void espnow_sender_task(void *arg)
         bool got_new_frame = xQueueReceive(audio_queue, &frame, pdMS_TO_TICKS(10)) == pdTRUE;
         if (got_new_frame) {
             have_frame = true;
+            current_packet_id = next_packet_id++;
         }
 
         bool should_send = got_new_frame || (ENABLE_STALE_FRAME_RESEND && have_frame);
@@ -103,6 +106,7 @@ void espnow_sender_task(void *arg)
                 PROTO_Sub_Packet sub_pkt = PROTO_Sub_Packet_init_zero;
                 sub_pkt.packet_index = packet_index;
                 sub_pkt.packet_count = total_packets;
+                sub_pkt.packet_id = current_packet_id;
 
                 /* Calculate chunk size */
                 size_t chunk_size = frame.data_len - offset;

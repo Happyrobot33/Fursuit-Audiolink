@@ -82,17 +82,18 @@ namespace PROTO {
             "Cgpjb2xvcmNob3JkGAcgASgLMhEuUFJPVE8uQ29sb3JDaG9yZBItCg5hdXRv",
             "Y29ycmVsYXRvchgIIAEoCzIVLlBST1RPLkF1dG9Db3JyZWxhdG9yEisKDWNo",
             "cm9ub3RlbnNpdHkYCSABKAsyFC5QUk9UTy5DaHJvbm90ZW5zaXR5EiwKDmds",
-            "b2JhbF9zdHJpbmdzGAogASgLMhQuUFJPVE8uR2xvYmFsU3RyaW5ncyJGCgpT",
+            "b2JhbF9zdHJpbmdzGAogASgLMhQuUFJPVE8uR2xvYmFsU3RyaW5ncyJZCgpT",
             "dWJfUGFja2V0EhQKDHBhY2tldF9pbmRleBgBIAEoBRIUCgxwYWNrZXRfY291",
-            "bnQYAyABKAUSDAoEZGF0YRgCIAMoDCrPAQoNUGxheWJhY2tTdGF0ZRIXChNQ",
-            "TEFZQkFDS19TVEFURV9OT05FEAASGgoWUExBWUJBQ0tfU1RBVEVfUExBWUlO",
-            "RxABEhkKFVBMQVlCQUNLX1NUQVRFX1BBVVNFRBACEhoKFlBMQVlCQUNLX1NU",
-            "QVRFX1NUT1BQRUQQAxIaChZQTEFZQkFDS19TVEFURV9MT0FESU5HEAQSHAoY",
-            "UExBWUJBQ0tfU1RBVEVfU1RSRUFNSU5HEAUSGAoUUExBWUJBQ0tfU1RBVEVf",
-            "RVJST1IQBiqcAQoMTG9vcE9yUmFuZG9tEhcKE0xPT1BfT1JfUkFORE9NX05P",
-            "TkUQABIXChNMT09QX09SX1JBTkRPTV9MT09QEAESGwoXTE9PUF9PUl9SQU5E",
-            "T01fTE9PUF9PTkUQAhIZChVMT09QX09SX1JBTkRPTV9SQU5ET00QAxIiCh5M",
-            "T09QX09SX1JBTkRPTV9SQU5ET01fQU5EX0xPT1AQBGIGcHJvdG8z"));
+            "bnQYAyABKAUSEQoJcGFja2V0X2lkGAUgASgNEgwKBGRhdGEYAiADKAwqzwEK",
+            "DVBsYXliYWNrU3RhdGUSFwoTUExBWUJBQ0tfU1RBVEVfTk9ORRAAEhoKFlBM",
+            "QVlCQUNLX1NUQVRFX1BMQVlJTkcQARIZChVQTEFZQkFDS19TVEFURV9QQVVT",
+            "RUQQAhIaChZQTEFZQkFDS19TVEFURV9TVE9QUEVEEAMSGgoWUExBWUJBQ0tf",
+            "U1RBVEVfTE9BRElORxAEEhwKGFBMQVlCQUNLX1NUQVRFX1NUUkVBTUlORxAF",
+            "EhgKFFBMQVlCQUNLX1NUQVRFX0VSUk9SEAYqnAEKDExvb3BPclJhbmRvbRIX",
+            "ChNMT09QX09SX1JBTkRPTV9OT05FEAASFwoTTE9PUF9PUl9SQU5ET01fTE9P",
+            "UBABEhsKF0xPT1BfT1JfUkFORE9NX0xPT1BfT05FEAISGQoVTE9PUF9PUl9S",
+            "QU5ET01fUkFORE9NEAMSIgoeTE9PUF9PUl9SQU5ET01fUkFORE9NX0FORF9M",
+            "T09QEARiBnByb3RvMw=="));
       descriptor = pbr::FileDescriptor.FromGeneratedCode(descriptorData,
           new pbr::FileDescriptor[] { },
           new pbr::GeneratedClrTypeInfo(new[] {typeof(global::PROTO.PlaybackState), typeof(global::PROTO.LoopOrRandom), }, null, new pbr::GeneratedClrTypeInfo[] {
@@ -114,7 +115,7 @@ namespace PROTO {
             new pbr::GeneratedClrTypeInfo(typeof(global::PROTO.Chronotensity), global::PROTO.Chronotensity.Parser, new[]{ "Bass", "Lowmid", "Highmid", "Treble" }, null, null, null, null),
             new pbr::GeneratedClrTypeInfo(typeof(global::PROTO.GlobalStrings), global::PROTO.GlobalStrings.Parser, new[]{ "PlayerName", "MasterName", "CustomString1", "CustomString2" }, null, null, null, null),
             new pbr::GeneratedClrTypeInfo(typeof(global::PROTO.Audiolink_Data), global::PROTO.Audiolink_Data.Parser, new[]{ "History", "ThemeColors", "Dft", "FilteredAudiolink", "Waveform", "GeneralVu", "Colorchord", "Autocorrelator", "Chronotensity", "GlobalStrings" }, null, null, null, null),
-            new pbr::GeneratedClrTypeInfo(typeof(global::PROTO.Sub_Packet), global::PROTO.Sub_Packet.Parser, new[]{ "PacketIndex", "PacketCount", "Data" }, null, null, null, null)
+            new pbr::GeneratedClrTypeInfo(typeof(global::PROTO.Sub_Packet), global::PROTO.Sub_Packet.Parser, new[]{ "PacketIndex", "PacketCount", "PacketId", "Data" }, null, null, null, null)
           }));
     }
     #endregion
@@ -6598,6 +6599,7 @@ namespace PROTO {
     public Sub_Packet(Sub_Packet other) : this() {
       packetIndex_ = other.packetIndex_;
       packetCount_ = other.packetCount_;
+      packetId_ = other.packetId_;
       data_ = other.data_.Clone();
       _unknownFields = pb::UnknownFieldSet.Clone(other._unknownFields);
     }
@@ -6635,6 +6637,21 @@ namespace PROTO {
       get { return packetCount_; }
       set {
         packetCount_ = value;
+      }
+    }
+
+    /// <summary>Field number for the "packet_id" field.</summary>
+    public const int PacketIdFieldNumber = 5;
+    private uint packetId_;
+    /// <summary>
+    ///identifies which set of sub packets this belongs to. Incremented for each new full packet split into sub packets, wraps around at uint32 max
+    /// </summary>
+    [global::System.Diagnostics.DebuggerNonUserCodeAttribute]
+    [global::System.CodeDom.Compiler.GeneratedCode("protoc", null)]
+    public uint PacketId {
+      get { return packetId_; }
+      set {
+        packetId_ = value;
       }
     }
 
@@ -6680,6 +6697,7 @@ namespace PROTO {
       }
       if (PacketIndex != other.PacketIndex) return false;
       if (PacketCount != other.PacketCount) return false;
+      if (PacketId != other.PacketId) return false;
       if(!data_.Equals(other.data_)) return false;
       return Equals(_unknownFields, other._unknownFields);
     }
@@ -6690,6 +6708,7 @@ namespace PROTO {
       int hash = 1;
       if (PacketIndex != 0) hash ^= PacketIndex.GetHashCode();
       if (PacketCount != 0) hash ^= PacketCount.GetHashCode();
+      if (PacketId != 0) hash ^= PacketId.GetHashCode();
       hash ^= data_.GetHashCode();
       if (_unknownFields != null) {
         hash ^= _unknownFields.GetHashCode();
@@ -6718,6 +6737,10 @@ namespace PROTO {
         output.WriteRawTag(24);
         output.WriteInt32(PacketCount);
       }
+      if (PacketId != 0) {
+        output.WriteRawTag(40);
+        output.WriteUInt32(PacketId);
+      }
       if (_unknownFields != null) {
         _unknownFields.WriteTo(output);
       }
@@ -6737,6 +6760,10 @@ namespace PROTO {
         output.WriteRawTag(24);
         output.WriteInt32(PacketCount);
       }
+      if (PacketId != 0) {
+        output.WriteRawTag(40);
+        output.WriteUInt32(PacketId);
+      }
       if (_unknownFields != null) {
         _unknownFields.WriteTo(ref output);
       }
@@ -6752,6 +6779,9 @@ namespace PROTO {
       }
       if (PacketCount != 0) {
         size += 1 + pb::CodedOutputStream.ComputeInt32Size(PacketCount);
+      }
+      if (PacketId != 0) {
+        size += 1 + pb::CodedOutputStream.ComputeUInt32Size(PacketId);
       }
       size += data_.CalculateSize(_repeated_data_codec);
       if (_unknownFields != null) {
@@ -6771,6 +6801,9 @@ namespace PROTO {
       }
       if (other.PacketCount != 0) {
         PacketCount = other.PacketCount;
+      }
+      if (other.PacketId != 0) {
+        PacketId = other.PacketId;
       }
       data_.Add(other.data_);
       _unknownFields = pb::UnknownFieldSet.MergeFrom(_unknownFields, other._unknownFields);
@@ -6804,6 +6837,10 @@ namespace PROTO {
             PacketCount = input.ReadInt32();
             break;
           }
+          case 40: {
+            PacketId = input.ReadUInt32();
+            break;
+          }
         }
       }
     #endif
@@ -6833,6 +6870,10 @@ namespace PROTO {
           }
           case 24: {
             PacketCount = input.ReadInt32();
+            break;
+          }
+          case 40: {
+            PacketId = input.ReadUInt32();
             break;
           }
         }
