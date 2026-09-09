@@ -20,7 +20,7 @@ esp_err_t MatrixController::init() {
     };
     HUB75_I2S_CFG config(MATRIX_WIDTH,
                          MATRIX_HEIGHT,
-                         1,
+                         MATRIX_COUNT,
                          pins,
                          HUB75_I2S_CFG::SHIFTREG,
                          HUB75_I2S_CFG::TYPE138,
@@ -59,12 +59,12 @@ void MatrixController::fill(const Color& color) {
         return;
     }
 
-    constexpr uint16_t matrix_width = MATRIX_WIDTH;
-    constexpr uint16_t matrix_height = MATRIX_HEIGHT;
+    constexpr uint16_t screen_width = SCREEN_WIDTH;
+    constexpr uint16_t screen_height = SCREEN_HEIGHT;
 
     driver_->clearScreen();
-    for (uint16_t x = 0; x < matrix_width; ++x) {
-        for (uint16_t y = 0; y < matrix_height; ++y) {
+    for (uint16_t x = 0; x < screen_width; ++x) {
+        for (uint16_t y = 0; y < screen_height; ++y) {
             driver_->drawPixelRGB888(x, y,
                                      static_cast<uint8_t>(color.R * 255),
                                      static_cast<uint8_t>(color.G * 255),

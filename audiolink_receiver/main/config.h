@@ -27,10 +27,13 @@
 #define MATRIX_CLOCK_PHASE_INVERT false
 
 // HUB75 matrix dimensions
-// Must be #define, not constexpr: the HUB75 library only skips its own default
-// (MATRIX_HEIGHT=32) via #ifndef, which doesn't see non-macro constants.
-#define MATRIX_WIDTH  32
-#define MATRIX_HEIGHT 8
+//the width and height should match what an INDIVIDUAL panel looks like
+#define MATRIX_WIDTH  64
+#define MATRIX_HEIGHT 64
+#define MATRIX_COUNT 2
+// EDIT THESE FOR THE LAYOUT OF YOUR PANELS
+#define SCREEN_WIDTH  MATRIX_WIDTH * MATRIX_COUNT
+#define SCREEN_HEIGHT MATRIX_HEIGHT
 
 // Selects which output device the receiver renders audio data to
 enum class OutputDevice : uint8_t {
@@ -39,8 +42,8 @@ enum class OutputDevice : uint8_t {
     MatrixStrip,
 };
 // static constexpr OutputDevice ACTIVE_OUTPUT_DEVICE = OutputDevice::LedStrip;
-// static constexpr OutputDevice ACTIVE_OUTPUT_DEVICE = OutputDevice::Matrix;
-static constexpr OutputDevice ACTIVE_OUTPUT_DEVICE = OutputDevice::MatrixStrip;
+static constexpr OutputDevice ACTIVE_OUTPUT_DEVICE = OutputDevice::Matrix;
+// static constexpr OutputDevice ACTIVE_OUTPUT_DEVICE = OutputDevice::MatrixStrip;
 
 // Number of LEDs in the strip. For a strip-driven matrix, the strip must be large enough
 // to cover every pixel in the logical matrix.
