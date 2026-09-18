@@ -5864,7 +5864,7 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: aa856f4528fc71343ae13d211071a669, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  audioSource: {fileID: 4982811956318127971}
+  audioSource: {fileID: 1782406702}
   gain: 1
   bass: 1
   treble: 1
@@ -10084,7 +10084,7 @@ GameObject:
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
   m_StaticEditorFlags: 0
-  m_IsActive: 1
+  m_IsActive: 0
 --- !u!4 &4982811956318127969
 Transform:
   m_ObjectHideFlags: 0

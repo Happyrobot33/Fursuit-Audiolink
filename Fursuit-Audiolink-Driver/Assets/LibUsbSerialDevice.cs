@@ -27,7 +27,23 @@ public class LibUsbSerialDevice : IUsbSerialDevice
     {
         Close();
 
-        context = new UsbContext();
+        try
+        {
+            context = new UsbContext();
+        }
+        catch (DllNotFoundException ex)
+        {
+            Debug.LogError($"libusb native library was not found. Add the x64 libusb-1.0.dll to the Windows player directory: {ex.Message}");
+            Close();
+            return false;
+        }
+        catch (Exception ex)
+        {
+            Debug.LogError($"Failed to initialize libusb: {ex.Message}");
+            Close();
+            return false;
+        }
+
         using (var deviceCollection = context.List())
         {
             var found = deviceCollection.FirstOrDefault(d => d.VendorId == VendorId && d.ProductId == ProductId);
