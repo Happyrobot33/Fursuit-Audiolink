@@ -38,7 +38,7 @@ RenderSettings:
   m_ReflectionIntensity: 1
   m_CustomReflection: {fileID: 0}
   m_Sun: {fileID: 705507994}
-  m_IndirectSpecularColor: {r: 0.44657898, g: 0.4964133, b: 0.5748178, a: 1}
+  m_IndirectSpecularColor: {r: 0.4465785, g: 0.49641252, b: 0.574817, a: 1}
   m_UseRadianceAmbientProbe: 0
 --- !u!157 &3
 LightmapSettings:
@@ -1051,10 +1051,10 @@ RectTransform:
   m_Father: {fileID: 1637064915}
   m_RootOrder: 1
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
-  m_AnchorMin: {x: 0, y: 1}
-  m_AnchorMax: {x: 0, y: 1}
-  m_AnchoredPosition: {x: 0, y: -261.51752}
-  m_SizeDelta: {x: 232.46, y: 0}
+  m_AnchorMin: {x: 0, y: 0}
+  m_AnchorMax: {x: 0, y: 0}
+  m_AnchoredPosition: {x: 0, y: 0}
+  m_SizeDelta: {x: 0, y: 130.75876}
   m_Pivot: {x: 0, y: 0}
 --- !u!114 &514124468
 MonoBehaviour:
@@ -1865,10 +1865,10 @@ RectTransform:
   m_Father: {fileID: 1637064915}
   m_RootOrder: 2
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
-  m_AnchorMin: {x: 0, y: 1}
-  m_AnchorMax: {x: 0, y: 1}
-  m_AnchoredPosition: {x: 0, y: -493.97754}
-  m_SizeDelta: {x: 232.46, y: 0}
+  m_AnchorMin: {x: 0, y: 0}
+  m_AnchorMax: {x: 0, y: 0}
+  m_AnchoredPosition: {x: 0, y: 0}
+  m_SizeDelta: {x: 0, y: 232.46}
   m_Pivot: {x: 0, y: 0}
 --- !u!114 &1050810398
 MonoBehaviour:
@@ -2279,10 +2279,10 @@ RectTransform:
   m_Father: {fileID: 1637064915}
   m_RootOrder: 0
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
-  m_AnchorMin: {x: 0, y: 1}
-  m_AnchorMax: {x: 0, y: 1}
-  m_AnchoredPosition: {x: 0, y: -130.75876}
-  m_SizeDelta: {x: 232.46, y: 0}
+  m_AnchorMin: {x: 0, y: 0}
+  m_AnchorMax: {x: 0, y: 0}
+  m_AnchoredPosition: {x: 0, y: 0}
+  m_SizeDelta: {x: 0, y: 130.75876}
   m_Pivot: {x: 0, y: 0}
 --- !u!114 &1419741900
 MonoBehaviour:
@@ -2545,6 +2545,18 @@ RectTransform:
   m_AnchoredPosition: {x: 0, y: 0}
   m_SizeDelta: {x: -20, y: -20}
   m_Pivot: {x: 0.5, y: 0.5}
+--- !u!114 &1722928114 stripped
+MonoBehaviour:
+  m_CorrespondingSourceObject: {fileID: 121649528618137789, guid: 9fec899fda7902a4b92f253e61db4e7e,
+    type: 3}
+  m_PrefabInstance: {fileID: 1177787072}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 0}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 67db9e8f0e2ae9c40bc1e2b64352a6b4, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
 --- !u!1 &1735652335
 GameObject:
   m_ObjectHideFlags: 0
@@ -2742,8 +2754,9 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 19cfd32b4d182964d8bfc7d0cdb18e7a, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  deviceName: CABLE Output (VB-Audio Virtual Cable)
+  deviceName: Monitor of Built-in Audio Analog Stereo 1
   dropdown: {fileID: 156456717}
+  slider: {fileID: 1722928114}
 --- !u!82 &1782406702
 AudioSource:
   m_ObjectHideFlags: 0
@@ -10084,7 +10097,7 @@ GameObject:
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
   m_StaticEditorFlags: 0
-  m_IsActive: 0
+  m_IsActive: 1
 --- !u!4 &4982811956318127969
 Transform:
   m_ObjectHideFlags: 0
