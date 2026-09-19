@@ -81,7 +81,7 @@ public class LibUsbSerialDevice : IUsbSerialDevice
 
         Debug.Log(
             $"libusb: found {interfaces.Count} interface(s); using interface {targetInterface.Number} "
-            + $"(class 0x{targetInterface.Class:X2}) for endpoint 0x{bulkOutEndpointAddress:X2}"
+            + $"(class 0x{(byte)targetInterface.Class:X2}) for endpoint 0x{bulkOutEndpointAddress:X2}"
         );
 
         try
