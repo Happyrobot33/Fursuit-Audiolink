@@ -88,10 +88,13 @@ public class LibUsbSerialDevice : IUsbSerialDevice
         {
             // Best-effort: if a generic kernel driver has bound this interface (common on Linux
             // for composite USB devices), detach it before claiming so the write doesn't silently
-            // go nowhere. No-op on platforms/backends that don't support it (e.g. Windows/WinUSB).
-            if (device.SupportsDetachKernelDriver() && device.IsKernelDriverActive(targetInterface.Number))
+            // go nowhere. Those APIs only exist on the concrete UsbDevice type, not IUsbDevice,
+            // and are no-ops on platforms/backends that don't support it (e.g. Windows/WinUSB).
+            if (device is UsbDevice concreteDevice
+                && concreteDevice.SupportsDetachKernelDriver()
+                && concreteDevice.IsKernelDriverActive(targetInterface.Number))
             {
-                device.SetAutoDetachKernelDriver(true);
+                concreteDevice.SetAutoDetachKernelDriver(true);
             }
         }
         catch (Exception ex)
