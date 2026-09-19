@@ -69,13 +69,43 @@ public class LibUsbSerialDevice : IUsbSerialDevice
             return false;
         }
 
+        // Unlike Windows (where WinUSB/MS-OS-descriptors only expose the vendor interface),
+        // libusb on Linux/macOS enumerates every interface of the composite device, so interface
+        // index 0 isn't guaranteed to be the vendor bulk interface. Find the interface that
+        // actually owns endpoint 0x01 OUT instead of assuming index 0.
+        const byte bulkOutEndpointAddress = 0x01;
+        var interfaces = device.Configs[0].Interfaces;
+        var targetInterface = interfaces.FirstOrDefault(
+            i => i.Endpoints.Any(e => e.EndpointAddress == bulkOutEndpointAddress)
+        ) ?? interfaces[0];
+
+        Debug.Log(
+            $"libusb: found {interfaces.Count} interface(s); using interface {targetInterface.Number} "
+            + $"(class 0x{targetInterface.Class:X2}) for endpoint 0x{bulkOutEndpointAddress:X2}"
+        );
+
         try
         {
-            device.ClaimInterface(device.Configs[0].Interfaces[0].Number);
+            // Best-effort: if a generic kernel driver has bound this interface (common on Linux
+            // for composite USB devices), detach it before claiming so the write doesn't silently
+            // go nowhere. No-op on platforms/backends that don't support it (e.g. Windows/WinUSB).
+            if (device.SupportsDetachKernelDriver() && device.IsKernelDriverActive(targetInterface.Number))
+            {
+                device.SetAutoDetachKernelDriver(true);
+            }
         }
         catch (Exception ex)
         {
-            Debug.LogWarning($"libusb: failed to claim interface: {ex.Message}");
+            Debug.LogWarning($"libusb: kernel driver check/detach failed (continuing anyway): {ex.Message}");
+        }
+
+        try
+        {
+            device.ClaimInterface(targetInterface.Number);
+        }
+        catch (Exception ex)
+        {
+            Debug.LogWarning($"libusb: failed to claim interface {targetInterface.Number}: {ex.Message}");
             Close();
             return false;
         }
