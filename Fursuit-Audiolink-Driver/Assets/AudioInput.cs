@@ -8,6 +8,7 @@ public class AudioInput : MonoBehaviour
 {
     public string deviceName;
     public TMP_Dropdown dropdown;
+    public Slider slider;
     AudioSource audioSource;
 
     // Start is called before the first frame update
@@ -25,7 +26,7 @@ public class AudioInput : MonoBehaviour
         }
         dropdown.AddOptions(options);
 
-        changeAudioVolume(1f);
+        changeAudioVolume(slider.value);
     }
 
     void initMic()
@@ -36,7 +37,8 @@ public class AudioInput : MonoBehaviour
             int deviceMaxFreq,
                 deviceMinFreq;
             Microphone.GetDeviceCaps(deviceName, out deviceMinFreq, out deviceMaxFreq);
-            audioSource.clip = Microphone.Start(deviceName, true, 10, deviceMaxFreq);
+            int sampleRate = (deviceMinFreq == 0 && deviceMaxFreq == 0) ? 44100 : deviceMaxFreq;
+            audioSource.clip = Microphone.Start(deviceName, true, 10, sampleRate);
             audioSource.loop = true;
             audioSource.Play();
         }
