@@ -33,8 +33,8 @@
 #define MATRIX_CLOCK_PHASE_INVERT false
 
 // HUB75 I2S data-clock frequency. Lower values reduce continuous DMA bus traffic, helping with WIFI contention.
-// #define MATRIX_I2S_CLOCK_HZ HUB75_I2S_CFG::clk_speed::HZ_8M
-#define MATRIX_I2S_CLOCK_HZ 2000000
+#define MATRIX_I2S_CLOCK_HZ HUB75_I2S_CFG::clk_speed::HZ_8M
+// #define MATRIX_I2S_CLOCK_HZ 2000000
 
 // HUB75 matrix dimensions
 //the width and height should match what an INDIVIDUAL panel looks like
