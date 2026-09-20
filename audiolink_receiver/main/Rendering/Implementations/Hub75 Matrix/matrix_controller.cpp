@@ -30,7 +30,7 @@ esp_err_t MatrixController::init() {
                          pins,
                          HUB75_I2S_CFG::SHIFTREG,
                          HUB75_I2S_CFG::TYPE138,
-                         false,
+                         MATRIX_DOUBLE_BUFFER,
                          static_cast<HUB75_I2S_CFG::clk_speed>(MATRIX_I2S_CLOCK_HZ),
                          1, //latching delay. TODO: Experiment with this more to fix flickering possibly
                          MATRIX_CLOCK_PHASE_INVERT,

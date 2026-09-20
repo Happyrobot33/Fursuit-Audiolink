@@ -54,6 +54,9 @@
 // #define MATRIX_COLOR_DEPTH_BITS 6
 // #define MATRIX_COLOR_DEPTH_BITS 4
 
+// Use two DMA framebuffers to prevent tearing. This requires twice the framebuffer RAM.
+static constexpr bool MATRIX_DOUBLE_BUFFER = true;
+
 // Selects which output device the receiver renders audio data to
 enum class OutputDevice : uint8_t {
     LedStrip,
