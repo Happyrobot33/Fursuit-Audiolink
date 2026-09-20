@@ -32,6 +32,10 @@
 // #define MATRIX_CLOCK_PHASE_INVERT true
 #define MATRIX_CLOCK_PHASE_INVERT false
 
+// HUB75 I2S data-clock frequency. Lower values reduce continuous DMA bus traffic, helping with WIFI contention.
+// #define MATRIX_I2S_CLOCK_HZ HUB75_I2S_CFG::clk_speed::HZ_8M
+#define MATRIX_I2S_CLOCK_HZ 2000000
+
 // HUB75 matrix dimensions
 //the width and height should match what an INDIVIDUAL panel looks like
 #define MATRIX_WIDTH  64
@@ -48,6 +52,7 @@
 // Bits per color channel (2-12). Lower values use less DMA framebuffer RAM at the cost of color banding.
 #define MATRIX_COLOR_DEPTH_BITS 8
 // #define MATRIX_COLOR_DEPTH_BITS 6
+// #define MATRIX_COLOR_DEPTH_BITS 4
 
 // Selects which output device the receiver renders audio data to
 enum class OutputDevice : uint8_t {
@@ -61,13 +66,15 @@ static constexpr OutputDevice ACTIVE_OUTPUT_DEVICE = OutputDevice::Matrix;
 
 // Number of LEDs in the strip. For a strip-driven matrix, the strip must be large enough
 // to cover every pixel in the logical matrix.
+static constexpr uint16_t LED_STRIP_LED_NUMBERS = 60;
 // static constexpr uint16_t LED_STRIP_LED_NUMBERS = 60 * 2;
 // static constexpr uint16_t LED_STRIP_LED_NUMBERS = 8 * 2; //sticks
-static constexpr uint16_t LED_STRIP_LED_NUMBERS = MATRIX_WIDTH * MATRIX_HEIGHT;
+// static constexpr uint16_t LED_STRIP_LED_NUMBERS = MATRIX_WIDTH * MATRIX_HEIGHT;
 // Brightness tuning for both output devices. 0..255, where 255 is full brightness.
 //LED strip still applies to strip matrices
-static constexpr uint8_t LED_STRIP_BRIGHTNESS = 20;
-static constexpr uint8_t MATRIX_BRIGHTNESS = 128;
+static constexpr uint8_t LED_STRIP_BRIGHTNESS = 128;
+// static constexpr uint8_t MATRIX_BRIGHTNESS = 128;
+static constexpr uint8_t MATRIX_BRIGHTNESS = 255;
 // Selects which IShader implementations are used; see Rendering/shader_config.h.
 static constexpr uint32_t FALLBACK_TIMEOUT_MS = 1 * 1000;
 

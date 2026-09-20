@@ -23,8 +23,11 @@
 // #include "uv_test_shader.h"
 // using SelectedShader = UvTestShader;
 
-#include "stacked_history_waveform_shader.h"
-using SelectedShader = StackedHistoryWaveformShader;
+#include "audiolink_texture_shader.h"
+using SelectedShader = AudiolinkTextureShader;
+
+// #include "stacked_history_waveform_shader.h"
+// using SelectedShader = StackedHistoryWaveformShader;
 
 // #include "chronotensity_voronoi_shader.h"
 // using SelectedShader = ChronotensityVoronoiShader;
@@ -39,12 +42,12 @@ using SelectedShader = StackedHistoryWaveformShader;
 // using SelectedShader = TrebleHistoryBrightnessShader;
 
 // Shown at boot and whenever no audio data has arrived for FALLBACK_TIMEOUT_MS (see config.h).
-#include "rotating_square_shader.h"
-using FallbackShaderType = RotatingSquareShader;
+// #include "rotating_square_shader.h"
+// using FallbackShaderType = RotatingSquareShader;
 // #include "voronoi_shader.h"
 // using FallbackShaderType = VoronoiShader;
-// #include "rainbow_shader.h"
-// using FallbackShaderType = RainbowShader;
+#include "rainbow_shader.h"
+using FallbackShaderType = RainbowShader;
 // #include "fallback_shader.h"
 // using FallbackShaderType = FallbackShader;
 // #include "uv_test_shader.h"

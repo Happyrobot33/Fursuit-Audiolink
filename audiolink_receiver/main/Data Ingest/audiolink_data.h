@@ -28,6 +28,14 @@ struct Color {
     float B;
 };
 
+inline Color operator*(const Color& color, float scale) {
+    return Color{color.R * scale, color.G * scale, color.B * scale};
+}
+
+inline Color operator*(float scale, const Color& color) {
+    return color * scale;
+}
+
 struct ThemeColors {
     Color ThemeColor0;
     Color ThemeColor1;

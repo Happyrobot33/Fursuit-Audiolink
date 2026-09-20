@@ -7,6 +7,12 @@
 #include "freertos/task.h"
 #include "ESP32-HUB75-MatrixPanel-I2S-DMA.h"
 
+namespace {
+uint8_t to_channel_byte(float value) {
+    return static_cast<uint8_t>(std::clamp(value, 0.0f, 1.0f) * ( (1 << MATRIX_COLOR_DEPTH_BITS) - 1 ));
+}
+} // namespace
+
 esp_err_t MatrixController::init() {
     if (driver_ != nullptr) {
         return ESP_OK;
@@ -24,8 +30,8 @@ esp_err_t MatrixController::init() {
                          pins,
                          HUB75_I2S_CFG::SHIFTREG,
                          HUB75_I2S_CFG::TYPE138,
-                         true,
-                         HUB75_I2S_CFG::HZ_8M,
+                         false,
+                         static_cast<HUB75_I2S_CFG::clk_speed>(MATRIX_I2S_CLOCK_HZ),
                          1, //latching delay. TODO: Experiment with this more to fix flickering possibly
                          MATRIX_CLOCK_PHASE_INVERT,
                          MATRIX_MIN_REFRESH_RATE,
@@ -66,9 +72,9 @@ void MatrixController::fill(const Color& color) {
     for (uint16_t x = 0; x < screen_width; ++x) {
         for (uint16_t y = 0; y < screen_height; ++y) {
             driver_->drawPixelRGB888(x, y,
-                                     static_cast<uint8_t>(color.R * 255),
-                                     static_cast<uint8_t>(color.G * 255),
-                                     static_cast<uint8_t>(color.B * 255));
+                                     to_channel_byte(color.R),
+                                     to_channel_byte(color.G),
+                                     to_channel_byte(color.B));
         }
     }
     driver_->flipDMABuffer();
@@ -80,9 +86,9 @@ void MatrixController::set_pixel(uint16_t x, uint16_t y, const Color& color) {
     }
 
     driver_->drawPixelRGB888(x, y,
-                             static_cast<uint8_t>(color.R * 255),
-                             static_cast<uint8_t>(color.G * 255),
-                             static_cast<uint8_t>(color.B * 255));
+                             to_channel_byte(color.R),
+                             to_channel_byte(color.G),
+                             to_channel_byte(color.B));
 }
 
 void MatrixController::clear() {
@@ -90,7 +96,7 @@ void MatrixController::clear() {
         return;
     }
 
-    driver_->clearScreen();
+    // driver_->clearScreen();
 }
 
 void MatrixController::present() {
