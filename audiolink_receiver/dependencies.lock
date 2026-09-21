@@ -38,21 +38,12 @@ dependencies:
       path: .
       type: git
     version: 3c3d4a4e9ca9477da037084353b9d0f4056a7010
-  nopnop2002/mirf:
-    component_hash: c2125d8b02cda80cb893045bac67ad29670c05839ba712f1216a261d5d8a2b02
-    dependencies: []
-    source:
-      git: https://github.com/nopnop2002/esp-idf-mirf.git
-      path: components/mirf/
-      type: git
-    version: 5c10ba0bc0c7bfe918217092d8001989eb3d197c
 direct_dependencies:
 - espressif/led_strip
 - espressif/zlib
 - idf
 - livekit/nanopb
 - mrcodetastic/esp32-hub75-matrixpanel-dma
-- nopnop2002/mirf
-manifest_hash: 0e9835f711ac43a7cd4c900103999dbac466c8234f65bdbd111b8be4fe22a7f7
+manifest_hash: a5a4bbcc1f758f51c26b0d7df9cbc44150cd9222b57ad4217f93de9cf846eff2
 target: esp32
 version: 3.0.0

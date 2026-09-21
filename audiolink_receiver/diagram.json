@@ -1,0 +1,30 @@
+{
+  "version": 1,
+  "author": "Fursuit-Audiolink",
+  "editor": "wokwi",
+  "parts": [
+    {
+      "id": "esp32",
+      "type": "board-esp32-devkit-c-v4",
+      "top": 0,
+      "left": 0,
+      "attrs": {}
+    },
+    {
+      "id": "matrix",
+      "type": "wokwi-led-matrix",
+      "top": -1000,
+      "left": -2500,
+      "rotate": 270,
+      "attrs": { "rows": "64", "cols": "32", "layout": "serpentine", "pixelShape": "circle" }
+    }
+  ],
+  "connections": [
+    ["esp32:13", "matrix:DIN", "green", ["v0"]],
+    ["esp32:5V", "matrix:VDD", "red", ["v0"]],
+    ["esp32:GND.1", "matrix:VSS", "black", ["v0"]],
+    ["esp32:TX", "$serialMonitor:RX", "", []],
+    ["esp32:RX", "$serialMonitor:TX", "", []]
+  ],
+  "serialMonitor": { "display": "always" }
+}

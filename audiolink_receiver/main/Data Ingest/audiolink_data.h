@@ -36,6 +36,11 @@ inline Color operator*(float scale, const Color& color) {
     return color * scale;
 }
 
+inline Color operator+(const Color& a, const Color& b) {
+    return Color{a.R + b.R, a.G + b.G, a.B + b.B};
+}
+
+
 struct ThemeColors {
     Color ThemeColor0;
     Color ThemeColor1;
