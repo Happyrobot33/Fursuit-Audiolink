@@ -6,10 +6,9 @@
 
 Color RainbowShader::render(float x, float y) {
     static constexpr float DEGREES_PER_SEC = 360.0f / 20.0f; // full hue cycle every 4 seconds
-    const float hue = std::fmod(x * 360.0f + _Time * DEGREES_PER_SEC, 360.0f);
-    const float value = 0.5f + 0.5f * y;
+    const float hue = std::fmod((x + y) * 360.0f + _Time * DEGREES_PER_SEC, 360.0f);
 
     uint8_t r, g, b;
-    hsv_to_rgb(hue, 1.0f, value, &r, &g, &b);
+    hsv_to_rgb(hue, 1.0f, 1.0f, &r, &g, &b);
     return Color{r / 255.0f, g / 255.0f, b / 255.0f};
 }
