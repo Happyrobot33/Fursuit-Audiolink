@@ -1,13 +1,12 @@
 # This file was generated using idf.py save-defconfig or menuconfig [D] key. It can be edited manually.
 # Espressif IoT Development Framework (ESP-IDF) 6.0.2 Project Minimal Configuration
 #
-CONFIG_ESP_WIFI_SLP_IRAM_OPT=y
-CONFIG_FREERTOS_HZ=1000
-
-# ESP-NOW-only receiver: no TCP/IP sockets, so trim WiFi driver buffer pools to reclaim heap.
+CONFIG_COMPILER_OPTIMIZATION_PERF=y
 CONFIG_ESP_WIFI_STATIC_RX_BUFFER_NUM=6
 CONFIG_ESP_WIFI_DYNAMIC_RX_BUFFER_NUM=12
 CONFIG_ESP_WIFI_DYNAMIC_TX_BUFFER_NUM=8
+CONFIG_ESP_WIFI_AMPDU_TX_ENABLED=n
+CONFIG_ESP_WIFI_AMPDU_RX_ENABLED=n
 CONFIG_ESP_WIFI_MGMT_SBUF_NUM=16
-# CONFIG_ESP_WIFI_AMPDU_TX_ENABLED is not set
-# CONFIG_ESP_WIFI_AMPDU_RX_ENABLED is not set
+CONFIG_ESP_WIFI_SLP_IRAM_OPT=y
+CONFIG_FREERTOS_HZ=1000
