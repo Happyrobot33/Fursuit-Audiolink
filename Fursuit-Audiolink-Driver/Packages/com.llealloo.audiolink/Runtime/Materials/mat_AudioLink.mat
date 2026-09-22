@@ -94,7 +94,7 @@ Material:
     - _FadeLength: 0.25
     - _FreqCeiling: 1
     - _FreqFloor: 0.123
-    - _Gain: 2
+    - _Gain: 1
     - _GlossMapScale: 1
     - _Glossiness: 0.5
     - _GlossyReflections: 1
