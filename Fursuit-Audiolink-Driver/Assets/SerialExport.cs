@@ -404,6 +404,31 @@ public class SerialExport : MonoBehaviour
         return protoIntensity;
     }
 
+    PROTO.FilteredIntensity getFilteredIntensity(Vector2Int pos)
+    {
+        float[] rmsleft = new float[4];
+        float[] peakLeft = new float[4];
+        float[] rmsRight = new float[4];
+        float[] peakRight = new float[4];
+
+        for (int i = 0; i < 4; i++)
+        {
+            rmsleft[i] = audioLink.rawAudioData[getIndexFromXY(pos.x, pos.y + i)].x;
+            peakLeft[i] = audioLink.rawAudioData[getIndexFromXY(pos.x, pos.y + i)].y;
+            rmsRight[i] = audioLink.rawAudioData[getIndexFromXY(pos.x, pos.y + i)].z;
+            peakRight[i] = audioLink.rawAudioData[getIndexFromXY(pos.x, pos.y + i)].w;
+        }
+
+        PROTO.FilteredIntensity protoFilteredIntensity = new PROTO.FilteredIntensity
+        {
+            RMSLeft = { rmsleft },
+            PeakLeft = { peakLeft },
+            RMSRight = { rmsRight },
+            PeakRight = { peakRight }
+        };
+        return protoFilteredIntensity;
+    }
+
     PROTO.Autogain getAutogain()
     {
         Vector2Int autogainPos = new Vector2Int(11, 22);
@@ -535,6 +560,9 @@ public class SerialExport : MonoBehaviour
         generalVU.CurrentIntensity = getIntensity(new Vector2Int(8, 22));
         generalVU.MarkerValue = getIntensity(new Vector2Int(9, 22));
         generalVU.MarkerTimes = getIntensity(new Vector2Int(10, 22));
+        generalVU.FilteredVu = getFilteredIntensity(new Vector2Int(24, 28));
+        generalVU.FilteredVuIntensity = getFilteredIntensity(new Vector2Int(24, 28));
+        generalVU.FilteredVuMarker = getFilteredIntensity(new Vector2Int(24, 29));
         generalVU.Autogain = getAutogain();
         // printProtoDefinition(generalVU);
         return generalVU;

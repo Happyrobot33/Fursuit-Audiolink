@@ -117,6 +117,14 @@ message Intensity {
     float PeakRight = 4; // ✓
 }
 
+message FilteredIntensity {
+    //4 wide, slowest to fastest moving
+    repeated float RMSLeft = 1 [packed=true]; // ✓
+    repeated float PeakLeft = 2 [packed=true]; // ✓
+    repeated float RMSRight = 3 [packed=true]; // ✓
+    repeated float PeakRight = 4 [packed=true]; // ✓
+}
+
 message Autogain {
     float asymmetricGain = 1; // ✓
     float symmetricGain = 2; // ✓
@@ -149,6 +157,9 @@ message GeneralVU { //TODO: Optimize some of these down to uint32's / uint64's?
     Intensity current_intensity = 10; // ✓
     Intensity marker_value = 11; // ✓
     Intensity marker_times = 12; // ✓
+    FilteredIntensity filtered_vu_intensity = 17; // ✓
+    FilteredIntensity filtered_vu = 18; // ✓
+    FilteredIntensity filtered_vu_marker = 19; // ✓
     Autogain autogain = 13; // ✓
     double UTCDaysSinceEpoch = 14; // ✓
     //this may not be correct, need to verify

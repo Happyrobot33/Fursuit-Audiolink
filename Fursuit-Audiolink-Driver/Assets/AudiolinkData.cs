@@ -43,57 +43,63 @@ namespace PROTO {
             "b29wT3JSYW5kb20iSAoKUGxheWVyRGF0YRIXCg9udW1iZXJPZlBsYXllcnMY",
             "ASABKA0SEAoIaXNNYXN0ZXIYAiABKAgSDwoHaXNPd25lchgDIAEoCCJTCglJ",
             "bnRlbnNpdHkSDwoHUk1TTGVmdBgBIAEoAhIQCghQZWFrTGVmdBgCIAEoAhIQ",
-            "CghSTVNSaWdodBgDIAEoAhIRCglQZWFrUmlnaHQYBCABKAIiOQoIQXV0b2dh",
-            "aW4SFgoOYXN5bW1ldHJpY0dhaW4YASABKAISFQoNc3ltbWV0cmljR2FpbhgC",
-            "IAEoAiIkCghQb3NpdGlvbhILCgNsYXQYASABKAESCwoDbG9uGAIgASgBIv0D",
-            "CglHZW5lcmFsVlUSFAoMdmVyc2lvbk1ham9yGAEgASgCEhQKDHZlcnNpb25N",
-            "aW5vchgCIAEoAhIRCglzeXN0ZW1GUFMYAyABKAISEgoKZnJhbWVDb3VudBgE",
-            "IAEoAhIcChRtc1NpbmNlSW5zdGFuY2VTdGFydBgFIAEoARIcChRtc1NpbmNl",
-            "TWlkbmlnaHRMb2NhbBgGIAEoARIXCg9tc0luTmV0d29ya1RpbWUYByABKAES",
-            "JgoLbWVkaWFfc3RhdGUYCCABKAsyES5QUk9UTy5NZWRpYVN0YXRlEiYKC3Bs",
-            "YXllcl9kYXRhGAkgASgLMhEuUFJPVE8uUGxheWVyRGF0YRIrChFjdXJyZW50",
-            "X2ludGVuc2l0eRgKIAEoCzIQLlBST1RPLkludGVuc2l0eRImCgxtYXJrZXJf",
-            "dmFsdWUYCyABKAsyEC5QUk9UTy5JbnRlbnNpdHkSJgoMbWFya2VyX3RpbWVz",
-            "GAwgASgLMhAuUFJPVE8uSW50ZW5zaXR5EiEKCGF1dG9nYWluGA0gASgLMg8u",
-            "UFJPVE8uQXV0b2dhaW4SGQoRVVRDRGF5c1NpbmNlRXBvY2gYDiABKAESGgoS",
-            "bXNTaW5jZVVUQ0RheVN0YXJ0GA8gASgBEiEKCHBvc2l0aW9uGBAgASgLMg8u",
-            "UFJPVE8uUG9zaXRpb24ijAEKCkNvbG9yQ2hvcmQSHAoGY29sb3JzGAEgAygL",
-            "MgwuUFJPVE8uQ29sb3ISGwoFc3RyaXAYAiADKAsyDC5QUk9UTy5Db2xvchIl",
-            "Cg9saWdodHNfaW50ZXJuYWwYAyADKAsyDC5QUk9UTy5Db2xvchIcCgZsaWdo",
-            "dHMYBCADKAsyDC5QUk9UTy5Db2xvciJHCg5BdXRvQ29ycmVsYXRvchIbCg9h",
-            "dXRvY29ycmVsYXRpb24YASADKAJCAhABEhgKDHVuY29ycmVsYXRlZBgCIAMo",
-            "AkICEAEi3QEKEUNocm9ub3RlbnNpdHlCYW5kEhIKCmluY3JlYXNpbmcYASAB",
-            "KA0SGwoTZmlsdGVyZWRfaW5jcmVhc2luZxgCIAEoDRIOCgZib3VuY2UYAyAB",
-            "KA0SFwoPZmlsdGVyZWRfYm91bmNlGAQgASgNEhcKD2ludGVuc2l0eV9wYXVz",
-            "ZRgFIAEoDRIgChhmaWx0ZXJlZF9pbnRlbnNpdHlfcGF1c2UYBiABKA0SFAoM",
-            "Ym91bmNlX3BhdXNlGAcgASgNEh0KFWZpbHRlcmVkX2JvdW5jZV9wYXVzZRgI",
-            "IAEoDSK2AQoNQ2hyb25vdGVuc2l0eRImCgRiYXNzGAEgASgLMhguUFJPVE8u",
-            "Q2hyb25vdGVuc2l0eUJhbmQSKAoGbG93bWlkGAIgASgLMhguUFJPVE8uQ2hy",
-            "b25vdGVuc2l0eUJhbmQSKQoHaGlnaG1pZBgDIAEoCzIYLlBST1RPLkNocm9u",
-            "b3RlbnNpdHlCYW5kEigKBnRyZWJsZRgEIAEoCzIYLlBST1RPLkNocm9ub3Rl",
-            "bnNpdHlCYW5kImUKDUdsb2JhbFN0cmluZ3MSEgoKcGxheWVyTmFtZRgBIAEo",
-            "CRISCgptYXN0ZXJOYW1lGAIgASgJEhUKDWN1c3RvbVN0cmluZzEYAyABKAkS",
-            "FQoNY3VzdG9tU3RyaW5nMhgEIAEoCSKkAwoOQXVkaW9saW5rX0RhdGESHwoH",
-            "aGlzdG9yeRgBIAEoCzIOLlBST1RPLkhpc3RvcnkSKAoMdGhlbWVfY29sb3Jz",
-            "GAIgASgLMhIuUFJPVE8uVGhlbWVDb2xvcnMSFwoDZGZ0GAMgASgLMgouUFJP",
-            "VE8uREZUEjQKEmZpbHRlcmVkX2F1ZGlvbGluaxgEIAEoCzIYLlBST1RPLkZp",
-            "bHRlcmVkQXVkaW9saW5rEiEKCHdhdmVmb3JtGAUgASgLMg8uUFJPVE8uV2F2",
-            "ZUZvcm0SJAoKZ2VuZXJhbF92dRgGIAEoCzIQLlBST1RPLkdlbmVyYWxWVRIl",
-            "Cgpjb2xvcmNob3JkGAcgASgLMhEuUFJPVE8uQ29sb3JDaG9yZBItCg5hdXRv",
-            "Y29ycmVsYXRvchgIIAEoCzIVLlBST1RPLkF1dG9Db3JyZWxhdG9yEisKDWNo",
-            "cm9ub3RlbnNpdHkYCSABKAsyFC5QUk9UTy5DaHJvbm90ZW5zaXR5EiwKDmds",
-            "b2JhbF9zdHJpbmdzGAogASgLMhQuUFJPVE8uR2xvYmFsU3RyaW5ncyJZCgpT",
-            "dWJfUGFja2V0EhQKDHBhY2tldF9pbmRleBgBIAEoBRIUCgxwYWNrZXRfY291",
-            "bnQYAyABKAUSEQoJcGFja2V0X2lkGAUgASgNEgwKBGRhdGEYAiADKAwqzwEK",
-            "DVBsYXliYWNrU3RhdGUSFwoTUExBWUJBQ0tfU1RBVEVfTk9ORRAAEhoKFlBM",
-            "QVlCQUNLX1NUQVRFX1BMQVlJTkcQARIZChVQTEFZQkFDS19TVEFURV9QQVVT",
-            "RUQQAhIaChZQTEFZQkFDS19TVEFURV9TVE9QUEVEEAMSGgoWUExBWUJBQ0tf",
-            "U1RBVEVfTE9BRElORxAEEhwKGFBMQVlCQUNLX1NUQVRFX1NUUkVBTUlORxAF",
-            "EhgKFFBMQVlCQUNLX1NUQVRFX0VSUk9SEAYqnAEKDExvb3BPclJhbmRvbRIX",
-            "ChNMT09QX09SX1JBTkRPTV9OT05FEAASFwoTTE9PUF9PUl9SQU5ET01fTE9P",
-            "UBABEhsKF0xPT1BfT1JfUkFORE9NX0xPT1BfT05FEAISGQoVTE9PUF9PUl9S",
-            "QU5ET01fUkFORE9NEAMSIgoeTE9PUF9PUl9SQU5ET01fUkFORE9NX0FORF9M",
-            "T09QEARiBnByb3RvMw=="));
+            "CghSTVNSaWdodBgDIAEoAhIRCglQZWFrUmlnaHQYBCABKAIiawoRRmlsdGVy",
+            "ZWRJbnRlbnNpdHkSEwoHUk1TTGVmdBgBIAMoAkICEAESFAoIUGVha0xlZnQY",
+            "AiADKAJCAhABEhQKCFJNU1JpZ2h0GAMgAygCQgIQARIVCglQZWFrUmlnaHQY",
+            "BCADKAJCAhABIjkKCEF1dG9nYWluEhYKDmFzeW1tZXRyaWNHYWluGAEgASgC",
+            "EhUKDXN5bW1ldHJpY0dhaW4YAiABKAIiJAoIUG9zaXRpb24SCwoDbGF0GAEg",
+            "ASgBEgsKA2xvbhgCIAEoASKbBQoJR2VuZXJhbFZVEhQKDHZlcnNpb25NYWpv",
+            "chgBIAEoAhIUCgx2ZXJzaW9uTWlub3IYAiABKAISEQoJc3lzdGVtRlBTGAMg",
+            "ASgCEhIKCmZyYW1lQ291bnQYBCABKAISHAoUbXNTaW5jZUluc3RhbmNlU3Rh",
+            "cnQYBSABKAESHAoUbXNTaW5jZU1pZG5pZ2h0TG9jYWwYBiABKAESFwoPbXNJ",
+            "bk5ldHdvcmtUaW1lGAcgASgBEiYKC21lZGlhX3N0YXRlGAggASgLMhEuUFJP",
+            "VE8uTWVkaWFTdGF0ZRImCgtwbGF5ZXJfZGF0YRgJIAEoCzIRLlBST1RPLlBs",
+            "YXllckRhdGESKwoRY3VycmVudF9pbnRlbnNpdHkYCiABKAsyEC5QUk9UTy5J",
+            "bnRlbnNpdHkSJgoMbWFya2VyX3ZhbHVlGAsgASgLMhAuUFJPVE8uSW50ZW5z",
+            "aXR5EiYKDG1hcmtlcl90aW1lcxgMIAEoCzIQLlBST1RPLkludGVuc2l0eRI3",
+            "ChVmaWx0ZXJlZF92dV9pbnRlbnNpdHkYESABKAsyGC5QUk9UTy5GaWx0ZXJl",
+            "ZEludGVuc2l0eRItCgtmaWx0ZXJlZF92dRgSIAEoCzIYLlBST1RPLkZpbHRl",
+            "cmVkSW50ZW5zaXR5EjQKEmZpbHRlcmVkX3Z1X21hcmtlchgTIAEoCzIYLlBS",
+            "T1RPLkZpbHRlcmVkSW50ZW5zaXR5EiEKCGF1dG9nYWluGA0gASgLMg8uUFJP",
+            "VE8uQXV0b2dhaW4SGQoRVVRDRGF5c1NpbmNlRXBvY2gYDiABKAESGgoSbXNT",
+            "aW5jZVVUQ0RheVN0YXJ0GA8gASgBEiEKCHBvc2l0aW9uGBAgASgLMg8uUFJP",
+            "VE8uUG9zaXRpb24ijAEKCkNvbG9yQ2hvcmQSHAoGY29sb3JzGAEgAygLMgwu",
+            "UFJPVE8uQ29sb3ISGwoFc3RyaXAYAiADKAsyDC5QUk9UTy5Db2xvchIlCg9s",
+            "aWdodHNfaW50ZXJuYWwYAyADKAsyDC5QUk9UTy5Db2xvchIcCgZsaWdodHMY",
+            "BCADKAsyDC5QUk9UTy5Db2xvciJHCg5BdXRvQ29ycmVsYXRvchIbCg9hdXRv",
+            "Y29ycmVsYXRpb24YASADKAJCAhABEhgKDHVuY29ycmVsYXRlZBgCIAMoAkIC",
+            "EAEi3QEKEUNocm9ub3RlbnNpdHlCYW5kEhIKCmluY3JlYXNpbmcYASABKA0S",
+            "GwoTZmlsdGVyZWRfaW5jcmVhc2luZxgCIAEoDRIOCgZib3VuY2UYAyABKA0S",
+            "FwoPZmlsdGVyZWRfYm91bmNlGAQgASgNEhcKD2ludGVuc2l0eV9wYXVzZRgF",
+            "IAEoDRIgChhmaWx0ZXJlZF9pbnRlbnNpdHlfcGF1c2UYBiABKA0SFAoMYm91",
+            "bmNlX3BhdXNlGAcgASgNEh0KFWZpbHRlcmVkX2JvdW5jZV9wYXVzZRgIIAEo",
+            "DSK2AQoNQ2hyb25vdGVuc2l0eRImCgRiYXNzGAEgASgLMhguUFJPVE8uQ2hy",
+            "b25vdGVuc2l0eUJhbmQSKAoGbG93bWlkGAIgASgLMhguUFJPVE8uQ2hyb25v",
+            "dGVuc2l0eUJhbmQSKQoHaGlnaG1pZBgDIAEoCzIYLlBST1RPLkNocm9ub3Rl",
+            "bnNpdHlCYW5kEigKBnRyZWJsZRgEIAEoCzIYLlBST1RPLkNocm9ub3RlbnNp",
+            "dHlCYW5kImUKDUdsb2JhbFN0cmluZ3MSEgoKcGxheWVyTmFtZRgBIAEoCRIS",
+            "CgptYXN0ZXJOYW1lGAIgASgJEhUKDWN1c3RvbVN0cmluZzEYAyABKAkSFQoN",
+            "Y3VzdG9tU3RyaW5nMhgEIAEoCSKkAwoOQXVkaW9saW5rX0RhdGESHwoHaGlz",
+            "dG9yeRgBIAEoCzIOLlBST1RPLkhpc3RvcnkSKAoMdGhlbWVfY29sb3JzGAIg",
+            "ASgLMhIuUFJPVE8uVGhlbWVDb2xvcnMSFwoDZGZ0GAMgASgLMgouUFJPVE8u",
+            "REZUEjQKEmZpbHRlcmVkX2F1ZGlvbGluaxgEIAEoCzIYLlBST1RPLkZpbHRl",
+            "cmVkQXVkaW9saW5rEiEKCHdhdmVmb3JtGAUgASgLMg8uUFJPVE8uV2F2ZUZv",
+            "cm0SJAoKZ2VuZXJhbF92dRgGIAEoCzIQLlBST1RPLkdlbmVyYWxWVRIlCgpj",
+            "b2xvcmNob3JkGAcgASgLMhEuUFJPVE8uQ29sb3JDaG9yZBItCg5hdXRvY29y",
+            "cmVsYXRvchgIIAEoCzIVLlBST1RPLkF1dG9Db3JyZWxhdG9yEisKDWNocm9u",
+            "b3RlbnNpdHkYCSABKAsyFC5QUk9UTy5DaHJvbm90ZW5zaXR5EiwKDmdsb2Jh",
+            "bF9zdHJpbmdzGAogASgLMhQuUFJPVE8uR2xvYmFsU3RyaW5ncyJZCgpTdWJf",
+            "UGFja2V0EhQKDHBhY2tldF9pbmRleBgBIAEoBRIUCgxwYWNrZXRfY291bnQY",
+            "AyABKAUSEQoJcGFja2V0X2lkGAUgASgNEgwKBGRhdGEYAiADKAwqzwEKDVBs",
+            "YXliYWNrU3RhdGUSFwoTUExBWUJBQ0tfU1RBVEVfTk9ORRAAEhoKFlBMQVlC",
+            "QUNLX1NUQVRFX1BMQVlJTkcQARIZChVQTEFZQkFDS19TVEFURV9QQVVTRUQQ",
+            "AhIaChZQTEFZQkFDS19TVEFURV9TVE9QUEVEEAMSGgoWUExBWUJBQ0tfU1RB",
+            "VEVfTE9BRElORxAEEhwKGFBMQVlCQUNLX1NUQVRFX1NUUkVBTUlORxAFEhgK",
+            "FFBMQVlCQUNLX1NUQVRFX0VSUk9SEAYqnAEKDExvb3BPclJhbmRvbRIXChNM",
+            "T09QX09SX1JBTkRPTV9OT05FEAASFwoTTE9PUF9PUl9SQU5ET01fTE9PUBAB",
+            "EhsKF0xPT1BfT1JfUkFORE9NX0xPT1BfT05FEAISGQoVTE9PUF9PUl9SQU5E",
+            "T01fUkFORE9NEAMSIgoeTE9PUF9PUl9SQU5ET01fUkFORE9NX0FORF9MT09Q",
+            "EARiBnByb3RvMw=="));
       descriptor = pbr::FileDescriptor.FromGeneratedCode(descriptorData,
           new pbr::FileDescriptor[] { },
           new pbr::GeneratedClrTypeInfo(new[] {typeof(global::PROTO.PlaybackState), typeof(global::PROTO.LoopOrRandom), }, null, new pbr::GeneratedClrTypeInfo[] {
@@ -106,9 +112,10 @@ namespace PROTO {
             new pbr::GeneratedClrTypeInfo(typeof(global::PROTO.MediaState), global::PROTO.MediaState.Parser, new[]{ "MediaVolume", "MediaTime", "MediaPlayback", "MediaLoop" }, null, null, null, null),
             new pbr::GeneratedClrTypeInfo(typeof(global::PROTO.PlayerData), global::PROTO.PlayerData.Parser, new[]{ "NumberOfPlayers", "IsMaster", "IsOwner" }, null, null, null, null),
             new pbr::GeneratedClrTypeInfo(typeof(global::PROTO.Intensity), global::PROTO.Intensity.Parser, new[]{ "RMSLeft", "PeakLeft", "RMSRight", "PeakRight" }, null, null, null, null),
+            new pbr::GeneratedClrTypeInfo(typeof(global::PROTO.FilteredIntensity), global::PROTO.FilteredIntensity.Parser, new[]{ "RMSLeft", "PeakLeft", "RMSRight", "PeakRight" }, null, null, null, null),
             new pbr::GeneratedClrTypeInfo(typeof(global::PROTO.Autogain), global::PROTO.Autogain.Parser, new[]{ "AsymmetricGain", "SymmetricGain" }, null, null, null, null),
             new pbr::GeneratedClrTypeInfo(typeof(global::PROTO.Position), global::PROTO.Position.Parser, new[]{ "Lat", "Lon" }, null, null, null, null),
-            new pbr::GeneratedClrTypeInfo(typeof(global::PROTO.GeneralVU), global::PROTO.GeneralVU.Parser, new[]{ "VersionMajor", "VersionMinor", "SystemFPS", "FrameCount", "MsSinceInstanceStart", "MsSinceMidnightLocal", "MsInNetworkTime", "MediaState", "PlayerData", "CurrentIntensity", "MarkerValue", "MarkerTimes", "Autogain", "UTCDaysSinceEpoch", "MsSinceUTCDayStart", "Position" }, null, null, null, null),
+            new pbr::GeneratedClrTypeInfo(typeof(global::PROTO.GeneralVU), global::PROTO.GeneralVU.Parser, new[]{ "VersionMajor", "VersionMinor", "SystemFPS", "FrameCount", "MsSinceInstanceStart", "MsSinceMidnightLocal", "MsInNetworkTime", "MediaState", "PlayerData", "CurrentIntensity", "MarkerValue", "MarkerTimes", "FilteredVuIntensity", "FilteredVu", "FilteredVuMarker", "Autogain", "UTCDaysSinceEpoch", "MsSinceUTCDayStart", "Position" }, null, null, null, null),
             new pbr::GeneratedClrTypeInfo(typeof(global::PROTO.ColorChord), global::PROTO.ColorChord.Parser, new[]{ "Colors", "Strip", "LightsInternal", "Lights" }, null, null, null, null),
             new pbr::GeneratedClrTypeInfo(typeof(global::PROTO.AutoCorrelator), global::PROTO.AutoCorrelator.Parser, new[]{ "Autocorrelation", "Uncorrelated" }, null, null, null, null),
             new pbr::GeneratedClrTypeInfo(typeof(global::PROTO.ChronotensityBand), global::PROTO.ChronotensityBand.Parser, new[]{ "Increasing", "FilteredIncreasing", "Bounce", "FilteredBounce", "IntensityPause", "FilteredIntensityPause", "BouncePause", "FilteredBouncePause" }, null, null, null, null),
@@ -2881,6 +2888,291 @@ namespace PROTO {
   }
 
   [global::System.Diagnostics.DebuggerDisplayAttribute("{ToString(),nq}")]
+  public sealed partial class FilteredIntensity : pb::IMessage<FilteredIntensity>
+  #if !GOOGLE_PROTOBUF_REFSTRUCT_COMPATIBILITY_MODE
+      , pb::IBufferMessage
+  #endif
+  {
+    private static readonly pb::MessageParser<FilteredIntensity> _parser = new pb::MessageParser<FilteredIntensity>(() => new FilteredIntensity());
+    private pb::UnknownFieldSet _unknownFields;
+    [global::System.Diagnostics.DebuggerNonUserCodeAttribute]
+    [global::System.CodeDom.Compiler.GeneratedCode("protoc", null)]
+    public static pb::MessageParser<FilteredIntensity> Parser { get { return _parser; } }
+
+    [global::System.Diagnostics.DebuggerNonUserCodeAttribute]
+    [global::System.CodeDom.Compiler.GeneratedCode("protoc", null)]
+    public static pbr::MessageDescriptor Descriptor {
+      get { return global::PROTO.AudiolinkDataReflection.Descriptor.MessageTypes[9]; }
+    }
+
+    [global::System.Diagnostics.DebuggerNonUserCodeAttribute]
+    [global::System.CodeDom.Compiler.GeneratedCode("protoc", null)]
+    pbr::MessageDescriptor pb::IMessage.Descriptor {
+      get { return Descriptor; }
+    }
+
+    [global::System.Diagnostics.DebuggerNonUserCodeAttribute]
+    [global::System.CodeDom.Compiler.GeneratedCode("protoc", null)]
+    public FilteredIntensity() {
+      OnConstruction();
+    }
+
+    partial void OnConstruction();
+
+    [global::System.Diagnostics.DebuggerNonUserCodeAttribute]
+    [global::System.CodeDom.Compiler.GeneratedCode("protoc", null)]
+    public FilteredIntensity(FilteredIntensity other) : this() {
+      rMSLeft_ = other.rMSLeft_.Clone();
+      peakLeft_ = other.peakLeft_.Clone();
+      rMSRight_ = other.rMSRight_.Clone();
+      peakRight_ = other.peakRight_.Clone();
+      _unknownFields = pb::UnknownFieldSet.Clone(other._unknownFields);
+    }
+
+    [global::System.Diagnostics.DebuggerNonUserCodeAttribute]
+    [global::System.CodeDom.Compiler.GeneratedCode("protoc", null)]
+    public FilteredIntensity Clone() {
+      return new FilteredIntensity(this);
+    }
+
+    /// <summary>Field number for the "RMSLeft" field.</summary>
+    public const int RMSLeftFieldNumber = 1;
+    private static readonly pb::FieldCodec<float> _repeated_rMSLeft_codec
+        = pb::FieldCodec.ForFloat(10);
+    private readonly pbc::RepeatedField<float> rMSLeft_ = new pbc::RepeatedField<float>();
+    /// <summary>
+    ///4 wide, slowest to fastest moving
+    /// </summary>
+    [global::System.Diagnostics.DebuggerNonUserCodeAttribute]
+    [global::System.CodeDom.Compiler.GeneratedCode("protoc", null)]
+    public pbc::RepeatedField<float> RMSLeft {
+      get { return rMSLeft_; }
+    }
+
+    /// <summary>Field number for the "PeakLeft" field.</summary>
+    public const int PeakLeftFieldNumber = 2;
+    private static readonly pb::FieldCodec<float> _repeated_peakLeft_codec
+        = pb::FieldCodec.ForFloat(18);
+    private readonly pbc::RepeatedField<float> peakLeft_ = new pbc::RepeatedField<float>();
+    /// <summary>
+    /// ✓
+    /// </summary>
+    [global::System.Diagnostics.DebuggerNonUserCodeAttribute]
+    [global::System.CodeDom.Compiler.GeneratedCode("protoc", null)]
+    public pbc::RepeatedField<float> PeakLeft {
+      get { return peakLeft_; }
+    }
+
+    /// <summary>Field number for the "RMSRight" field.</summary>
+    public const int RMSRightFieldNumber = 3;
+    private static readonly pb::FieldCodec<float> _repeated_rMSRight_codec
+        = pb::FieldCodec.ForFloat(26);
+    private readonly pbc::RepeatedField<float> rMSRight_ = new pbc::RepeatedField<float>();
+    /// <summary>
+    /// ✓
+    /// </summary>
+    [global::System.Diagnostics.DebuggerNonUserCodeAttribute]
+    [global::System.CodeDom.Compiler.GeneratedCode("protoc", null)]
+    public pbc::RepeatedField<float> RMSRight {
+      get { return rMSRight_; }
+    }
+
+    /// <summary>Field number for the "PeakRight" field.</summary>
+    public const int PeakRightFieldNumber = 4;
+    private static readonly pb::FieldCodec<float> _repeated_peakRight_codec
+        = pb::FieldCodec.ForFloat(34);
+    private readonly pbc::RepeatedField<float> peakRight_ = new pbc::RepeatedField<float>();
+    /// <summary>
+    /// ✓
+    /// </summary>
+    [global::System.Diagnostics.DebuggerNonUserCodeAttribute]
+    [global::System.CodeDom.Compiler.GeneratedCode("protoc", null)]
+    public pbc::RepeatedField<float> PeakRight {
+      get { return peakRight_; }
+    }
+
+    [global::System.Diagnostics.DebuggerNonUserCodeAttribute]
+    [global::System.CodeDom.Compiler.GeneratedCode("protoc", null)]
+    public override bool Equals(object other) {
+      return Equals(other as FilteredIntensity);
+    }
+
+    [global::System.Diagnostics.DebuggerNonUserCodeAttribute]
+    [global::System.CodeDom.Compiler.GeneratedCode("protoc", null)]
+    public bool Equals(FilteredIntensity other) {
+      if (ReferenceEquals(other, null)) {
+        return false;
+      }
+      if (ReferenceEquals(other, this)) {
+        return true;
+      }
+      if(!rMSLeft_.Equals(other.rMSLeft_)) return false;
+      if(!peakLeft_.Equals(other.peakLeft_)) return false;
+      if(!rMSRight_.Equals(other.rMSRight_)) return false;
+      if(!peakRight_.Equals(other.peakRight_)) return false;
+      return Equals(_unknownFields, other._unknownFields);
+    }
+
+    [global::System.Diagnostics.DebuggerNonUserCodeAttribute]
+    [global::System.CodeDom.Compiler.GeneratedCode("protoc", null)]
+    public override int GetHashCode() {
+      int hash = 1;
+      hash ^= rMSLeft_.GetHashCode();
+      hash ^= peakLeft_.GetHashCode();
+      hash ^= rMSRight_.GetHashCode();
+      hash ^= peakRight_.GetHashCode();
+      if (_unknownFields != null) {
+        hash ^= _unknownFields.GetHashCode();
+      }
+      return hash;
+    }
+
+    [global::System.Diagnostics.DebuggerNonUserCodeAttribute]
+    [global::System.CodeDom.Compiler.GeneratedCode("protoc", null)]
+    public override string ToString() {
+      return pb::JsonFormatter.ToDiagnosticString(this);
+    }
+
+    [global::System.Diagnostics.DebuggerNonUserCodeAttribute]
+    [global::System.CodeDom.Compiler.GeneratedCode("protoc", null)]
+    public void WriteTo(pb::CodedOutputStream output) {
+    #if !GOOGLE_PROTOBUF_REFSTRUCT_COMPATIBILITY_MODE
+      output.WriteRawMessage(this);
+    #else
+      rMSLeft_.WriteTo(output, _repeated_rMSLeft_codec);
+      peakLeft_.WriteTo(output, _repeated_peakLeft_codec);
+      rMSRight_.WriteTo(output, _repeated_rMSRight_codec);
+      peakRight_.WriteTo(output, _repeated_peakRight_codec);
+      if (_unknownFields != null) {
+        _unknownFields.WriteTo(output);
+      }
+    #endif
+    }
+
+    #if !GOOGLE_PROTOBUF_REFSTRUCT_COMPATIBILITY_MODE
+    [global::System.Diagnostics.DebuggerNonUserCodeAttribute]
+    [global::System.CodeDom.Compiler.GeneratedCode("protoc", null)]
+    void pb::IBufferMessage.InternalWriteTo(ref pb::WriteContext output) {
+      rMSLeft_.WriteTo(ref output, _repeated_rMSLeft_codec);
+      peakLeft_.WriteTo(ref output, _repeated_peakLeft_codec);
+      rMSRight_.WriteTo(ref output, _repeated_rMSRight_codec);
+      peakRight_.WriteTo(ref output, _repeated_peakRight_codec);
+      if (_unknownFields != null) {
+        _unknownFields.WriteTo(ref output);
+      }
+    }
+    #endif
+
+    [global::System.Diagnostics.DebuggerNonUserCodeAttribute]
+    [global::System.CodeDom.Compiler.GeneratedCode("protoc", null)]
+    public int CalculateSize() {
+      int size = 0;
+      size += rMSLeft_.CalculateSize(_repeated_rMSLeft_codec);
+      size += peakLeft_.CalculateSize(_repeated_peakLeft_codec);
+      size += rMSRight_.CalculateSize(_repeated_rMSRight_codec);
+      size += peakRight_.CalculateSize(_repeated_peakRight_codec);
+      if (_unknownFields != null) {
+        size += _unknownFields.CalculateSize();
+      }
+      return size;
+    }
+
+    [global::System.Diagnostics.DebuggerNonUserCodeAttribute]
+    [global::System.CodeDom.Compiler.GeneratedCode("protoc", null)]
+    public void MergeFrom(FilteredIntensity other) {
+      if (other == null) {
+        return;
+      }
+      rMSLeft_.Add(other.rMSLeft_);
+      peakLeft_.Add(other.peakLeft_);
+      rMSRight_.Add(other.rMSRight_);
+      peakRight_.Add(other.peakRight_);
+      _unknownFields = pb::UnknownFieldSet.MergeFrom(_unknownFields, other._unknownFields);
+    }
+
+    [global::System.Diagnostics.DebuggerNonUserCodeAttribute]
+    [global::System.CodeDom.Compiler.GeneratedCode("protoc", null)]
+    public void MergeFrom(pb::CodedInputStream input) {
+    #if !GOOGLE_PROTOBUF_REFSTRUCT_COMPATIBILITY_MODE
+      input.ReadRawMessage(this);
+    #else
+      uint tag;
+      while ((tag = input.ReadTag()) != 0) {
+      if ((tag & 7) == 4) {
+        // Abort on any end group tag.
+        return;
+      }
+      switch(tag) {
+          default:
+            _unknownFields = pb::UnknownFieldSet.MergeFieldFrom(_unknownFields, input);
+            break;
+          case 10:
+          case 13: {
+            rMSLeft_.AddEntriesFrom(input, _repeated_rMSLeft_codec);
+            break;
+          }
+          case 18:
+          case 21: {
+            peakLeft_.AddEntriesFrom(input, _repeated_peakLeft_codec);
+            break;
+          }
+          case 26:
+          case 29: {
+            rMSRight_.AddEntriesFrom(input, _repeated_rMSRight_codec);
+            break;
+          }
+          case 34:
+          case 37: {
+            peakRight_.AddEntriesFrom(input, _repeated_peakRight_codec);
+            break;
+          }
+        }
+      }
+    #endif
+    }
+
+    #if !GOOGLE_PROTOBUF_REFSTRUCT_COMPATIBILITY_MODE
+    [global::System.Diagnostics.DebuggerNonUserCodeAttribute]
+    [global::System.CodeDom.Compiler.GeneratedCode("protoc", null)]
+    void pb::IBufferMessage.InternalMergeFrom(ref pb::ParseContext input) {
+      uint tag;
+      while ((tag = input.ReadTag()) != 0) {
+      if ((tag & 7) == 4) {
+        // Abort on any end group tag.
+        return;
+      }
+      switch(tag) {
+          default:
+            _unknownFields = pb::UnknownFieldSet.MergeFieldFrom(_unknownFields, ref input);
+            break;
+          case 10:
+          case 13: {
+            rMSLeft_.AddEntriesFrom(ref input, _repeated_rMSLeft_codec);
+            break;
+          }
+          case 18:
+          case 21: {
+            peakLeft_.AddEntriesFrom(ref input, _repeated_peakLeft_codec);
+            break;
+          }
+          case 26:
+          case 29: {
+            rMSRight_.AddEntriesFrom(ref input, _repeated_rMSRight_codec);
+            break;
+          }
+          case 34:
+          case 37: {
+            peakRight_.AddEntriesFrom(ref input, _repeated_peakRight_codec);
+            break;
+          }
+        }
+      }
+    }
+    #endif
+
+  }
+
+  [global::System.Diagnostics.DebuggerDisplayAttribute("{ToString(),nq}")]
   public sealed partial class Autogain : pb::IMessage<Autogain>
   #if !GOOGLE_PROTOBUF_REFSTRUCT_COMPATIBILITY_MODE
       , pb::IBufferMessage
@@ -2895,7 +3187,7 @@ namespace PROTO {
     [global::System.Diagnostics.DebuggerNonUserCodeAttribute]
     [global::System.CodeDom.Compiler.GeneratedCode("protoc", null)]
     public static pbr::MessageDescriptor Descriptor {
-      get { return global::PROTO.AudiolinkDataReflection.Descriptor.MessageTypes[9]; }
+      get { return global::PROTO.AudiolinkDataReflection.Descriptor.MessageTypes[10]; }
     }
 
     [global::System.Diagnostics.DebuggerNonUserCodeAttribute]
@@ -3136,7 +3428,7 @@ namespace PROTO {
     [global::System.Diagnostics.DebuggerNonUserCodeAttribute]
     [global::System.CodeDom.Compiler.GeneratedCode("protoc", null)]
     public static pbr::MessageDescriptor Descriptor {
-      get { return global::PROTO.AudiolinkDataReflection.Descriptor.MessageTypes[10]; }
+      get { return global::PROTO.AudiolinkDataReflection.Descriptor.MessageTypes[11]; }
     }
 
     [global::System.Diagnostics.DebuggerNonUserCodeAttribute]
@@ -3380,7 +3672,7 @@ namespace PROTO {
     [global::System.Diagnostics.DebuggerNonUserCodeAttribute]
     [global::System.CodeDom.Compiler.GeneratedCode("protoc", null)]
     public static pbr::MessageDescriptor Descriptor {
-      get { return global::PROTO.AudiolinkDataReflection.Descriptor.MessageTypes[11]; }
+      get { return global::PROTO.AudiolinkDataReflection.Descriptor.MessageTypes[12]; }
     }
 
     [global::System.Diagnostics.DebuggerNonUserCodeAttribute]
@@ -3412,6 +3704,9 @@ namespace PROTO {
       currentIntensity_ = other.currentIntensity_ != null ? other.currentIntensity_.Clone() : null;
       markerValue_ = other.markerValue_ != null ? other.markerValue_.Clone() : null;
       markerTimes_ = other.markerTimes_ != null ? other.markerTimes_.Clone() : null;
+      filteredVuIntensity_ = other.filteredVuIntensity_ != null ? other.filteredVuIntensity_.Clone() : null;
+      filteredVu_ = other.filteredVu_ != null ? other.filteredVu_.Clone() : null;
+      filteredVuMarker_ = other.filteredVuMarker_ != null ? other.filteredVuMarker_.Clone() : null;
       autogain_ = other.autogain_ != null ? other.autogain_.Clone() : null;
       uTCDaysSinceEpoch_ = other.uTCDaysSinceEpoch_;
       msSinceUTCDayStart_ = other.msSinceUTCDayStart_;
@@ -3611,6 +3906,51 @@ namespace PROTO {
       }
     }
 
+    /// <summary>Field number for the "filtered_vu_intensity" field.</summary>
+    public const int FilteredVuIntensityFieldNumber = 17;
+    private global::PROTO.FilteredIntensity filteredVuIntensity_;
+    /// <summary>
+    /// ✓
+    /// </summary>
+    [global::System.Diagnostics.DebuggerNonUserCodeAttribute]
+    [global::System.CodeDom.Compiler.GeneratedCode("protoc", null)]
+    public global::PROTO.FilteredIntensity FilteredVuIntensity {
+      get { return filteredVuIntensity_; }
+      set {
+        filteredVuIntensity_ = value;
+      }
+    }
+
+    /// <summary>Field number for the "filtered_vu" field.</summary>
+    public const int FilteredVuFieldNumber = 18;
+    private global::PROTO.FilteredIntensity filteredVu_;
+    /// <summary>
+    /// ✓
+    /// </summary>
+    [global::System.Diagnostics.DebuggerNonUserCodeAttribute]
+    [global::System.CodeDom.Compiler.GeneratedCode("protoc", null)]
+    public global::PROTO.FilteredIntensity FilteredVu {
+      get { return filteredVu_; }
+      set {
+        filteredVu_ = value;
+      }
+    }
+
+    /// <summary>Field number for the "filtered_vu_marker" field.</summary>
+    public const int FilteredVuMarkerFieldNumber = 19;
+    private global::PROTO.FilteredIntensity filteredVuMarker_;
+    /// <summary>
+    /// ✓
+    /// </summary>
+    [global::System.Diagnostics.DebuggerNonUserCodeAttribute]
+    [global::System.CodeDom.Compiler.GeneratedCode("protoc", null)]
+    public global::PROTO.FilteredIntensity FilteredVuMarker {
+      get { return filteredVuMarker_; }
+      set {
+        filteredVuMarker_ = value;
+      }
+    }
+
     /// <summary>Field number for the "autogain" field.</summary>
     public const int AutogainFieldNumber = 13;
     private global::PROTO.Autogain autogain_;
@@ -3699,6 +4039,9 @@ namespace PROTO {
       if (!object.Equals(CurrentIntensity, other.CurrentIntensity)) return false;
       if (!object.Equals(MarkerValue, other.MarkerValue)) return false;
       if (!object.Equals(MarkerTimes, other.MarkerTimes)) return false;
+      if (!object.Equals(FilteredVuIntensity, other.FilteredVuIntensity)) return false;
+      if (!object.Equals(FilteredVu, other.FilteredVu)) return false;
+      if (!object.Equals(FilteredVuMarker, other.FilteredVuMarker)) return false;
       if (!object.Equals(Autogain, other.Autogain)) return false;
       if (!pbc::ProtobufEqualityComparers.BitwiseDoubleEqualityComparer.Equals(UTCDaysSinceEpoch, other.UTCDaysSinceEpoch)) return false;
       if (!pbc::ProtobufEqualityComparers.BitwiseDoubleEqualityComparer.Equals(MsSinceUTCDayStart, other.MsSinceUTCDayStart)) return false;
@@ -3722,6 +4065,9 @@ namespace PROTO {
       if (currentIntensity_ != null) hash ^= CurrentIntensity.GetHashCode();
       if (markerValue_ != null) hash ^= MarkerValue.GetHashCode();
       if (markerTimes_ != null) hash ^= MarkerTimes.GetHashCode();
+      if (filteredVuIntensity_ != null) hash ^= FilteredVuIntensity.GetHashCode();
+      if (filteredVu_ != null) hash ^= FilteredVu.GetHashCode();
+      if (filteredVuMarker_ != null) hash ^= FilteredVuMarker.GetHashCode();
       if (autogain_ != null) hash ^= Autogain.GetHashCode();
       if (UTCDaysSinceEpoch != 0D) hash ^= pbc::ProtobufEqualityComparers.BitwiseDoubleEqualityComparer.GetHashCode(UTCDaysSinceEpoch);
       if (MsSinceUTCDayStart != 0D) hash ^= pbc::ProtobufEqualityComparers.BitwiseDoubleEqualityComparer.GetHashCode(MsSinceUTCDayStart);
@@ -3808,6 +4154,18 @@ namespace PROTO {
         output.WriteRawTag(130, 1);
         output.WriteMessage(Position);
       }
+      if (filteredVuIntensity_ != null) {
+        output.WriteRawTag(138, 1);
+        output.WriteMessage(FilteredVuIntensity);
+      }
+      if (filteredVu_ != null) {
+        output.WriteRawTag(146, 1);
+        output.WriteMessage(FilteredVu);
+      }
+      if (filteredVuMarker_ != null) {
+        output.WriteRawTag(154, 1);
+        output.WriteMessage(FilteredVuMarker);
+      }
       if (_unknownFields != null) {
         _unknownFields.WriteTo(output);
       }
@@ -3882,6 +4240,18 @@ namespace PROTO {
         output.WriteRawTag(130, 1);
         output.WriteMessage(Position);
       }
+      if (filteredVuIntensity_ != null) {
+        output.WriteRawTag(138, 1);
+        output.WriteMessage(FilteredVuIntensity);
+      }
+      if (filteredVu_ != null) {
+        output.WriteRawTag(146, 1);
+        output.WriteMessage(FilteredVu);
+      }
+      if (filteredVuMarker_ != null) {
+        output.WriteRawTag(154, 1);
+        output.WriteMessage(FilteredVuMarker);
+      }
       if (_unknownFields != null) {
         _unknownFields.WriteTo(ref output);
       }
@@ -3927,6 +4297,15 @@ namespace PROTO {
       }
       if (markerTimes_ != null) {
         size += 1 + pb::CodedOutputStream.ComputeMessageSize(MarkerTimes);
+      }
+      if (filteredVuIntensity_ != null) {
+        size += 2 + pb::CodedOutputStream.ComputeMessageSize(FilteredVuIntensity);
+      }
+      if (filteredVu_ != null) {
+        size += 2 + pb::CodedOutputStream.ComputeMessageSize(FilteredVu);
+      }
+      if (filteredVuMarker_ != null) {
+        size += 2 + pb::CodedOutputStream.ComputeMessageSize(FilteredVuMarker);
       }
       if (autogain_ != null) {
         size += 1 + pb::CodedOutputStream.ComputeMessageSize(Autogain);
@@ -4002,6 +4381,24 @@ namespace PROTO {
           MarkerTimes = new global::PROTO.Intensity();
         }
         MarkerTimes.MergeFrom(other.MarkerTimes);
+      }
+      if (other.filteredVuIntensity_ != null) {
+        if (filteredVuIntensity_ == null) {
+          FilteredVuIntensity = new global::PROTO.FilteredIntensity();
+        }
+        FilteredVuIntensity.MergeFrom(other.FilteredVuIntensity);
+      }
+      if (other.filteredVu_ != null) {
+        if (filteredVu_ == null) {
+          FilteredVu = new global::PROTO.FilteredIntensity();
+        }
+        FilteredVu.MergeFrom(other.FilteredVu);
+      }
+      if (other.filteredVuMarker_ != null) {
+        if (filteredVuMarker_ == null) {
+          FilteredVuMarker = new global::PROTO.FilteredIntensity();
+        }
+        FilteredVuMarker.MergeFrom(other.FilteredVuMarker);
       }
       if (other.autogain_ != null) {
         if (autogain_ == null) {
@@ -4125,6 +4522,27 @@ namespace PROTO {
             input.ReadMessage(Position);
             break;
           }
+          case 138: {
+            if (filteredVuIntensity_ == null) {
+              FilteredVuIntensity = new global::PROTO.FilteredIntensity();
+            }
+            input.ReadMessage(FilteredVuIntensity);
+            break;
+          }
+          case 146: {
+            if (filteredVu_ == null) {
+              FilteredVu = new global::PROTO.FilteredIntensity();
+            }
+            input.ReadMessage(FilteredVu);
+            break;
+          }
+          case 154: {
+            if (filteredVuMarker_ == null) {
+              FilteredVuMarker = new global::PROTO.FilteredIntensity();
+            }
+            input.ReadMessage(FilteredVuMarker);
+            break;
+          }
         }
       }
     #endif
@@ -4229,6 +4647,27 @@ namespace PROTO {
             input.ReadMessage(Position);
             break;
           }
+          case 138: {
+            if (filteredVuIntensity_ == null) {
+              FilteredVuIntensity = new global::PROTO.FilteredIntensity();
+            }
+            input.ReadMessage(FilteredVuIntensity);
+            break;
+          }
+          case 146: {
+            if (filteredVu_ == null) {
+              FilteredVu = new global::PROTO.FilteredIntensity();
+            }
+            input.ReadMessage(FilteredVu);
+            break;
+          }
+          case 154: {
+            if (filteredVuMarker_ == null) {
+              FilteredVuMarker = new global::PROTO.FilteredIntensity();
+            }
+            input.ReadMessage(FilteredVuMarker);
+            break;
+          }
         }
       }
     }
@@ -4251,7 +4690,7 @@ namespace PROTO {
     [global::System.Diagnostics.DebuggerNonUserCodeAttribute]
     [global::System.CodeDom.Compiler.GeneratedCode("protoc", null)]
     public static pbr::MessageDescriptor Descriptor {
-      get { return global::PROTO.AudiolinkDataReflection.Descriptor.MessageTypes[12]; }
+      get { return global::PROTO.AudiolinkDataReflection.Descriptor.MessageTypes[13]; }
     }
 
     [global::System.Diagnostics.DebuggerNonUserCodeAttribute]
@@ -4528,7 +4967,7 @@ namespace PROTO {
     [global::System.Diagnostics.DebuggerNonUserCodeAttribute]
     [global::System.CodeDom.Compiler.GeneratedCode("protoc", null)]
     public static pbr::MessageDescriptor Descriptor {
-      get { return global::PROTO.AudiolinkDataReflection.Descriptor.MessageTypes[13]; }
+      get { return global::PROTO.AudiolinkDataReflection.Descriptor.MessageTypes[14]; }
     }
 
     [global::System.Diagnostics.DebuggerNonUserCodeAttribute]
@@ -4762,7 +5201,7 @@ namespace PROTO {
     [global::System.Diagnostics.DebuggerNonUserCodeAttribute]
     [global::System.CodeDom.Compiler.GeneratedCode("protoc", null)]
     public static pbr::MessageDescriptor Descriptor {
-      get { return global::PROTO.AudiolinkDataReflection.Descriptor.MessageTypes[14]; }
+      get { return global::PROTO.AudiolinkDataReflection.Descriptor.MessageTypes[15]; }
     }
 
     [global::System.Diagnostics.DebuggerNonUserCodeAttribute]
@@ -5243,7 +5682,7 @@ namespace PROTO {
     [global::System.Diagnostics.DebuggerNonUserCodeAttribute]
     [global::System.CodeDom.Compiler.GeneratedCode("protoc", null)]
     public static pbr::MessageDescriptor Descriptor {
-      get { return global::PROTO.AudiolinkDataReflection.Descriptor.MessageTypes[15]; }
+      get { return global::PROTO.AudiolinkDataReflection.Descriptor.MessageTypes[16]; }
     }
 
     [global::System.Diagnostics.DebuggerNonUserCodeAttribute]
@@ -5603,7 +6042,7 @@ namespace PROTO {
     [global::System.Diagnostics.DebuggerNonUserCodeAttribute]
     [global::System.CodeDom.Compiler.GeneratedCode("protoc", null)]
     public static pbr::MessageDescriptor Descriptor {
-      get { return global::PROTO.AudiolinkDataReflection.Descriptor.MessageTypes[16]; }
+      get { return global::PROTO.AudiolinkDataReflection.Descriptor.MessageTypes[17]; }
     }
 
     [global::System.Diagnostics.DebuggerNonUserCodeAttribute]
@@ -5925,7 +6364,7 @@ namespace PROTO {
     [global::System.Diagnostics.DebuggerNonUserCodeAttribute]
     [global::System.CodeDom.Compiler.GeneratedCode("protoc", null)]
     public static pbr::MessageDescriptor Descriptor {
-      get { return global::PROTO.AudiolinkDataReflection.Descriptor.MessageTypes[17]; }
+      get { return global::PROTO.AudiolinkDataReflection.Descriptor.MessageTypes[18]; }
     }
 
     [global::System.Diagnostics.DebuggerNonUserCodeAttribute]
@@ -6577,7 +7016,7 @@ namespace PROTO {
     [global::System.Diagnostics.DebuggerNonUserCodeAttribute]
     [global::System.CodeDom.Compiler.GeneratedCode("protoc", null)]
     public static pbr::MessageDescriptor Descriptor {
-      get { return global::PROTO.AudiolinkDataReflection.Descriptor.MessageTypes[18]; }
+      get { return global::PROTO.AudiolinkDataReflection.Descriptor.MessageTypes[19]; }
     }
 
     [global::System.Diagnostics.DebuggerNonUserCodeAttribute]
