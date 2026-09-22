@@ -533,6 +533,12 @@ namespace VRCAudioLink
                 else
                     break;
             }
+//string combined = "";
+//foreach(Vector4 vec in vecs)
+//{
+//combined += $"({vec.ToString()})";
+//}
+//Debug.Log(combined);
 
             // Expose the vectors to shader
             audioMaterial.SetVectorArray(nameID, vecs);
