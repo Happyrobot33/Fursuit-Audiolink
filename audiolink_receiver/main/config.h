@@ -69,10 +69,10 @@ static constexpr OutputDevice ACTIVE_OUTPUT_DEVICE = OutputDevice::Matrix;
 
 // Number of LEDs in the strip. For a strip-driven matrix, the strip must be large enough
 // to cover every pixel in the logical matrix.
-static constexpr uint16_t LED_STRIP_LED_NUMBERS = 60;
+// static constexpr uint16_t LED_STRIP_LED_NUMBERS = 60;
 // static constexpr uint16_t LED_STRIP_LED_NUMBERS = 60 * 2;
 // static constexpr uint16_t LED_STRIP_LED_NUMBERS = 8 * 2; //sticks
-// static constexpr uint16_t LED_STRIP_LED_NUMBERS = MATRIX_WIDTH * MATRIX_HEIGHT;
+static constexpr uint16_t LED_STRIP_LED_NUMBERS = SCREEN_WIDTH * SCREEN_HEIGHT;
 // Brightness tuning for both output devices. 0..255, where 255 is full brightness.
 //LED strip still applies to strip matrices
 static constexpr uint8_t LED_STRIP_BRIGHTNESS = 128;

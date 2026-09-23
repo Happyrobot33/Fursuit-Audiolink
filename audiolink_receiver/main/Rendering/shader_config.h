@@ -46,12 +46,14 @@ using SelectedShader = AudiolinkTextureShader;
 // using FallbackShaderType = RotatingSquareShader;
 // #include "voronoi_shader.h"
 // using FallbackShaderType = VoronoiShader;
-#include "rainbow_shader.h"
-using FallbackShaderType = RainbowShader;
+// #include "rainbow_shader.h"
+// using FallbackShaderType = RainbowShader;
 // #include "fallback_shader.h"
 // using FallbackShaderType = FallbackShader;
 // #include "uv_test_shader.h"
 // using FallbackShaderType = UvTestShader;
+#include "text_shader.h"
+using FallbackShaderType = TextShader;
 
 // Common UV fit modes for mapping a pixel grid onto the shader's UV domain.
 // - Stretch: use the native width/height mapping exactly.
