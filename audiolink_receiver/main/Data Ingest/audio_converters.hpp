@@ -449,6 +449,36 @@ public:
     }
 };
 
+class FilteredIntensityConverter : public MessageConverter<
+        FilteredIntensityConverter,
+        FilteredIntensity,
+        PROTO_FilteredIntensity,
+        &PROTO_FilteredIntensity_msg>
+{
+public:
+    static ProtoType encoderInit(const LocalType& local) {
+        return ProtoType{
+                .RMSLeft = ArrayConverter<FloatConverter, std::vector<float>>::encoderCallbackInit(local.RMSLeft),
+                .PeakLeft = ArrayConverter<FloatConverter, std::vector<float>>::encoderCallbackInit(local.PeakLeft),
+                .RMSRight = ArrayConverter<FloatConverter, std::vector<float>>::encoderCallbackInit(local.RMSRight),
+                .PeakRight = ArrayConverter<FloatConverter, std::vector<float>>::encoderCallbackInit(local.PeakRight)
+        };
+    }
+
+    static ProtoType decoderInit(LocalType& local) {
+        return ProtoType{
+                .RMSLeft = ArrayConverter<FloatConverter, std::vector<float>>::decoderCallbackInit(local.RMSLeft),
+                .PeakLeft = ArrayConverter<FloatConverter, std::vector<float>>::decoderCallbackInit(local.PeakLeft),
+                .RMSRight = ArrayConverter<FloatConverter, std::vector<float>>::decoderCallbackInit(local.RMSRight),
+                .PeakRight = ArrayConverter<FloatConverter, std::vector<float>>::decoderCallbackInit(local.PeakRight)
+        };
+    }
+
+    static bool decoderApply(const ProtoType& proto, LocalType& local) {
+        return true;  // Vectors populated by callbacks
+    }
+};
+
 class GeneralVUConverter : public MessageConverter<
         GeneralVUConverter,
         GeneralVU,
@@ -480,7 +510,13 @@ public:
                 .UTCDaysSinceEpoch = local.UTCDaysSinceEpoch,
                 .msSinceUTCDayStart = local.msSinceUTCDayStart,
                 .has_position = true,
-                .position = PositionConverter::encoderInit(local.position)
+                .position = PositionConverter::encoderInit(local.position),
+                .has_filtered_vu_intensity = true,
+                .filtered_vu_intensity = FilteredIntensityConverter::encoderInit(local.filtered_vu_intensity),
+                .has_filtered_vu = true,
+                .filtered_vu = FilteredIntensityConverter::encoderInit(local.filtered_vu),
+                .has_filtered_vu_marker = true,
+                .filtered_vu_marker = FilteredIntensityConverter::encoderInit(local.filtered_vu_marker)
         };
     }
 
@@ -508,7 +544,13 @@ public:
                 .UTCDaysSinceEpoch = local.UTCDaysSinceEpoch,
                 .msSinceUTCDayStart = local.msSinceUTCDayStart,
                 .has_position = true,
-                .position = PositionConverter::decoderInit(local.position)
+                .position = PositionConverter::decoderInit(local.position),
+                .has_filtered_vu_intensity = true,
+                .filtered_vu_intensity = FilteredIntensityConverter::decoderInit(local.filtered_vu_intensity),
+                .has_filtered_vu = true,
+                .filtered_vu = FilteredIntensityConverter::decoderInit(local.filtered_vu),
+                .has_filtered_vu_marker = true,
+                .filtered_vu_marker = FilteredIntensityConverter::decoderInit(local.filtered_vu_marker)
         };
     }
 
@@ -529,7 +571,10 @@ public:
                IntensityConverter::decoderApply(proto.marker_value, local.marker_value) &&
                IntensityConverter::decoderApply(proto.marker_times, local.marker_times) &&
              AutogainConverter::decoderApply(proto.autogain, local.autogain) &&
-             PositionConverter::decoderApply(proto.position, local.position);
+             PositionConverter::decoderApply(proto.position, local.position) &&
+             FilteredIntensityConverter::decoderApply(proto.filtered_vu_intensity, local.filtered_vu_intensity) &&
+             FilteredIntensityConverter::decoderApply(proto.filtered_vu, local.filtered_vu) &&
+             FilteredIntensityConverter::decoderApply(proto.filtered_vu_marker, local.filtered_vu_marker);
     }
 };
 

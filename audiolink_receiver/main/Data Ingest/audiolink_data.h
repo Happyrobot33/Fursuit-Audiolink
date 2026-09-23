@@ -122,6 +122,14 @@ struct Autogain {
     float symmetricGain = 0.0f;
 };
 
+// 4 wide, slowest to fastest moving.
+struct FilteredIntensity {
+    std::vector<float> RMSLeft;
+    std::vector<float> PeakLeft;
+    std::vector<float> RMSRight;
+    std::vector<float> PeakRight;
+};
+
 struct Position {
     double lat = 0.0;
     double lon = 0.0;
@@ -144,6 +152,9 @@ struct GeneralVU {
     double UTCDaysSinceEpoch = 0.0;
     double msSinceUTCDayStart = 0.0;
     Position position;
+    FilteredIntensity filtered_vu_intensity;
+    FilteredIntensity filtered_vu;
+    FilteredIntensity filtered_vu_marker;
 };
 
 struct ColorChord {
