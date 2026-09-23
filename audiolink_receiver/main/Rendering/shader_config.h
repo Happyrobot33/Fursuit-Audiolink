@@ -52,8 +52,10 @@ using SelectedShader = AudiolinkTextureShader;
 // using FallbackShaderType = FallbackShader;
 // #include "uv_test_shader.h"
 // using FallbackShaderType = UvTestShader;
-#include "text_shader.h"
-using FallbackShaderType = TextShader;
+// #include "text_shader.h"
+// using FallbackShaderType = TextShader;
+#include "belatro_shader.h"
+using FallbackShaderType = BelatroShader;
 
 // Common UV fit modes for mapping a pixel grid onto the shader's UV domain.
 // - Stretch: use the native width/height mapping exactly.
