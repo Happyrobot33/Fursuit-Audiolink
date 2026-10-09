@@ -21,3 +21,11 @@ Almost any ESP32 will work, as long as it can receive ESP-NOW broadcast packets 
 These are the most common, and feature a on-board antenna. While these are cheaper and more compact, they receive signals significantly worse and are highly not recommended except for testing or if you are on a big budget. An example of these is this https://a.co/d/07FVEDM8
 ### Off-Board Antenna
 These are the ones you should be looking to purchase. These feature an off-board antenna. which has significantly more strength to receive data and will cause significantly less packet loss, especially at further distances or through bodies/walls. An example of this is these https://a.co/d/09AUEV2m
+
+## Batteries
+Currently all I have tested with is using USB batteries. These are actually fairly effective, you can pickup cheap portable phone charger batteries from say five below that are 5000mAH, and due to the amperage draw will last 7 ish hours, just using the USB cable. Just be careful with amperage draw, you will need to create a more complicated setup if you start drawing too many amps through the ESP32 itself.
+
+## LEDs
+Virtually any neopixel-like / single-wire LED strip will work currently. You can even set them up in a serpentine matrix for 2D displays. Bear in mind, cheaper addressable strips have worse shift register timing, which can lead to severe color flickering happening, especially on longer runs.
+
+HUB75 Matrices are also supported. One note, is that currently due to DMA costs, the current maximum that has been acheived is a 128x64 matrix arrangement, and with severe downsides such as reduced update rate of the matrix itself and a data rate of roughly 4 FPS, as the DMA process of updating the screen causes WiFi to drop packets. A longer term solution to this would be to have one ESP32 receive and process the audiolink data, while a seperate ESP32 sent data over serial handled the actual matrix rendering
